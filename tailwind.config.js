@@ -2,7 +2,11 @@
 export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      borderRadius: {
+        'b-10': '10px',
+      }
+    },
   },
   plugins: [],
 }
