@@ -4,6 +4,8 @@ import DiscoveryIcon from "./DiscoveryIcon.png"
 import FolderIcon from "./FolderIcon.png"
 import LibraryIcon from "./LibraryIcon.png"
 import AddIcon from "./AddIcon.png"
+import TemplateQuiz1 from "./TemplateQuiz1.jsx"
+import TemplateQuiz2 from "./TemplateQuiz2.jsx"
 
 function Discovery(){
     
@@ -24,7 +26,7 @@ function Discovery(){
             </div>
 
             {/* side bar + display bar */}
-            <div class="flex w-full h-full">
+            <div class="flex w-full h-screen">
                 {/* side bar */}
                 <div class="bg-white max-w-[420px] grow shrink flex-2">
                     {/* User info */}
@@ -78,7 +80,7 @@ function Discovery(){
                     </div>
 
                     {/* Add button */}
-                    <div class="flex flex-wrap mt-[100px]">
+                    <div class="flex flex-wrap mt-[80px]">
                         <div class="bg-[#006B2D] w-[80px] h-[80px] flex justify-center items-center">
                             <img src={AddIcon} alt="Add Icon" class="w-[50px] h-[50px]" />
                         </div>
@@ -91,7 +93,7 @@ function Discovery(){
                     </div>
 
                     {/* Setting */}
-                    <div class="flex justify-center items-center text-3xl mt-[207px]">
+                    <div class="flex w-full text-3xl mt-[75px] ">
                         <button id="settings" class="bg-white hover:bg-gray-400 hover:text-white ease-in duration-100
                         min-w-[100px] min-h-[60px] shrink max-w-full max-h-[75px] grow font-bold m-[1px]">
                             Settings
@@ -100,8 +102,9 @@ function Discovery(){
                 </div>
 
                 {/* display bar */}
-                <div class="bg-[#3E4757] min-w-[250px] grow h-screen flex-1 text-white overflow-y-auto">
-                    display
+                <div class="bg-[#3E4757] min-w-[250px] h-screen grow flex overflow-x-auto snap justify-center items-center">
+                        <TemplateQuiz2 />
+
                 </div>
             </div>
         </>

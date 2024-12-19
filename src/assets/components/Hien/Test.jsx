@@ -1,47 +1,33 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import TemplateCard from "./TemplateQuiz1.jsx"
 
-// Define a functional component named UploadAndDisplayImage
-const UploadAndDisplayImage = () => {
-  // Define a state variable to store the selected image
-  const [selectedImage, setSelectedImage] = useState(null);
+const cards = [
+  TemplateCard,
+  TemplateCard,
+  TemplateCard,
+  TemplateCard
+];
 
-  // Return the JSX for rendering
+function RainbowDeck() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
+  };
+
   return (
-    <div>
-      {/* Header */}
-      <h1>Upload and Display Image</h1>
-      <h3>using React Hooks</h3>
-
-      {/* Conditionally render the selected image if it exists */}
-      {selectedImage && (
-        <div>
-          {/* Display the selected image */}
-          <img
-            alt="not found"
-            width={"250px"}
-            src={URL.createObjectURL(selectedImage)}
-          />
-          <br /> <br />
-          {/* Button to remove the selected image */}
-          <button onClick={() => setSelectedImage(null)}>Remove</button>
-        </div>
-      )}
-
-      <br />
-
-      {/* Input element to select an image file */}
-      <input
-        type="file"
-        name="myImage"
-        // Event handler to capture file selection and update the state
-        onChange={(event) => {
-          console.log(event.target.files[0]); // Log the selected file
-          setSelectedImage(event.target.files[0]); // Update the state with the selected file
-        }}
-      />
+    <div class="flex flex-col items-center justify-center h-screen bg-gray-200">
+      <div
+        class={`${cards[currentIndex]}`}
+      ></div>
+      <button
+        onClick={handleNext}
+        class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
+      >
+        Next
+      </button>
     </div>
   );
-};
+}
 
-// Export the UploadAndDisplayImage component as default
-export default UploadAndDisplayImage;
+export default RainbowDeck;
