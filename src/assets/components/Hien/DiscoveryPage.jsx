@@ -23,7 +23,6 @@ function Discovery(){
                 </div>
             </div>
 
-            
             {/* side bar + display bar */}
             <div class="flex w-full h-full">
                 {/* side bar */}
@@ -85,24 +84,23 @@ function Discovery(){
                         </div>
                         <button class="bg-[#21DC6F] h-[80px] max-w-[270px] grow min-w-[90px] 
                         shrink rounded-r-full flex justify-center items-center 
-                        hover:border-green-300 hover:border-[10px] text-xl hover:text-3xl">
+                        hover:border-green-300 hover:border-r-[15px] hover:border-t-[15px] hover:border-b-[15px] text-2xl hover:text-3xl">
                             <div class="font-bold text-white">Add</div>
                         </button>
             
                     </div>
 
                     {/* Setting */}
-                    <div class="flex justify-center items-center text-3xl mt-[157px]">
-                        <button id="settings" class="bg-white hover:bg-gray-600 hover:text-white ease-in duration-100 rounded-full
-                        min-w-[100px] min-h-[60px] shrink max-w-[200px] max-h-[75px] grow font-bold m-[1px]">
+                    <div class="flex justify-center items-center text-3xl mt-[207px]">
+                        <button id="settings" class="bg-white hover:bg-gray-400 hover:text-white ease-in duration-100
+                        min-w-[100px] min-h-[60px] shrink max-w-full max-h-[75px] grow font-bold m-[1px]">
                             Settings
                         </button>
                     </div>
                 </div>
 
-
                 {/* display bar */}
-                <div class="bg-[#3E4757] min-w-[250px] grow flex-1 text-white overflow-y-auto">
+                <div class="bg-[#3E4757] min-w-[250px] grow h-screen flex-1 text-white overflow-y-auto">
                     display
                 </div>
             </div>
