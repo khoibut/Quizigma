@@ -6,7 +6,6 @@ import LibraryIcon from "./LibraryIcon.png"
 import AddIcon from "./AddIcon.png"
 
 function Discovery(){
-    
     return (
         <>
             {/* <!-- top bar --> */}
