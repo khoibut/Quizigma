@@ -1,11 +1,36 @@
+import { useState } from "react";
 import OnlineIcon from "./OnlineIcon.png"
 import PlayIcon from "./Play icon.png"
 import DiscoveryIcon from "./DiscoveryIcon.png"
 import FolderIcon from "./FolderIcon.png"
 import LibraryIcon from "./LibraryIcon.png"
 import AddIcon from "./AddIcon.png"
+import TemplateQuiz1 from "./TemplateQuiz1.jsx"
+import TemplateQuiz2 from "./TemplateQuiz2.jsx"
+import Arrow from "./arrow.png"
+
+const quiz =[
+    TemplateQuiz1,
+    TemplateQuiz2
+];
 
 function Discovery(){
+    const [currentIndex, setCurrentIndex] = useState(0);
+    
+    const handleNext = () => {
+    if (currentIndex < quiz.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+    }
+    };
+
+    const handlePrevious = () => {
+    if (currentIndex > 0) {
+        setCurrentIndex(currentIndex - 1);
+    }
+    };
+
+    const CurrentQuiz = quiz[currentIndex];
+    
     return (
         <>
             {/* <!-- top bar --> */}
@@ -23,7 +48,7 @@ function Discovery(){
             </div>
 
             {/* side bar + display bar */}
-            <div class="flex w-full h-full">
+            <div class="flex w-full h-screen">
                 {/* side bar */}
                 <div class="bg-white max-w-[420px] grow shrink flex-2">
                     {/* User info */}
@@ -77,7 +102,7 @@ function Discovery(){
                     </div>
 
                     {/* Add button */}
-                    <div class="flex flex-wrap mt-[100px]">
+                    <div class="flex flex-wrap mt-[80px]">
                         <div class="bg-[#006B2D] w-[80px] h-[80px] flex justify-center items-center">
                             <img src={AddIcon} alt="Add Icon" class="w-[50px] h-[50px]" />
                         </div>
@@ -90,7 +115,7 @@ function Discovery(){
                     </div>
 
                     {/* Setting */}
-                    <div class="flex justify-center items-center text-3xl mt-[207px]">
+                    <div class="flex w-full text-3xl mt-[75px] ">
                         <button id="settings" class="bg-white hover:bg-gray-400 hover:text-white ease-in duration-100
                         min-w-[100px] min-h-[60px] shrink max-w-full max-h-[75px] grow font-bold m-[1px]">
                             Settings
@@ -99,8 +124,20 @@ function Discovery(){
                 </div>
 
                 {/* display bar */}
-                <div class="bg-[#3E4757] min-w-[250px] grow h-screen flex-1 text-white overflow-y-auto">
-                    display
+                <div class="bg-gradient-to-r from-[#40c9ff] to-blue-900 min-w-[250px] grow flex flex-col items-center ease-out duration-300">
+                    <div className="mb-8">
+                        <CurrentQuiz />
+                    </div>
+                    <div className="max-w-[250px] max-h-[85px] w-full h-full flex flex-wrap justify-center gap-[50px]">
+                        <button onClick={handlePrevious} className="bg-gray-500 max-w-[100px] max-h-[70px] w-full h-full flex items-center 
+                        justify-center rounded-full -scale-x-100 border-black border-[3px] hover:bg-gray-300 hover:-translate-y-2 ease-out duration-300">
+                            <img src={Arrow} alt="arrow" className="max-w-[50px] max-h-[50px]"/>
+                        </button>
+                        <button onClick={handleNext} className="bg-gray-500 max-w-[100px] max-h-[70px] w-full h-full flex items-center 
+                        justify-center rounded-full border-black border-[3px] hover:bg-gray-300 hover:-translate-y-2 ease-out duration-300">
+                            <img src={Arrow} alt="arrow" className="max-w-[50px] max-h-[50px]"/>
+                        </button>
+                    </div>
                 </div>
             </div>
         </>
