@@ -1,33 +1,39 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import reactLogo from './assets/images/react.svg'
 import viteLogo from '/vite.svg'
-import './App.css'
+import './assets/styles/App.css'
+import SignIn from './components/AccountSystem/SignIn.jsx'
+import SignUp from './components/AccountSystem/SignUp.jsx'
+import LandingPage from './components/LandingPage/LandingPage.jsx';
+import AddQuestion from './components/QuestionSystem/AddQuiz.jsx'
+import QuestionDisplay from './components/QuestionSystem/QuestionDisplay.jsx'
+import { BrowserRouter, Routes, Route } from "react-router";
+import Discovery from './assets/components/Hien/DiscoveryPage.jsx'
+import Test from './assets/components/Hien/Test.jsx'
+import "./index.css"
+import HostGame from './components/Game/HostGame.jsx'
+import AddImage from './components/PopUp/AddImage.jsx'
+import AddQuiz from './components/QuestionSystem/AddQuiz.jsx'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<LandingPage />} />
+          <Route path='questionlist' element={<QuestionDisplay />} />
+          <Route path='host' element={<HostGame />} />
+          <Route path='signin' element={<SignIn />} />
+          <Route path='signup' element={<SignUp />} />
+          <Route path='addquiz' element={<AddQuiz />} />
+        </Routes>
+      </BrowserRouter>
+
+      {/* <Discovery /> */}
+      {/* <LandingPage /> */}
+      {/* <Test /> */}
+      {/* <TemplateCard /> */}
     </>
   )
 }
