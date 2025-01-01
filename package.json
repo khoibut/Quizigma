@@ -6,10 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:css": "npx tailwindcss -i ./src/index.css -o ./src/assets/components/Hien/dist/style.css --watch",
+    "build:css": "npx tailwindcss -i ./src/style.css -o ./dist/style.css --watch",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "build:css": "npx tailwindcss -i ./src/style.css -o ./dist/style.css --watch"
+    "preview": "vite preview"
   },
   "dependencies": {
     "axios": "^1.7.9",
