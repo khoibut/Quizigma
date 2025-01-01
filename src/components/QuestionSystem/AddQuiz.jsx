@@ -60,8 +60,6 @@ function AddQuiz( {setIsOpen} ) {
                         <div class="col-span-2 flex justify-end mt-5 justify-self-center w-2/3 lg:w-full" value="CREATE"><button class="w-full sm:w-fit bg-red-400 rounded-full py-2 px-16 text-white hover:bg-rose-500 hover:scale-105 transition-all">CREATE</button></div>
                         
                     </div>
-                    <div class="text-end mt-5"><button onClick={() => {setIsOpen(false)}} class="w-full sm:w-fit bg-blue-500 rounded-full py-2 px-16 text-white hover:bg-violet-800 hover:scale-105 transition-all">Exit</button></div>
-                    </form>
                     <NavLink to='/discovery' end>
                         <div class="text-end mt-5"><button onClick={() => {setIsOpen(false)}} class="w-full sm:w-fit bg-blue-500 rounded-full py-2 px-16 text-white hover:bg-violet-800 hover:scale-105 transition-all">Exit</button></div>
                     </NavLink>

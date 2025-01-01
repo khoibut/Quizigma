@@ -1,6 +1,6 @@
-import OnlineIcon from "./OnlineIcon.png"
-import PlayIcon from "./Play icon.png"
-import WelcomeToQizigma from "./landingPageBg.png"
+import OnlineIcon from "./Icons&Images/OnlineIcon.png"
+import PlayIcon from "./Icons&Images/Play icon.png"
+import WelcomeToQizigma from "./Icons&Images/landingPageBg.png"
 
 function LandingPage(){
     return(

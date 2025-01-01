@@ -1,9 +1,9 @@
-import OnlineIcon from "./OnlineIcon.png"
-import PlayIcon from "./Play icon.png"
-import DiscoveryIcon from "./DiscoveryIcon.png"
-import FolderIcon from "./FolderIcon.png"
-import LibraryIcon from "./LibraryIcon.png"
-import AddIcon from "./AddIcon.png"
+import OnlineIcon from "./Icons&Images/OnlineIcon.png"
+import PlayIcon from "./Icons&Images/Play icon.png"
+import DiscoveryIcon from "./Icons&Images/DiscoveryIcon.png"
+import FolderIcon from "./Icons&Images/FolderIcon.png"
+import LibraryIcon from "./Icons&Images/LibraryIcon.png"
+import AddIcon from "./Icons&Images/AddIcon.png"
 import { NavLink } from "react-router";
 
 function SideBar(){

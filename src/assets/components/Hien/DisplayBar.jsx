@@ -7,7 +7,7 @@ import TemplateQuiz6 from "./Template_Quizzes/TemplateQuiz6.jsx"
 import TemplateQuiz7 from "./Template_Quizzes/TemplateQuiz7.jsx"
 import TemplateQuiz8 from "./Template_Quizzes/TemplateQuiz8.jsx"
 import TemplateQuiz9 from "./Template_Quizzes/TemplateQuiz9.jsx"
-import Arrow from "./arrow.png"
+import Arrow from "./Icons&Images/arrow.png"
 
 import { useState } from "react";
 const quiz =[
