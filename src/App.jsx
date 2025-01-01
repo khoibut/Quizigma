@@ -10,8 +10,14 @@ import Test from './assets/components/Hien/Test.jsx'
 import AddQuiz from './components/QuestionSystem/AddQuiz.jsx';
 import SideBar from './assets/components/Hien/SideBar.jsx';
 import TopBar from './assets/components/Hien/TopBar.jsx';
-
 import "./index.css"
+import HostGame from './components/Game/HostGame.jsx'
+import AddImage from './components/PopUp/AddImage.jsx'
+import AddQuiz from './components/QuestionSystem/AddQuiz.jsx'
+import JoinGame from './components/Game/JoinGame.jsx'
+import WaitingRoom from './components/Game/WaitingRoom.jsx'
+import HostingRoom from './components/Game/HostRoom.jsx'
+
 function App() {
 
   return (
@@ -21,20 +27,21 @@ function App() {
         <Routes>
           <Route index element={<LandingPage />} />
           <Route path='questionlist' element={<QuestionDisplay />} />
+          <Route path='host' element={<HostGame />} />
           <Route path='signin' element={<SignIn />} />
           <Route path='signup' element={<SignUp />} />
+          <Route path='addquiz' element={<AddQuiz />} />
+          <Route path='join' element={<JoinGame />} />
+          <Route path='game/*' element={<WaitingRoom />} />
           <Route path='discovery' element={<Discovery />} />
-          <Route path='addquiz' element={<AddQuiz/>} />
           <Route path='sidebar' element={<SideBar />}/>
+          <Route path='game/hosting/*' element={<HostingRoom />} />
         </Routes>
       </BrowserRouter>
 
-      
       {/* <LandingPage /> */}
       {/* <Test /> */}
       {/* <TemplateCard /> */}
-      {/* <SideBar /> */}
-      {/* <Discovery /> */}
     </>
   )
 }
