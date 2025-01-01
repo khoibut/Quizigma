@@ -1,6 +1,6 @@
 import { useState } from "react";
-import TemplateQuiz1 from "./TemplateQuiz1.jsx";
-import TemplateQuiz2 from "./TemplateQuiz2.jsx";
+import TemplateQuiz1 from "./Template_Quizzes/TemplateQuiz1.jsx";
+import TemplateQuiz2 from "./Template_Quizzes/TemplateQuiz2.jsx";
 
 const cards = [
   TemplateQuiz1,

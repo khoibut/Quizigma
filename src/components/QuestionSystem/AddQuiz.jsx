@@ -1,6 +1,7 @@
 import { useState } from "react"
 import Modal from "react-modal"
 import AddImage from "../PopUp/AddImage"
+import { NavLink } from "react-router"
 
 function AddQuiz( {setIsOpen} ) {
     const [addImage, setAddImage] = useState(false)
@@ -60,6 +61,10 @@ function AddQuiz( {setIsOpen} ) {
                         
                     </div>
                     <div class="text-end mt-5"><button onClick={() => {setIsOpen(false)}} class="w-full sm:w-fit bg-blue-500 rounded-full py-2 px-16 text-white hover:bg-violet-800 hover:scale-105 transition-all">Exit</button></div>
+                    </form>
+                    <NavLink to='/discovery' end>
+                        <div class="text-end mt-5"><button onClick={() => {setIsOpen(false)}} class="w-full sm:w-fit bg-blue-500 rounded-full py-2 px-16 text-white hover:bg-violet-800 hover:scale-105 transition-all">Exit</button></div>
+                    </NavLink>
                 </div>
             </div>
         </>

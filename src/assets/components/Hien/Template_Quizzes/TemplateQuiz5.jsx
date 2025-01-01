@@ -1,11 +1,11 @@
-import image2 from "./image2.jpg"
+import Sanji from "./sanji.jpg"
 
 function TemplateQuiz2(){
     return(
         <div class="bg-gradient-to-r from-teal-400 to-blue-500 rounded-3xl max-w-[800px] h-[850px] grow min-w-[200px] 
         flex flex-col flex-wrap items-center gap-2">
             <div class="mt-6 rounded-3xl bg-white max-w-[600px] max-h-[300px] grow w-full overflow-hidden">
-                <img src={image2} alt="Profile Picture" class="w-full h-full object-fill" />
+                <img src={Sanji} alt="Profile Picture" class="w-full h-full object-fill" />
             </div>
 
             <div class="relative -translate-y-[20px] rounded-full bg-[#439cfb] max-w-[600px] max-h-[70px] w-full 
@@ -16,10 +16,10 @@ function TemplateQuiz2(){
             <div class="relative rounded-xl bg-[#439cfb] max-w-[600px] max-h-[80px] w-full font-bold 
             text-white flex justify-center items-center text-xl text-center flex-col"> 
                 <span className="text-ellipsis overflow-hidden">
-                    Title: AWOOGA BOOBIES
+                    Title: Lesson on how to stalk woman
                 </span> 
                 <span>
-                    Author: Zoro
+                    Author: Sanji
                 </span>
                 <span>
                     ID: #727
