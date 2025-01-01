@@ -14,6 +14,9 @@ import "./index.css"
 import HostGame from './components/Game/HostGame.jsx'
 import AddImage from './components/PopUp/AddImage.jsx'
 import AddQuiz from './components/QuestionSystem/AddQuiz.jsx'
+import JoinGame from './components/Game/JoinGame.jsx'
+import WaitingRoom from './components/Game/WaitingRoom.jsx'
+import HostingRoom from './components/Game/HostRoom.jsx'
 
 function App() {
 
@@ -27,6 +30,9 @@ function App() {
           <Route path='signin' element={<SignIn />} />
           <Route path='signup' element={<SignUp />} />
           <Route path='addquiz' element={<AddQuiz />} />
+          <Route path='join' element={<JoinGame />} />
+          <Route path='game/*' element={<WaitingRoom />} />
+          <Route path='game/hosting/*' element={<HostingRoom />} />
         </Routes>
       </BrowserRouter>
 
