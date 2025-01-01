@@ -94,8 +94,7 @@ function SignUp() {
         if(flag) {
             axios.post('https://quizigmaapi.onrender.com/api/v1/acc', user)
             .then(function (response) {
-                console.log(response);
-                alert(response.data)
+                console.log(response.data);
             })
             .catch(function (error) {
                 console.log(error);
