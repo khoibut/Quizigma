@@ -8,21 +8,18 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import Discovery from './assets/components/Hien/DiscoveryPage.jsx'
 import Test from './assets/components/Hien/Test.jsx'
 import AddQuiz from './components/QuestionSystem/AddQuiz.jsx';
-import SideBar from './assets/components/Hien/SideBar.jsx';
-import TopBar from './assets/components/Hien/TopBar.jsx';
 import "./index.css"
 import HostGame from './components/Game/HostGame.jsx'
 import AddImage from './components/PopUp/AddImage.jsx'
-import AddQuiz from './components/QuestionSystem/AddQuiz.jsx'
 import JoinGame from './components/Game/JoinGame.jsx'
 import WaitingRoom from './components/Game/WaitingRoom.jsx'
 import HostingRoom from './components/Game/HostRoom.jsx'
+import Game_Text from './assets/components/Hien/Game_MultipleChoice_Answer.jsx'
 
 function App() {
 
   return (
     <>
-
       <BrowserRouter>
         <Routes>
           <Route index element={<LandingPage />} />
@@ -34,13 +31,13 @@ function App() {
           <Route path='join' element={<JoinGame />} />
           <Route path='game/*' element={<WaitingRoom />} />
           <Route path='discovery' element={<Discovery />} />
-          <Route path='sidebar' element={<SideBar />}/>
           <Route path='game/hosting/*' element={<HostingRoom />} />
+          <Route path='game_text' element={<Game_Text />} />
+          <Route path='code_testing' element={<Test />}/>
         </Routes>
       </BrowserRouter>
 
       {/* <LandingPage /> */}
-      {/* <Test /> */}
       {/* <TemplateCard /> */}
     </>
   )

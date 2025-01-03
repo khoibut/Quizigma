@@ -3,7 +3,7 @@
 import landingPageBg from '../../assets/images/landingPageBg.png'
 import Title from './Title.jsx'
 import MainSidebar from './MainSidebar.jsx'
-import '../../assets/styles/App.css'
+// import '../../assets/styles/App.css'
 // import AccountForm from '../AccountSystem/AccountForm.jsx'
 
 

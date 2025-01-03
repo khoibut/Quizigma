@@ -1,7 +1,6 @@
 import OnlineIcon from "./Icons&Images/OnlineIcon.png"
 import PlayIcon from "./Icons&Images/Play icon.png"
 import DiscoveryIcon from "./Icons&Images/DiscoveryIcon.png"
-import FolderIcon from "./Icons&Images/FolderIcon.png"
 import LibraryIcon from "./Icons&Images/LibraryIcon.png"
 import AddIcon from "./Icons&Images/AddIcon.png"
 import { NavLink } from "react-router";
@@ -48,13 +47,15 @@ function SideBar(){
                                     <span class="text-sm">Online</span>
                                 </button>
                             </NavLink>
-
-                            <button class="relative rounded-full shadow-xl bg-[#487FA7] font-bold text-white hover:bg-sky-500 hover:shadow-none ease-in 
-                            duration-200 text-base w-[140px] h-[65px] flex flex-col items-center justify-center hover:animate-bounce
-                            m-[1px]">
-                                <img src={PlayIcon} alt="Play Icon" class="w-10 h-10 mb-1"/>
-                                <span class="text-sm">Play</span>
-                            </button>
+                            
+                            <NavLink to='/join' end>
+                                <button class="relative rounded-full shadow-xl bg-[#487FA7] font-bold text-white hover:bg-sky-500 hover:shadow-none ease-in 
+                                duration-200 text-base w-[140px] h-[65px] flex flex-col items-center justify-center hover:animate-bounce
+                                m-[1px]">
+                                    <img src={PlayIcon} alt="Play Icon" class="w-10 h-10 mb-1"/>
+                                    <span class="text-sm">Play</span>
+                                </button>
+                            </NavLink>
                         </div>
                     </div>
 
