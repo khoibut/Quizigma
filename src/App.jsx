@@ -14,7 +14,8 @@ import AddImage from './components/PopUp/AddImage.jsx'
 import JoinGame from './components/Game/JoinGame.jsx'
 import WaitingRoom from './components/Game/WaitingRoom.jsx'
 import HostingRoom from './components/Game/HostRoom.jsx'
-import Game_Text from './assets/components/Hien/Game_MultipleChoice_Answer.jsx'
+import Game_MultipleChoice from './assets/components/Hien/Game_MultipleChoice_Answer.jsx'
+import Game_Text from './assets/components/Hien/Game_TextAnswer.jsx'
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
           <Route path='game/*' element={<WaitingRoom />} />
           <Route path='discovery' element={<Discovery />} />
           <Route path='game/hosting/*' element={<HostingRoom />} />
+          <Route path='game_multiple_choice' element={<Game_MultipleChoice />} />
           <Route path='game_text' element={<Game_Text />} />
           <Route path='code_testing' element={<Test />}/>
         </Routes>
