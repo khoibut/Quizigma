@@ -2,7 +2,7 @@ function PlayerSelector( {choosePlayer} ) {
     let nameInput
     return (
         <>
-            <div class="flex flex-col items-center gap-10 w-[22%]">
+            <div class="flex flex-col items-center gap-10 md:w-[22%]">
                 <div class="rounded-full text-center h-[30%] aspect-square border-2 border-black">hrllo</div>
                 <input ref={(current) => {nameInput = current}} class="bg-[#B0B0B0] w-full rounded-full p-6 font-semibold text-lg placeholder-white outline-none text-center shadow-[0_3px_5px_1px_rgba(0,0,0,0.2)]" type="text" placeholder="Enter your name" />
                 <button onClick={() => {choosePlayer({

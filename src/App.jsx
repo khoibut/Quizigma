@@ -17,6 +17,8 @@ import AddQuiz from './components/QuestionSystem/AddQuiz.jsx'
 import JoinGame from './components/Game/JoinGame.jsx'
 import WaitingRoom from './components/Game/WaitingRoom.jsx'
 import HostingRoom from './components/Game/HostRoom.jsx'
+import StatManagement from './components/Game/StatManagement.jsx'
+import PlayerStat from './components/Game/PlayerStat.jsx'
 
 function App() {
 
@@ -33,6 +35,9 @@ function App() {
           <Route path='addquiz' element={<AddQuiz />} />
           <Route path='join' element={<JoinGame />} />
           <Route path='game/*' element={<WaitingRoom />} />
+          <Route path='game/host/*' element={<HostingRoom />} />
+          <Route path='game/host/stat' element={<StatManagement totalQuestion="10" />} />
+          <Route path='game/stat' element={<PlayerStat total="10" score="10000" correct="9" />} />
           <Route path='discovery' element={<Discovery />} />
           <Route path='sidebar' element={<SideBar />}/>
           <Route path='game/hosting/*' element={<HostingRoom />} />
