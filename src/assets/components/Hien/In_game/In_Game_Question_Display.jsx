@@ -1,4 +1,4 @@
-import ExampleImg from './Icons&Images/godzillaxHenry.jpg';
+import ExampleImg from '../Icons&Images/godzillaxHenry.jpg';
 
 function In_Game_Question_Display(){
     return (

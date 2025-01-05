@@ -6,7 +6,7 @@ function Discovery(){
     return (
         <>
             <TopBar />
-            <div class="flex w-full h-screen">
+            <div class="flex w-full h-screen overflow-y-auto">
                 <SideBar />
                 <DisplayBar />
             </div>

@@ -1,4 +1,4 @@
-import ExampleAnswer from '../Icons&Images/gojoPeter.jpg'
+import ExampleAnswer from '../../Icons&Images/gojoPeter.jpg'
 
 function TemplateCard1() {
     return(

@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-
 function TemplateCard3() {
     return(
         <>

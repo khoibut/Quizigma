@@ -11,7 +11,7 @@ function TopBar(){
 
                 {/* Search bar */}
                 <div class="flex pl-5 items-center">
-                    <input type="text" placeholder="  Search.." class="rounded-full h-10 w-[150px]"/>
+                    <input type="text" placeholder="Search.." class="rounded-full h-10 w-[150px] caret-white bg-gray-800 p-2 pl-3 text-white"/>
                 </div>
             </div>
         </>

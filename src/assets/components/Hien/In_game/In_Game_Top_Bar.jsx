@@ -1,4 +1,4 @@
-import ExampleProfilePic from './Icons&Images/godzilla.jpg';
+import ExampleProfilePic from '../Icons&Images/godzilla.jpg';
 
 function In_Game_Top_Bar(){
     return(

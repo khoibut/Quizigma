@@ -16,18 +16,28 @@ export default {
           '0%, 100%': { transform: 'rotate(-2deg)' },
           '50%': { transform: 'rotate(2deg)' },
         },
-        shrinkLeft: {
+        shrinkBorderLeft: {
           '100%':{borderLeft: '26vh solid white'},
         },
-        shrinkRight: {
+        shrinkBorderRight: {
           '100%':{borderRight: '26vh solid white'},
+        },
+        shrinkLeft: {
+          '0%': {width: 'full'},
+          '100%':{width: '0'},
+        },
+        openLeft: {
+          '0%': {width: '0'},
+          '100%':{width: 'full'},
         },
       },
       animation: {
         wiggle: 'wiggle 1.5s ease-in-out infinite',
         rgbBorder: 'rgbBorder 3s infinite ease-in-out',
+        shrinkBorderLeft: 'shrinkBorderLeft 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards',
+        shrinkBorderRight: 'shrinkBorderRight 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards',
         shrinkLeft: 'shrinkLeft 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards',
-        shrinkRight: 'shrinkRight 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards',
+        openLeft: 'openLeft 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards',
       },
 
       utilities: {
