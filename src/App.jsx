@@ -5,7 +5,7 @@ import LandingPage from './components/LandingPage/LandingPage.jsx';
 import AddQuestion from './components/QuestionSystem/AddQuiz.jsx'
 import QuestionDisplay from './components/QuestionSystem/QuestionDisplay.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
-import Discovery from './assets/components/Hien/Discovery_Page.jsx'
+import Discovery from './assets/components/Hien/Discovery_page/Discovery_Page.jsx'
 import Test from './assets/components/Hien/Test.jsx'
 import AddQuiz from './components/QuestionSystem/AddQuiz.jsx';
 import "./index.css"
