@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import reactLogo from './assets/images/react.svg'
-import viteLogo from '/vite.svg'
 import './assets/styles/App.css'
 import SignIn from './components/AccountSystem/SignIn.jsx'
 import SignUp from './components/AccountSystem/SignUp.jsx'
@@ -10,6 +7,9 @@ import QuestionDisplay from './components/QuestionSystem/QuestionDisplay.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
 import Discovery from './assets/components/Hien/DiscoveryPage.jsx'
 import Test from './assets/components/Hien/Test.jsx'
+import AddQuiz from './components/QuestionSystem/AddQuiz.jsx';
+import SideBar from './assets/components/Hien/SideBar.jsx';
+import TopBar from './assets/components/Hien/TopBar.jsx';
 import "./index.css"
 import HostGame from './components/Game/HostGame.jsx'
 import AddImage from './components/PopUp/AddImage.jsx'
@@ -24,6 +24,7 @@ function App() {
 
   return (
     <>
+
       <BrowserRouter>
         <Routes>
           <Route index element={<LandingPage />} />
@@ -37,10 +38,12 @@ function App() {
           <Route path='game/host/*' element={<HostingRoom />} />
           <Route path='game/host/stat' element={<StatManagement totalQuestion="10" />} />
           <Route path='game/stat' element={<PlayerStat total="10" score="10000" correct="9" />} />
+          <Route path='discovery' element={<Discovery />} />
+          <Route path='sidebar' element={<SideBar />}/>
+          <Route path='game/hosting/*' element={<HostingRoom />} />
         </Routes>
       </BrowserRouter>
 
-      {/* <Discovery /> */}
       {/* <LandingPage /> */}
       {/* <Test /> */}
       {/* <TemplateCard /> */}

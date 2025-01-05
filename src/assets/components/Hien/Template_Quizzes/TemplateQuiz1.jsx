@@ -1,11 +1,12 @@
-import ProfilePicture from "./ProfilePicture.jpg"
+import Luffy from "./ProfilePicture.jpg"
 
 function TemplateQuiz1(){
     return(
-        <div class="bg-gradient-to-r from-teal-400 to-blue-500 rounded-3xl max-w-[800px] h-[850px] grow min-w-[200px] 
+        <div class="bg-gradient-to-r from-teal-400 to-blue-500 rounded-3xl
+         max-w-[800px] h-[850px] grow min-w-[200px] 
         flex flex-col flex-wrap items-center gap-2">
             <div class="mt-6 rounded-3xl bg-white max-w-[600px] max-h-[300px] grow w-full overflow-hidden">
-                <img src={ProfilePicture} alt="Profile Picture" class="w-full h-full object-fill" />
+                <img src={Luffy} alt="Profile Picture" class="w-full h-full object-fill" />
             </div>
 
             <div class="relative -translate-y-[20px] rounded-full bg-[#439cfb] max-w-[600px] max-h-[70px] w-full 
