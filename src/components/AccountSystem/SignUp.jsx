@@ -23,6 +23,7 @@ function SignUp() {
     let lowerError = useRef()
     let upperError = useRef()
     let specialError = useRef()
+    let invalidEmailError = useRef()
     
     function addAccount() {
         let flag = true
@@ -56,6 +57,14 @@ function SignUp() {
         }
         else {
             lowerError.style.display = 'none'
+        }
+
+        if(!user.email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) {
+            invalidEmailError.style.display = 'flex'
+            flag = false
+        }
+        else {
+            invalidEmailError.style.display = 'none'
         }
 
         if(user.password.split('').every(char => {return (char >= '0' && char <= '9') ? false : true}) || user.password === '') {
@@ -94,10 +103,23 @@ function SignUp() {
         if(flag) {
             axios.post('https://quizigmaapi.onrender.com/api/v1/acc', user)
             .then(function (response) {
-                console.log(response.data);
+                emailError.style.display = 'none'
+                usernameError.style.display = 'none'
+                alert('Hello user')
             })
             .catch(function (error) {
-                console.log(error);
+                if(error.response.data.error === 'Username already exists') {
+                    usernameError.style.display = 'flex'
+                }
+                else {
+                    usernameError.style.display = 'none'
+                }
+                if(error.response.data.error === 'Email already exists') {
+                    emailError.style.display = 'flex'
+                }
+                else {
+                    emailError.style.display = 'none'
+                }
             });
         }
     }
@@ -120,6 +142,10 @@ function SignUp() {
                     <div ref={(current) => (emailError = current)} class="text-rose-500 font-bold hidden mt-1 gap-2 items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(244, 63, 94)"><path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
                         <span>Email has already been taken</span>
+                    </div>
+                    <div ref={(current) => (invalidEmailError = current)} class="text-rose-500 font-bold hidden mt-1 gap-2 items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(244, 63, 94)"><path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                        <span>Invalid email</span>
                     </div>
                     
                     <label class="mt-2 text-xl" for="password">Password</label>

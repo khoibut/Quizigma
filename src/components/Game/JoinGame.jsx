@@ -27,7 +27,7 @@ function JoinGame() {
                         if(e.key == "Enter") {
                             handleEnter()
                         }
-                    }} type="text" class="w-[20vw] bg-[#B0B0B0] rounded-xl ps-4 py-3 md:ps-12 md:py-5 md:text-lg outline-none font-semibold" />
+                    }} type="text" class="w-[40vw] sm:w-[20vw] bg-[#B0B0B0] rounded-xl ps-4 py-3 md:ps-12 md:py-5 md:text-lg outline-none font-semibold" />
                 </div>
             </div>
         </>
