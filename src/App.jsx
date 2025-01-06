@@ -5,8 +5,8 @@ import LandingPage from './components/LandingPage/LandingPage.jsx';
 import AddQuestion from './components/QuestionSystem/AddQuiz.jsx'
 import QuestionDisplay from './components/QuestionSystem/QuestionDisplay.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
-import Discovery from './assets/components/Hien/Discovery_page/Discovery_Page.jsx'
-import Test from './assets/components/Hien/Test.jsx'
+import Discovery from './components/Discovery_page/Discovery_Page.jsx'
+import Test from './components/Test.jsx'
 import AddQuiz from './components/QuestionSystem/AddQuiz.jsx';
 import "./index.css"
 import HostGame from './components/Game/HostGame.jsx'
@@ -14,8 +14,8 @@ import AddImage from './components/PopUp/AddImage.jsx'
 import JoinGame from './components/Game/JoinGame.jsx'
 import WaitingRoom from './components/Game/WaitingRoom.jsx'
 import HostingRoom from './components/Game/HostRoom.jsx'
-import Game_MultipleChoice from './assets/components/Hien/In_game/Game_MultipleChoice_Answer.jsx'
-import Game_Text from './assets/components/Hien/In_game/Game_TextAnswer.jsx'
+import Game_MultipleChoice from './components/In_game/Game_MultipleChoice_Answer.jsx'
+import Game_Text from './components/In_game/Game_TextAnswer.jsx'
 import StatManagement from './components/Game/StatManagement.jsx'
 import PlayerStat from './components/Game/PlayerStat.jsx'
 
