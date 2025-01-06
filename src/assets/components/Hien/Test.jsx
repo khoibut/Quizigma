@@ -1,44 +1,15 @@
-import { useState } from "react";
-import TemplateQuiz1 from "./Template_Quizzes/TemplateQuiz1.jsx";
-import TemplateQuiz2 from "./Template_Quizzes/TemplateQuiz2.jsx";
+// src/components/BackgroundSection.js
+const Test = () => {
+    return (
+        <div className="relative h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage:"url('https://media.geeksforgeeks.org/wp-content/uploads/20241009154536548672/0_ilw552fVUGbwIzbE.jpg') ", }}>
+            {/* Overlay */}
+            < div className="absolute inset-0 bg-black opacity-50" ></div>
+            {/* Content on top of overlay */}
+            < div className="relative z-10 flex items-center justify-center h-full">
+                <h1 className="text-white text-5xl font-bold text-center px-4">Welcome to GeeksForGeeks</h1>
+            </div>
+        </div >
+    );
+};
 
-const cards = [
-  TemplateQuiz1,
-  TemplateQuiz2
-];
-
-function Deck() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const handleNext = () => {
-    if (currentIndex < cards.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
-
-  const CurrentCard = cards[currentIndex];
-
-  return (
-    <div className="flex flex-col items-center h-screen bg-gray-200">
-      <div className="transition-transform duration-500 transform">
-        <CurrentCard /> {/* Render the current card */}
-      </div>
-      <div class="flex justify-center gap-5">
-        <button onClick={handlePrevious} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
-          Previous
-        </button>
-        <button onClick={handleNext} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">
-          Next
-        </button>
-      </div>
-    </div>
-  );
-}
-
-export default Deck;
+export default Test;

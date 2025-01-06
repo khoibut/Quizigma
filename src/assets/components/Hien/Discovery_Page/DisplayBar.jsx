@@ -7,7 +7,7 @@ import TemplateQuiz6 from "./Template_Quizzes/TemplateQuiz6.jsx"
 import TemplateQuiz7 from "./Template_Quizzes/TemplateQuiz7.jsx"
 import TemplateQuiz8 from "./Template_Quizzes/TemplateQuiz8.jsx"
 import TemplateQuiz9 from "./Template_Quizzes/TemplateQuiz9.jsx"
-import Arrow from "./arrow.png"
+import Arrow from "../Icons&Images/arrow.png"
 
 import { useState } from "react";
 const quiz =[
@@ -42,21 +42,19 @@ function DisplayBar(){
     return(
         <>
             {/* display bar */}
-            <div class="bg-gradient-to-r from-[#40c9ff] to-blue-900 min-w-[250px] min-h-[950px] grow flex flex-col items-center">
-                <div className="max-w-[250px] max-h-[85px] w-full h-full flex flex-wrap justify-center gap-[50px]">
-                    <button onClick={handlePrevious} className="bg-gray-500 max-w-[100px] max-h-[70px] w-full h-full flex items-center 
-                    justify-center rounded-full -scale-x-100 border-black border-[3px] hover:bg-gray-300 
+            <div class="bg-gradient-to-r from-[#40c9ff] to-blue-900 md:w-fit w-1 h-full grow flex flex-col items-center overflow-auto">
+                <div className="md:w-full w-[20vh] h-full flex flex-wrap justify-center md:gap-[5vh] mt-2">
+                    <button onClick={handlePrevious} className="bg-gray-500 md:w-[100px] w-[6vh] md:h-[70px] flex items-center 
+                    justify-center rounded-full -scale-x-100 hover:bg-gray-200 active:scale-y-75
                     hover:-translate-y-2 ease-out duration-300">
-                        <img src={Arrow} alt="arrow" className="max-w-[50px] max-h-[50px]"/>
+                        <img src={Arrow} alt="arrow" className="md:w-[50px] w-[4vh] md:h-[50px] h-[4vh]"/>
                     </button>
-                    <button onClick={handleNext} className="bg-gray-500 max-w-[100px] max-h-[70px] w-full h-full flex items-center 
-                    justify-center rounded-full border-black border-[3px] hover:bg-gray-300 hover:-translate-y-2 ease-out duration-300">
-                        <img src={Arrow} alt="arrow" className="max-w-[50px] max-h-[50px]"/>
+                    <button onClick={handleNext} className="bg-gray-500 md:w-[100px] w-[6vh] md:h-[70px] flex items-center 
+                    justify-center rounded-full hover:bg-gray-200 hover:-translate-y-2 ease-out duration-300 active:scale-y-75">
+                        <img src={Arrow} alt="arrow" className="md:w-[50px] w-[4vh] md:h-[50px] h-[4vh]"/>
                     </button>
                 </div>
-                <div className="mb-8">
-                    <CurrentQuiz />
-                </div>
+                <CurrentQuiz />
             </div>
         </>
     )
