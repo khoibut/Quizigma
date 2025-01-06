@@ -7,7 +7,7 @@ function Answer_Deck(){
     return(
         <>
             <div className="flex w-full h-full">
-                <div className="bg-gray-800 h-full w-4/5 flex justify-evenly mt-1 pt-5 overflow-auto snap-x space-x-2">
+                <div className="bg-gray-800 h-full w-4/5 flex justify-evenly mt-1 pt-2 overflow-auto snap-x space-x-2">
                     <TempCard1 />
                     <TempCard2 />
                     <TempCard3 />
@@ -21,14 +21,14 @@ function Answer_Deck(){
                         </span>
                     </div>
                     
-                    <div className='h-full w-full space-y-2 p-2'>
-                        <button className="group bg-sky-200 w-full md:h-[9vh] h-[5vh] rounded-2xl flex justify-start items-center border-white md:hover:animate-shrinkBorderLeft transition ease-out hover:scale-90 active:scale-75">
+                    <div className='flex flex-col md:h-[30vh] h-[20vh] w-full p-2 items-center justify-end'>
+                        <button className="m-2 group bg-sky-200 w-full md:h-[9vh] h-[5vh] rounded-2xl flex justify-start items-center border-white transition ease-out hover:scale-90 active:scale-75">
                             <div className="md:text-[5vh] font-bold text-sm mr-2 p-2 text-black group-hover:text-sky-900">
                                 Next
                             </div>
                         </button>
 
-                        <button className="group bg-sky-200 w-full md:h-[9vh] h-[5vh] rounded-2xl flex justify-end items-center border-white md:hover:animate-shrinkBorderRight transition ease-out hover:scale-90 active:scale-75">
+                        <button className="m-2 group bg-sky-200 w-full md:h-[9vh] h-[5vh] rounded-2xl flex justify-end items-center border-white transition ease-out hover:scale-90 active:scale-75">
                             <div className="md:text-[5vh] font-bold text-sm mr-2 p-2 text-black group-hover:text-sky-900">
                                 Back
                             </div>
