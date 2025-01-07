@@ -1,4 +1,4 @@
-import Chopper from "./chopper.jpg"
+import Chopper from "../../Icons&Images/chopper.jpg"
 
 function TemplateQuiz1(){
     return(

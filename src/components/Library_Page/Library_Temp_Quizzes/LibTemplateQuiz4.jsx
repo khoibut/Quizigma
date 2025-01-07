@@ -1,4 +1,4 @@
-import Brook from "../../Icons&Images/Brook.jpg"
+import Sanji from "../../Icons&Images/sanji.jpg"
 
 function TemplateQuiz1(){
     return(
@@ -6,7 +6,7 @@ function TemplateQuiz1(){
         md:w-[50vh] w-[36vh] md:h-[45vh] h-[30vh] snap-center flex items-center shrink-0 items-center p-2 cursor-pointer">
             <div className="h-full w-1/2 flex flex-col">
                 <div className="w-full h-2/3 rounded-3xl rounded-br-none rounded-tr-none border-r-2 border-black">
-                    <img src={Brook} alt="Profile Picture" class="w-full h-full rounded-3xl rounded-br-none rounded-tr-none" />
+                    <img src={Sanji} alt="Profile Picture" class="w-full h-full rounded-3xl rounded-br-none rounded-tr-none" />
                 </div>
                 <div className="w-full h-1/3 border-black rounded-3xl rounded-br-none rounded-tr-none border-b-2 border-l-2 border-r-none">
                     <div className="w-full h-1/4 rounded-tl-3xl rounded-br-3xl flex items-center justify-center bg-black opacity-75">
@@ -35,13 +35,23 @@ function TemplateQuiz1(){
                         <span className="text-gray-800 text-sm opacity-75">Desc...</span>
                     </div>
                 </div>
-                <div className="w-full h-1/3 rounded-br-3xl flex items-center justify-center ">
-                    <button className="bg-white h-5/6 w-1/2 rounded-3xl scale-90 flex items-center justify-center mt-4 hover:scale-100 transition ease-out duration-500 hover:animate-rgbBorder hover:border-[3px]">
-                        <span className="text-lg font-bold text-gray-700">Assign</span>
-                    </button>
-                    <button className="bg-white h-5/6 w-1/2 rounded-3xl scale-90 flex items-center justify-center mt-4 hover:scale-100 transition ease-out duration-500 hover:animate-rgbBorder hover:border-[3px]">
-                        <span className="text-lg font-bold text-gray-700">Host</span>
-                    </button>                    
+                <div className="w-full h-1/3 rounded-br-3xl flex items-center justify-center flex-col">
+                    <div className="w-full h-2/3 flex items-center">
+                        <button className="bg-white h-5/6 w-1/2 rounded-3xl scale-90 flex items-center justify-center hover:scale-100 transition ease-out duration-500 hover:animate-rgbBorder hover:border-[3px]">
+                            <span className="text-lg font-bold text-gray-700">Assign</span>
+                        </button>
+                        <button className="bg-white h-5/6 w-1/2 rounded-3xl scale-90 flex items-center justify-center hover:scale-100 transition ease-out duration-500 hover:animate-rgbBorder hover:border-[3px]">
+                            <span className="text-lg font-bold text-gray-700">Host</span>
+                        </button>
+                    </div>
+                    <div className="w-full h-1/3 p-1 flex items-center justify-center">
+                        <button className="group bg-gray-600 h-full w-full rounded-lg scale-90 flex items-center justify-center hover:scale-100 transition ease-out duration-500">
+                            <span className="md:text-lg text-sm font-bold text-gray-300 group-hover:text-gray-100">Remove</span>
+                        </button>
+                        <button className="group bg-gray-600 h-full w-full rounded-lg scale-90 flex items-center justify-center hover:scale-100 transition ease-out duration-500">
+                            <span className="md:text-lg text-sm font-bold text-gray-300 group-hover:text-gray-100">Edit</span>
+                        </button>                      
+                    </div>
                 </div>
             </div>
         </div>

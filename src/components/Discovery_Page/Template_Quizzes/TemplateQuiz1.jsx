@@ -1,4 +1,4 @@
-import Luffy from "./ProfilePicture.jpg"
+import Luffy from "../../Icons&Images/ProfilePicture.jpg"
 
 function TemplateQuiz1(){
     return(
