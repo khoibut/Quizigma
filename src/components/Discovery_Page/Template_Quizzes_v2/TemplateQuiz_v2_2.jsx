@@ -1,4 +1,4 @@
-import Zoro from "./image2.jpg"
+import Zoro from "../../Icons&Images/image2.jpg"
 
 function TemplateQuiz1(){
     return(

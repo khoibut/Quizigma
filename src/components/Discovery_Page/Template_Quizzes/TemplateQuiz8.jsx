@@ -1,4 +1,4 @@
-import Brook from "./Brook.jpg"
+import Brook from "../../Icons&Images/Brook.jpg"
 
 function TemplateQuiz2(){
     return(

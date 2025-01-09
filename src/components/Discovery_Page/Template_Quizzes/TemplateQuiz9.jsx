@@ -1,4 +1,4 @@
-import Franky from "./Franky.jpg"
+import Franky from "../../Icons&Images/Franky.jpg"
 
 function TemplateQuiz2(){
     return(

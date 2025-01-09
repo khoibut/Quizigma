@@ -1,4 +1,4 @@
-import Nami from "./Nami.jpg"
+import Nami from "../../Icons&Images/Nami.jpg"
 
 function TemplateQuiz1(){
     return(

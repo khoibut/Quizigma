@@ -1,4 +1,4 @@
-import Robin from "./robin.jpg"
+import Robin from "../../Icons&Images/robin.jpg"
 
 function TemplateQuiz1(){
     return(

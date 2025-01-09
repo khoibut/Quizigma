@@ -1,4 +1,4 @@
-import Sanji from "./sanji.jpg"
+import Sanji from "../../Icons&Images/sanji.jpg"
 
 function TemplateQuiz1(){
     return(

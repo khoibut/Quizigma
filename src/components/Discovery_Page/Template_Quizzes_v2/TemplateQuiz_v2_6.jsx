@@ -1,4 +1,4 @@
-import Usopp from "./Usopp.jpg"
+import Usopp from "../../Icons&Images/Usopp.jpg"
 
 function TemplateQuiz1(){
     return(
