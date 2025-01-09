@@ -13,7 +13,6 @@ import TopBar from './assets/components/Hien/TopBar.jsx';
 import "./index.css"
 import HostGame from './components/Game/HostGame.jsx'
 import AddImage from './components/PopUp/AddImage.jsx'
-import AddQuiz from './components/QuestionSystem/AddQuiz.jsx'
 import JoinGame from './components/Game/JoinGame.jsx'
 import WaitingRoom from './components/Game/WaitingRoom.jsx'
 import HostingRoom from './components/Game/HostRoom.jsx'
