@@ -404,7 +404,7 @@ function QuestionDisplay() {
             <Title />
             <div className="grid lg:grid-cols-[auto_1fr] min-h-screen">
                 {/* sidebar containing quiz info, editing quiz option */}
-                <div ref={(current) => {sidebar = current}} className="overflow-hidden z-10 fixed inset-0 max-lg:w-0 lg:sticky w-[300px] h-screen bg-[#B1E5FF] flex flex-col transition-all">
+                <div ref={(current) => {sidebar = current}} className="overflow-hidden z-20 fixed inset-0 max-lg:w-0 lg:sticky w-[300px] h-screen bg-[#B1E5FF] flex flex-col transition-all animate-openLeft">
                     {/* quiz info */}
                     <div className="w-[90%] h-36 bg-black rounded-xl self-center my-5 ">image here</div>
                     <div className="self-center font-bold text-lg mb-5 text-nowrap">Hiter trivia</div>
@@ -424,7 +424,7 @@ function QuestionDisplay() {
 
                 <div className="h-full mb-10">
                     {/* top bar containing search bar, filter bar, delete question that has been selected, save quiz */}
-                    <div className="bg-[#A3D5FF] gap-4 flex items-center p-4 mb-5 sticky top-0 flex-wrap">
+                    <div className="bg-[#A3D5FF] gap-4 flex items-center p-4 mb-5 sticky top-0 flex-wrap z-10">
                         {/* search bar */}
                         <input className="outline-none max-sm:basis-full px-4 py-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-xl bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-blue-500" placeholder="Search" />
                         {/* filter */}
@@ -441,7 +441,7 @@ function QuestionDisplay() {
                     </div>
 
                     {/* questions container */}
-                    <div className="sm:pl-8">
+                    <div className="sm:pl-8 overflow-hidden animate-dropdown">
                         {questions.map(question => {
                             if(question.setId == 0) {
                                 return <TextAnswerQuestion question={question}  />

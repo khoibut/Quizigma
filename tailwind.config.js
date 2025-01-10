@@ -40,6 +40,20 @@ export default {
             transform: "translateY(0)",
           },
         },
+        dropdown: {
+          '0%': {
+            opacity: 0,
+            transform: "translateY(-100%)",
+          },
+          '50%': {
+            opacity: 0,
+            transform: "translateY(-70%)",
+          },
+          '100%': {
+            opacity: 1,
+            transform: "translateY(0)",
+          }
+        },
       },
       animation: {
         wiggle: 'wiggle 1.5s ease-in-out infinite',
@@ -52,6 +66,7 @@ export default {
         slidein300: "slidein 1s ease 300ms",
         slidein500: "slidein 1s ease 500ms",
         slidein700: "slidein 1s ease 700ms",
+        dropdown: "dropdown 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards",
       },
 
       utilities: {
@@ -63,4 +78,3 @@ export default {
   },
   plugins: [],
 }
-
