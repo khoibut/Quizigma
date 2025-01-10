@@ -37,6 +37,7 @@ function App() {
           <Route path='game/host/stat' element={<StatManagement totalQuestion="10" />} />
           <Route path='game/stat' element={<PlayerStat total="10" score="10000" correct="9" />} />
           <Route path='discovery' element={<Discovery />} />
+          <Route path='sidebar' element={<SideBar />}/>
           <Route path='library' element={<Library />} />
           <Route path='game/hosting/*' element={<HostingRoom />} />
           <Route path='game_multiple_choice' element={<Game_MultipleChoice />} />
