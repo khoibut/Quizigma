@@ -75,7 +75,7 @@ function MultiChoiceQuestion({question}) {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        zIndex: 10,
+                        zIndex: 20,
                         background: '#fff'
                     },
                     content: {
@@ -173,7 +173,7 @@ function TextAnswerQuestion({question}) {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        zIndex: 10,
+                        zIndex: 20,
                         background: '#fff'
                     },
                     content: {
@@ -311,7 +311,7 @@ function QuestionDisplay() {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        zIndex: 10,
+                        zIndex: 20,
                         background: '#fff'
                     },
                     content: {
@@ -344,7 +344,7 @@ function QuestionDisplay() {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        zIndex: 10,
+                        zIndex: 20,
                         background: '#00000060'
                     },
                     content: {
@@ -377,7 +377,7 @@ function QuestionDisplay() {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        zIndex: 10,
+                        zIndex: 20,
                         background: '#fff'
                     },
                     content: {
