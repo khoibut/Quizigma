@@ -39,7 +39,7 @@ function App() {
           <Route path='game/stat' element={<PlayerStat total="10" score="10000" correct="9" />} />
           <Route path='discovery' element={<Discovery />} />
           <Route path='sidebar' element={<SideBar />}/>
-          <Route path='game/hosting/*' element={<HostingRoom />} />
+          {/* <Route path='game/hosting/*' element={<HostingRoom />} /> */}
         </Routes>
       </BrowserRouter>
 
