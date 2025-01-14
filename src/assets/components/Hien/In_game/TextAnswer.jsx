@@ -1,7 +1,7 @@
-import QuestionDisplay from './In_Game_Question_Display';
-import InGameTopBar from './In_Game_Top_Bar';
+import QuestionDisplay from './QuestionDisplay';
+import InGameTopBar from './GameTopBar';
 
-function Game_TextAnswer(){
+function TextAnswer(){
     return(
         <>
         <div className="w-full h-screen overflow-hidden">
@@ -17,4 +17,4 @@ function Game_TextAnswer(){
         </>
     )
 }
-export default Game_TextAnswer;
+export default TextAnswer;

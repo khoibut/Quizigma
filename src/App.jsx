@@ -14,11 +14,11 @@ import AddImage from './components/PopUp/AddImage.jsx'
 import JoinGame from './components/Game/JoinGame.jsx'
 import WaitingRoom from './components/Game/WaitingRoom.jsx'
 import HostingRoom from './components/Game/HostRoom.jsx'
-import Game_MultipleChoice from './assets/components/Hien/In_game/Game_MultipleChoice_Answer.jsx'
-import Game_Text from './assets/components/Hien/In_game/Game_TextAnswer.jsx'
+import MultipleChoice from './assets/components/Hien/In_game/MultipleChoice.jsx'
+import Game_Text from './assets/components/Hien/In_game/TextAnswer.jsx'
 import StatManagement from './components/Game/StatManagement.jsx'
 import PlayerStat from './components/Game/PlayerStat.jsx'
-
+import GamePage from './pages/gamePage.jsx'
 function App() {
 
   return (
@@ -32,12 +32,12 @@ function App() {
           <Route path='signup' element={<SignUp />} />
           <Route path='addquiz' element={<AddQuiz />} />
           <Route path='join' element={<JoinGame />} />
-          <Route path='game/:roomId' element={<WaitingRoom />} />
+          <Route path='game/:roomId' element={<GamePage />} />
           <Route path='game/host/:roomId' element={<HostingRoom />} />
           <Route path='game/host/stat' element={<StatManagement totalQuestion="10" />} />
           <Route path='game/stat' element={<PlayerStat total="10" score="10000" correct="9" />} />
           <Route path='discovery' element={<Discovery />} />
-          <Route path='game_multiple_choice' element={<Game_MultipleChoice />} />
+          <Route path='game_multiple_choice' element={<MultipleChoice />} />
           <Route path='game_text' element={<Game_Text />} />
           <Route path='code_testing' element={<Test />}/>
         </Routes>

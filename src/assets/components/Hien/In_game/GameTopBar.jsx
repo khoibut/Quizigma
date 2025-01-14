@@ -1,6 +1,6 @@
 import ExampleProfilePic from '../Icons&Images/godzilla.jpg';
 
-function In_Game_Top_Bar(){
+function GameTopBar(){
     return(
         <>
             <div className="bg-green-500 w-full max-h-[50vh] flex justify-between items-center flex-wrap ">
@@ -26,4 +26,4 @@ function In_Game_Top_Bar(){
     )
 }
 
-export default In_Game_Top_Bar;
+export default GameTopBar;

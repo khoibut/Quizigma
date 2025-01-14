@@ -1,17 +1,18 @@
-import TempCard1 from './Template_Answer_Cards/TemplateCard1';
-import TempCard2 from './Template_Answer_Cards/TemplateCard2';
-import TempCard3 from './Template_Answer_Cards/TemplateCard3';
-import TempCard4 from './Template_Answer_Cards/TemplateCard4';
-
-function Answer_Deck(){
+import AnswerCard from "./AnswerCard";
+function AnswerDeck(){
     return(
         <>
             <div className="flex w-full h-full">
                 <div className="bg-gray-800 h-full w-4/5 flex justify-evenly mt-1 pt-5 overflow-auto snap-x space-x-2">
-                    <TempCard1 />
-                    <TempCard2 />
-                    <TempCard3 />
-                    <TempCard4 />             
+                    <AnswerCard text="Answer 1" color="red"/>
+                    <AnswerCard text="Answer 1" color="red"/>
+                    <AnswerCard text="Answer 1" color="red"/>
+                    <AnswerCard text="Answer 1" color="red"/>
+                    <AnswerCard text="Answer 1" color="red"/>
+                    <AnswerCard text="Answer 1" color="red"/>
+                    <AnswerCard text="Answer 1" color="red"/>
+                    <AnswerCard text="Answer 1" color="red"/>
+                    <AnswerCard text="Answer 1" color="red"/>
                 </div>
 
                 <div className="bg-gray-600 h-full w-1/5 mt-1 flex flex-col items-center">
@@ -40,4 +41,4 @@ function Answer_Deck(){
     )
 }
 
-export default Answer_Deck;
+export default AnswerDeck;

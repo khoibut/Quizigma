@@ -61,7 +61,7 @@ function HostingRoom() {
                     <div class="justify-self-center text-lg font-extrabold mb-10 text-center">Waiting for host to start game</div>
                     <div class="font-semibold text-lg">Join by enter this code:</div>
                     <div class="flex mb-6 items-center gap-2">
-                        <span class="w-4/5 bg-white p-4 ps-4 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)]">#123456</span>
+                        <span class="w-4/5 bg-white p-4 ps-4 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)]">{"#"+roomId}</span>
                         <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#000000"><path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z" /></svg>
                     </div>
                     <div class='flex justify-between mb-6'>

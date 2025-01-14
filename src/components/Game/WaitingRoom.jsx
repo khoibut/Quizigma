@@ -28,54 +28,7 @@ function PlayerSelector({ choosePlayer }) {
         </>
     )
 }
-function WaitingRoom() {
-    const [player, setPlayer] = useState({
-        playing: true,
-        name: ''
-    })
-
-    const [players, setPlayers] = useState([])
-    const roomId = useParams().roomId
-    useEffect(() => {
-        let socket
-        let stompClient
-        console.log("Effect running", { player, roomId });
-        if (!player.playing) {
-            console.log(player.name)
-            const encodedName = encodeURIComponent(player.name)
-            socket = new SockJS(`http://localhost:8080/player?room=${roomId}&player=${encodedName}`);
-            stompClient = Stomp.over(socket)
-            stompClient.heartbeatIncoming = 10000
-            stompClient.heartbeatOutgoing = 10000
-            stompClient.connect({}, () => {
-                console.log('connected')
-                stompClient.subscribe('/topic/player/' + roomId, (message) => {
-                    const messageBody = JSON.parse(message.body)
-                    console.log(messageBody)
-                    if (messageBody.type == 'start') {
-                        console.log('Game started')
-                    }
-                    if (messageBody.type == 'players') {
-                        let decodedPlayers=[]
-                        messageBody.players.forEach(player => {
-                            decodedPlayers.push(decodeURIComponent(player))
-                        })
-                        setPlayers(decodedPlayers)
-                    }
-                })
-                stompClient.subscribe(`/queue/${roomId}/${encodedName}`, (message) => {
-                    const messageBody = JSON.parse(message.body)
-                    console.log(messageBody)
-                    if (messageBody.type == 'error') {
-                        window.location.href = "/join"
-                    }
-                })
-                stompClient.publish({ destination: '/quizz/player/join', body: JSON.stringify({ player: encodedName, room: roomId }) })
-            }, (err) => {
-                console.log(err)
-            })
-        }
-    }, [player])
+function WaitingRoom({ roomId, player, setPlayer, players, setPlayers }) {
     return (
         <>
             <Modal
