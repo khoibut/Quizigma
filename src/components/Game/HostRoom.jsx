@@ -1,4 +1,9 @@
-function Player( player ) {
+import { use, useEffect } from "react";
+import { useParams } from "react-router";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
+import { useState } from "react";
+function Player(player) {
     return (
         <>
             <div className="bg-white min-w-fit w-[230px] py-10 rounded-full text-center text-xl font-bold">{player.name}</div>
@@ -6,23 +11,51 @@ function Player( player ) {
     )
 }
 function HostingRoom() {
+    const [players, setPlayers] = useState([])
+    const roomId = useParams().roomId;
+    const [stompClient, setStompClient] = useState(null);
+	function disconnect() {
+		stompClient.disconnect();
+	}
+    useEffect(() => {
+        let socket = new SockJS(`http://localhost:8080/creator?room=${roomId}`);
+        let stompClient = Stomp.over(socket);
+		stompClient.heartbeatIncoming = 10000;
+		stompClient.heartbeatOutgoing = 10000;
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            setStompClient(stompClient);
+            stompClient.subscribe('/queue/creator/' + roomId, function (message) {
+                const messageBody = JSON.parse(message.body);
+                console.log(messageBody);
+                if(messageBody.type == 'players'){
+					let decodedPlayers = [];
+					messageBody.players.forEach(player => {
+						decodedPlayers.push(decodeURIComponent(player));	
+					})
+					setPlayers(decodedPlayers);
+                }
+                if(messageBody.type == 'error') {
+                    window.location.href="/join";
+                }
+            });
+            stompClient.publish({ destination: '/quizz/creator/join', body: JSON.stringify({ room: roomId, creator: localStorage.getItem('token')})});
+        });
+    }, [])
+
+    function startGame() {
+        if(stompClient!=null) {
+            stompClient.publish({destination: '/quizz/creator/start', body: JSON.stringify({room: roomId})});
+        }
+    }
     return (
         <>
             <div className="flex h-screen p-1 sm:p-2 gap-2 bg-[#3272E8] max-sm:flex-col-reverse">
                 <div className="lg:w-[78%] w-[70%] flex max-sm:p-2 md:items-center content-center justify-center overflow-auto max-sm:w-full ">
                     <div className="grid h-fit md:grid-cols-2 lg:grid-cols-3 gap-5">
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="+10 more" />
+                        {players.map((player) => {
+                        return <Player name={player} />
+                    })}
                     </div>
                 </div>
 
@@ -46,7 +79,7 @@ function HostingRoom() {
                             <span onClick={() => {navigator.clipboard.write('sex.com/sexsupersex');}} className="w-fit max-w-[200px] bg-white cursor-pointer p-1 px-4 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">sex.com/sexsupersex</span>
                         </div>
                     <div class="flex flex-col items-center">
-                        <button class="w-full sm:w-fit bg-red-400 rounded-full py-2 px-16 text-white hover:bg-rose-500 hover:scale-105 transition-all">START</button>
+                        <button onClick={startGame} class="w-full sm:w-fit bg-red-400 rounded-full py-2 px-16 text-white hover:bg-rose-500 hover:scale-105 transition-all">START</button>
                     </div>
                 </div>
             </div>

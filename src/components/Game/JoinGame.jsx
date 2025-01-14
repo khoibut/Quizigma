@@ -8,7 +8,7 @@ function JoinGame() {
     const navigate = useNavigate();
 
     function handleEnter() {
-        navigate("/game#" + input.value);
+        navigate("/game/" + input.value);
     }
 
     return (

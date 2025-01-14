@@ -1,7 +1,9 @@
 import { useState } from "react"
 import { useNavigate } from "react-router";
-
-function LiveGame() {
+import { useParams } from "react-router";
+import { useRef } from "react";
+import axios from "axios";
+function LiveGame({ timeLimit }) {
     return (
         <div className="flex flex-col gap-4">
             {/* Maximun score input */}
@@ -11,8 +13,8 @@ function LiveGame() {
             </div>
             {/* Game length */}
             <div>
-                <span className="font-semibold text-lg">Time: </span>
-                <input className="p-1 ps-3 outline-none rounded-lg" type="text"></input>
+                <span class="font-semibold text-lg">Time: </span>
+                <input ref={timeLimit} class="p-1 ps-3 outline-none rounded-lg" type="text"></input>
             </div>
             {/* Late join check box */}
             <div className="flex items-center gap-4">
@@ -48,8 +50,8 @@ function Assignment() {
         </div>
     )
 }
-function MultiChoiceOption( {correct} ) {
-    if(correct) {
+function MultiChoiceOption({ correct }) {
+    if (correct) {
         return (
             <>
                 <div className="flex gap-10 border-b-2 py-3">
@@ -82,7 +84,6 @@ function MultiChoiceQuestion() {
 
     function open() {
         if(!active) {
-            option.style.height = '250px'
             option.style.paddingTop = '2rem'
             option.style.paddingBottom = '2rem'
         }
@@ -102,6 +103,7 @@ function MultiChoiceQuestion() {
                     <div className="max-sm:basis-full">
                         <div className="font-semibold text-xl">Question 1:</div>
                         <div className="question-title">Who save Hitler from drowning when he was a kid</div>
+
                     </div>
                     <div className="ml-auto flex gap-5 items-center">
                         <div className="px-10 py-2 rounded-full font-bold bg-red-400 text-white text-nowrap">Multiple choice</div>
@@ -127,6 +129,7 @@ function TextAnswerQuestion() {
     // open answer key container
     function open() {
         if(!active) {
+
             option.style.height = '250px'
             option.style.paddingTop = '2rem'
             option.style.paddingBottom = '2rem'
@@ -161,16 +164,16 @@ function TextAnswerQuestion() {
 }
 
 function HostGame() {
-    // display game mode options which ever the user is going to host (live game or assignment)
-    const [typeOfHost, setTypeOfHost] = useState(<LiveGame />) 
-    // live game toggle element and assignment toggle element use for styling
+    const setId = useParams()
+    const timeLimit = useRef()
+    const [typeOfHost, setTypeOfHost] = useState(<LiveGame timeLimit={timeLimit} />)
     let liveGameButton
     let assignmentButton
     const navigate = useNavigate()
 
     // switch, toggle game mode styling
     function liveGame() {
-        setTypeOfHost(<LiveGame />)
+        setTypeOfHost(<LiveGame timeLimit={timeLimit} />)
         liveGameButton.style.borderRadius = '0 9999px 9999px 0'
         liveGameButton.style.boxShadow = '6px 0 2px rgba(0,0,15,0.5)'
         liveGameButton.style.zIndex = '10'
@@ -191,6 +194,24 @@ function HostGame() {
         navigate("/game/host#randomnumber")
     }
 
+    function startGame() {
+        localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3IiwiaWF0IjoxNzM1MDE1MDY4fQ.k5gwjnOWJSSMHkgmWThL2N3Z0f-t8xOUTwnkMG-ePsg')
+        const roomDTO = {
+            setId: setId.setId,
+            timeLimit: timeLimit.current.value
+        }
+        axios.post('http://localhost:8080/api/v1/room', roomDTO,
+            { headers: 
+                { 'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            } 
+        }).then((response) => {
+            if(response.status === 200){
+                window.location.href = `/game/host/${response.data.roomId}`
+            }else{
+                console.log(response.data)
+            }
+        })
+    }
     return (
         <>
             <div className="p-2 flex flex-col">
@@ -231,7 +252,7 @@ function HostGame() {
                     </div>
                 </div>
             </div>
-            
+
         </>
     )
 }

@@ -1,20 +1,34 @@
 import { useState } from "react";
-import PlayerSelector from "./PlayerSelector";
 import Modal from "react-modal";
-
-function Player( player ) {
+import { useParams } from "react-router";
+import { useEffect } from "react";
+import { Stomp } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+function Player(player) {
     return (
         <>
             <div className="bg-white min-w-fit w-[230px] leading-[100px] h-[100px] rounded-full text-center text-xl font-bold">{player.name}</div>
         </>
     )
 }
-function WaitingRoom() {
-    const [player, setPlayer] = useState({
-        playing: true,
-        name: ''
-    })
-
+function PlayerSelector({ choosePlayer }) {
+    let nameInput
+    return (
+        <>
+            <div class="flex flex-col items-center gap-10 md:w-[22%]">
+                <div class="rounded-full text-center h-[30%] aspect-square border-2 border-black">hrllo</div>
+                <input ref={(current) => { nameInput = current }} class="bg-[#B0B0B0] w-full rounded-full p-6 font-semibold text-lg placeholder-white outline-none text-center shadow-[0_3px_5px_1px_rgba(0,0,0,0.2)]" type="text" placeholder="Enter your name" />
+                <button onClick={() => {
+                    choosePlayer({
+                        playing: false,
+                        name: nameInput.value
+                    })
+                }} class="w-[70%] bg-[#25FF50] border-green-950 border rounded-full py-2 font-bold hover:scale-110 transition-all">Join</button>
+            </div>
+        </>
+    )
+}
+function WaitingRoom({ roomId, player, setPlayer, players, setPlayers }) {
     return (
         <>
             <Modal
@@ -45,24 +59,18 @@ function WaitingRoom() {
                         padding: '0'
                     }
                 }}
-            > 
+            >
                 <PlayerSelector choosePlayer={setPlayer} />
             </Modal>
+            {console.log(players)}
             <div className="flex h-screen p-1 sm:p-2 gap-2 bg-[#3272E8] max-sm:flex-col-reverse">
                 <div className="lg:w-[78%] w-[70%] flex max-sm:p-2 md:items-center content-center justify-center overflow-auto max-sm:w-full ">
                     <div className="grid h-fit md:grid-cols-2 lg:grid-cols-3 gap-5">
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="player 1" />
-                        <Player name="+10 more" />
+                        {players.map((player) => {
+                        return (
+                            <Player name={player} />
+                        )
+                    })}
                     </div>
                 </div>
 
