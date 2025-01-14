@@ -27,17 +27,16 @@ function App() {
         <Routes>
           <Route index element={<LandingPage />} />
           <Route path='questionlist' element={<QuestionDisplay />} />
-          <Route path='host' element={<HostGame />} />
+          <Route path='host/:setId' element={<HostGame />} />
           <Route path='signin' element={<SignIn />} />
           <Route path='signup' element={<SignUp />} />
           <Route path='addquiz' element={<AddQuiz />} />
           <Route path='join' element={<JoinGame />} />
-          <Route path='game/*' element={<WaitingRoom />} />
-          <Route path='game/host/*' element={<HostingRoom />} />
+          <Route path='game/:roomId' element={<WaitingRoom />} />
+          <Route path='game/host/:roomId' element={<HostingRoom />} />
           <Route path='game/host/stat' element={<StatManagement totalQuestion="10" />} />
           <Route path='game/stat' element={<PlayerStat total="10" score="10000" correct="9" />} />
           <Route path='discovery' element={<Discovery />} />
-          <Route path='game/hosting/*' element={<HostingRoom />} />
           <Route path='game_multiple_choice' element={<Game_MultipleChoice />} />
           <Route path='game_text' element={<Game_Text />} />
           <Route path='code_testing' element={<Test />}/>
