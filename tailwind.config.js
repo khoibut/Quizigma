@@ -30,6 +30,30 @@ export default {
           '0%': {width: '0'},
           '100%':{width: 'full'},
         },
+        slidein: {
+          from: {
+            opacity: "0",
+            transform: "translateY(-10px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
+        dropdown: {
+          '0%': {
+            opacity: 0,
+            transform: "translateY(-100%)",
+          },
+          '50%': {
+            opacity: 0,
+            transform: "translateY(-70%)",
+          },
+          '100%': {
+            opacity: 1,
+            transform: "translateY(0)",
+          }
+        },
       },
       animation: {
         wiggle: 'wiggle 1.5s ease-in-out infinite',
@@ -38,6 +62,11 @@ export default {
         shrinkBorderRight: 'shrinkBorderRight 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards',
         shrinkLeft: 'shrinkLeft 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards',
         openLeft: 'openLeft 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards',
+        slidein200: "slidein 1s ease 200ms",
+        slidein300: "slidein 1s ease 300ms",
+        slidein500: "slidein 1s ease 500ms",
+        slidein700: "slidein 1s ease 700ms",
+        dropdown: "dropdown 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards",
       },
 
       utilities: {
@@ -49,4 +78,3 @@ export default {
   },
   plugins: [],
 }
-

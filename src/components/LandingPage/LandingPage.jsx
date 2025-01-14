@@ -11,11 +11,11 @@ function LandingPage() {
     return (
         <>
             <Title />
-            <div class="flex w-full h-auto">
-                <div class="flex grow justify-end h-auto">
+            <div className="flex w-full h-auto">
+                <div className="flex grow justify-end h-auto">
                     <MainSidebar />
-                    <div class="h-auto w-full">
-                        <img src={landingPageBg} alt="Welcome to Quizigma" class="w-full object-fit" />
+                    <div className="h-auto w-full">
+                        <img src={landingPageBg} alt="Welcome to Quizigma" className="w-full object-fit" />
                     </div>
                 </div>
             </div>
