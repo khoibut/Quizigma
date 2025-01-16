@@ -16,6 +16,10 @@ export default {
           '0%, 100%': { transform: 'rotate(-2deg)' },
           '50%': { transform: 'rotate(2deg)' },
         },
+        bigWiggle: {
+          '0%, 100%': { transform: 'rotate(-5deg)' },
+          '50%': { transform: 'rotate(5deg)' },
+        },
         shrinkBorderLeft: {
           '100%':{borderLeft: '26vh solid white'},
         },
@@ -54,9 +58,11 @@ export default {
             transform: "translateY(0)",
           }
         },
+
       },
       animation: {
         wiggle: 'wiggle 1.5s ease-in-out infinite',
+        bigWiggle: 'bigWiggle 1s ease-in-out infinite',
         rgbBorder: 'rgbBorder 3s infinite ease-in-out',
         shrinkBorderLeft: 'shrinkBorderLeft 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards',
         shrinkBorderRight: 'shrinkBorderRight 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards',
@@ -68,7 +74,10 @@ export default {
         slidein700: "slidein 1s ease 700ms",
         dropdown: "dropdown 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards",
       },
-
+      backgroundImage: {
+        'OnlineIcon': "url('../../assets/images/OnlineIcon.png')",
+        'PlayIcon': "url('../../assets/images/PlayIcon.png')",
+      },
       utilities: {
         '.x-scroll': {
           overflowX: 'scroll',

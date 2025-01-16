@@ -19,6 +19,7 @@ import Game_Text from './components/In_game/Game_TextAnswer.jsx'
 import StatManagement from './components/Game/StatManagement.jsx'
 import PlayerStat from './components/Game/PlayerStat.jsx'
 import Library from './components/Library_Page/LibraryPage.jsx'
+import ResultScreen from './components/In_game/ResultScreen.jsx';
 function App() {
 
   return (
@@ -43,6 +44,7 @@ function App() {
           <Route path='game_multiple_choice' element={<Game_MultipleChoice />} />
           <Route path='game_text' element={<Game_Text />} />
           <Route path='code_testing' element={<Test />}/>
+          <Route path='game/result' element={<ResultScreen correct={true} />}/>
         </Routes>
       </BrowserRouter>
 
