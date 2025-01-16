@@ -2,14 +2,23 @@ import { useState } from "react"
 import Modal from "react-modal"
 import AddImage from "../PopUp/AddImage"
 import { NavLink, useNavigate } from "react-router"
+import axios from "axios"
 
 function AddQuiz( {setIsOpen} ) {
     const [addImage, setAddImage] = useState(false)
     const [image, setImage] = useState('')
-    let quiz
+    let name
+    let description
     const navigate = useNavigate()
 
     function createQuiz() {
+        let quiz = {
+            name: name.value,
+            description: description.value,
+            image: image,
+            questions: []
+        }
+        axios.post('https://quizigmaapi.onrender.com/api/v1/set', quiz, {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
         navigate("/questionlist")
     }
 
@@ -57,9 +66,9 @@ function AddQuiz( {setIsOpen} ) {
                         </label>
                         <div className="flex flex-col justify-self-center w-2/3 lg:w-full">
                             <label className="mt-3 font-semibold" for="quiz-name">Name</label>
-                            <input ref={(current) => {quiz = current}} className="p-3 rounded-xl" type="text" />
+                            <input ref={(current) => {name = current}} className="p-3 rounded-xl" type="text" />
                             <label className="mt-3 font-semibold" for="quiz-name">Description</label>
-                            <textarea className="p-3 rounded-xl h-full"></textarea>
+                            <textarea ref={(current) => {description = current}} className="p-3 rounded-xl h-full"></textarea>
                         </div>
 
                         <div className="col-span-2 flex justify-end mt-5 justify-self-center w-2/3 lg:w-full" onClick={createQuiz} value="CREATE"><button className="w-full sm:w-fit bg-red-400 rounded-full py-2 px-16 text-white hover:bg-rose-500 hover:scale-105 transition-all">CREATE</button></div>

@@ -110,9 +110,10 @@ function SignUp() {
             .then(function (response) {
                 emailError.style.display = 'none'
                 usernameError.style.display = 'none'
+                localStorage.setItem('token', response.data.token)
                 navigate("/discovery")
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 if(error.response.data.error === 'Username already exists') {
                     usernameError.style.display = 'flex'
                 }
