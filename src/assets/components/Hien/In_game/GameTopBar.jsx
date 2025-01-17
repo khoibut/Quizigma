@@ -1,4 +1,3 @@
-import ExampleProfilePic from '../Icons&Images/godzilla.jpg';
 
 function GameTopBar(){
     return(
@@ -18,7 +17,6 @@ function GameTopBar(){
                         godzilla
                     </div>
                     <div className="w-[8vh] h-[8vh] rounded-full bg-white m-2 overflow-hidden">
-                        <img src={ExampleProfilePic} alt="Profile Picture" className="w-full h-full object-fill" />
                     </div>
                 </div>
             </div>

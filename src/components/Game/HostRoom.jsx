@@ -10,51 +10,14 @@ function Player(player) {
         </>
     )
 }
-function HostingRoom() {
-    const [players, setPlayers] = useState([])
-    const roomId = useParams().roomId;
-    const [stompClient, setStompClient] = useState(null);
-	function disconnect() {
-		stompClient.disconnect();
-	}
-    useEffect(() => {
-        let socket = new SockJS(`http://localhost:8080/creator?room=${roomId}`);
-        let stompClient = Stomp.over(socket);
-		stompClient.heartbeatIncoming = 10000;
-		stompClient.heartbeatOutgoing = 10000;
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            setStompClient(stompClient);
-            stompClient.subscribe('/queue/creator/' + roomId, function (message) {
-                const messageBody = JSON.parse(message.body);
-                console.log(messageBody);
-                if(messageBody.type == 'players'){
-					let decodedPlayers = [];
-					messageBody.players.forEach(player => {
-						decodedPlayers.push(decodeURIComponent(player));	
-					})
-					setPlayers(decodedPlayers);
-                }
-                if(messageBody.type == 'error') {
-                    window.location.href="/join";
-                }
-            });
-            stompClient.publish({ destination: '/quizz/creator/join', body: JSON.stringify({ room: roomId, creator: localStorage.getItem('token')})});
-        });
-    }, [])
-
-    function startGame() {
-        if(stompClient!=null) {
-            stompClient.publish({destination: '/quizz/creator/start', body: JSON.stringify({room: roomId})});
-        }
-    }
+function HostingRoom({ players, setPlayers, roomId, startGame }) {
     return (
         <>
             <div className="flex h-screen p-1 sm:p-2 gap-2 bg-[#3272E8] max-sm:flex-col-reverse">
                 <div className="lg:w-[78%] w-[70%] flex max-sm:p-2 md:items-center content-center justify-center overflow-auto max-sm:w-full ">
                     <div className="grid h-fit md:grid-cols-2 lg:grid-cols-3 gap-5">
                         {players.map((player) => {
-                        return <Player name={player} />
+                        return <Player name={player.name} />
                     })}
                     </div>
                 </div>
@@ -64,7 +27,7 @@ function HostingRoom() {
                         <div className="flex max-sm:gap-4 mb-4 flex-wrap">
                             <div className="font-semibold sm:text-lg md:basis-full">Join by enter this code:</div>
                             <div className="flex items-center gap-1 flex-wrap">
-                                <span className="bg-white cursor-pointer p-1 px-4 w-fit rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">#123456</span>
+                                <span className="bg-white cursor-pointer p-1 px-4 w-fit rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">{`#${roomId}`}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#000000"><path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/></svg>
                             </div>
                         </div>
@@ -76,7 +39,7 @@ function HostingRoom() {
                         
                         <div className="flex gap-2 max-sm:gap-6 mb-4 flex-wrap">
                             <span className="font-semibold sm:text-lg">Assignment link: </span>
-                            <span onClick={() => {navigator.clipboard.write('sex.com/sexsupersex');}} className="w-fit max-w-[200px] bg-white cursor-pointer p-1 px-4 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">sex.com/sexsupersex</span>
+                            <span onClick={() => {navigator.clipboard.write();}} className="w-fit max-w-[200px] bg-white cursor-pointer p-1 px-4 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">{`.com/game/${roomId}`}</span>
                         </div>
                     <div class="flex flex-col items-center">
                         <button onClick={startGame} class="w-full sm:w-fit bg-red-400 rounded-full py-2 px-16 text-white hover:bg-rose-500 hover:scale-105 transition-all">START</button>

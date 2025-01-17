@@ -68,7 +68,7 @@ function WaitingRoom({ roomId, player, setPlayer, players, setPlayers }) {
                     <div className="grid h-fit md:grid-cols-2 lg:grid-cols-3 gap-5">
                         {players.map((player) => {
                         return (
-                            <Player name={player} />
+                            <Player name={player.name} />
                         )
                     })}
                     </div>

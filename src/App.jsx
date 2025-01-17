@@ -15,11 +15,12 @@ import JoinGame from './components/Game/JoinGame.jsx'
 import WaitingRoom from './components/Game/WaitingRoom.jsx'
 import HostingRoom from './components/Game/HostRoom.jsx'
 import Library from './components/Library_Page/LibraryPage.jsx'
-import MultipleChoice from './assets/components/Hien/In_game/MultipleChoice.jsx'
-import Game_Text from './assets/components/Hien/In_game/TextAnswer.jsx'
-import StatManagement from './components/Game/StatManagement.jsx'
+import StatManagement from './components/Game/HostGameStat.jsx'
 import PlayerStat from './components/Game/PlayerStat.jsx'
 import GamePage from './pages/gamePage.jsx'
+import MultipleChoice from './components/In_game/MultipleChoice.jsx';
+import TextAnswer from './components/In_game/TextAnswer.jsx';
+import HostGamePage from './pages/HostGamePage.jsx';
 function App() {
 
   return (
@@ -34,15 +35,15 @@ function App() {
           <Route path='addquiz' element={<AddQuiz />} />
           <Route path='join' element={<JoinGame />} />
           <Route path='game/:roomId' element={<GamePage />} />
-          <Route path='game/host/:roomId' element={<HostingRoom />} />
+          <Route path='game/host/:roomId' element={<HostGamePage />} />
           <Route path='game/host/stat' element={<StatManagement totalQuestion="10" />} />
           <Route path='game/stat' element={<PlayerStat total="10" score="10000" correct="9" />} />
           <Route path='discovery' element={<Discovery />} />
           {/* <Route path='sidebar' element={<SideBar />}/> */}
           <Route path='library' element={<Library />} />
           <Route path='game_multiple_choice' element={<MultipleChoice />} />
-          <Route path='game_text' element={<Game_Text />} />
-          <Route path='code_testing' element={<Test />}/>
+          <Route path='game_text' element={<TextAnswer />} />
+          <Route path='code_testing' element={<Test />} />
         </Routes>
       </BrowserRouter>
 

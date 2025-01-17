@@ -3,14 +3,57 @@ import { useParams } from "react-router"
 import { useEffect, useState } from "react"
 import SockJS from "sockjs-client"
 import { Stomp } from "@stomp/stompjs"
+import CorrectScreen from "../components/In_game/CorrectScreen"
+import QuizGameplay from "../components/Game/QuizGameplay"
+import ResultView from "../components/Game/ResultView"
 function GamePage() {
     const [player, setPlayer] = useState({
         playing: true,
-        name: ''
+        name: '',
+        score: 0
     })
+    const[questions,setQuestions]=useState([])
     const [view, setView] = useState('waiting')
     const [players, setPlayers] = useState([])
+    const [stompClientRef, setStompClientRef] = useState()
     const roomId = useParams().roomId
+    function randomQuestion(){
+        return questions[Math.floor(Math.random()*questions.length)]
+    }
+    function answerQuestion(question,answer){
+        let answerDTO={
+            room:roomId,
+            player:player.name,
+            questionId:question.id,
+            answer:answer
+        }
+        console.log(answerDTO)
+        stompClient.publish({destination:'/quizz/player/answer',body:JSON.stringify(answerDTO)})
+    }
+    function renderView() {
+        switch (view) {
+            case 'waiting':
+                return <WaitingRoom
+                    roomId={roomId}
+                    player={player}
+                    setPlayer={setPlayer}
+                    players={players}
+                    setPlayers={setPlayers}
+                />
+            case 'quiz':
+                return <QuizGameplay
+                    roomId={roomId}
+                    player={player}
+                    question={randomQuestion()}
+                    answerQuestion={answerQuestion}
+                    stompClient={stompClientRef}
+                />
+            case 'correct':
+                return <ResultView result='correct' setView={setView}/>
+            case 'wrong':
+                return <ResultView result='wrong' setView={setView}/>
+        }
+    }
     useEffect(() => {
         let socket
         let stompClient
@@ -22,6 +65,11 @@ function GamePage() {
             stompClient = Stomp.over(socket)
             stompClient.heartbeatIncoming = 10000
             stompClient.heartbeatOutgoing = 10000
+            setStompClientRef(stompClient)
+            stompClient.onWebSocketClose = () => {
+                console.log('closed')
+                window.location.href = "/join";
+            }
             stompClient.connect({}, () => {
                 console.log('connected')
                 stompClient.subscribe('/topic/player/' + roomId, (message) => {
@@ -31,35 +79,47 @@ function GamePage() {
                         console.log('Game started')
                     }
                     if (messageBody.type == 'players') {
-                        let decodedPlayers = []
-                        messageBody.players.forEach(player => {
-                            decodedPlayers.push(decodeURIComponent(player))
+                        let decodedPlayers = messageBody.players
+                        decodedPlayers.forEach(player => {
+                            player.name = decodeURIComponent(player.name)
                         })
+                        console.log(decodedPlayers)
                         setPlayers(decodedPlayers)
+                    }
+                    if(messageBody.type=='questions'){
+                        setQuestions(messageBody.questions)
+                        setView('quiz')
+                    }
+                    if(messageBody.type=='end'){
+                        console.log('Game ended')
+                        stompClient.disconnect()
+                    }
+                    if(messageBody.type=='error'){
+                        window.location.href="/join"
                     }
                 })
                 stompClient.subscribe(`/queue/${roomId}/${encodedName}`, (message) => {
                     const messageBody = JSON.parse(message.body)
                     console.log(messageBody)
+                    if(messageBody.type=='correct'){
+                        setView('correct')
+                    }
+                    if(messageBody.type=='incorrect'){
+                        setView('wrong')
+                    }
                     if (messageBody.type == 'error') {
                         window.location.href = "/join"
                     }
                 })
                 stompClient.publish({ destination: '/quizz/player/join', body: JSON.stringify({ player: encodedName, room: roomId }) })
             }, (err) => {
-                console.log(err)
+                console.log("COCKKKKKKKK")
             })
         }
-    }, [player])
+    }, [player.playing])
     return (
         <>
-            <WaitingRoom
-                roomId={roomId}
-                player={player}
-                setPlayer={setPlayer}
-                players={players}
-                setPlayers={setPlayers}
-            />
+            {renderView()}
         </>
     )
 }

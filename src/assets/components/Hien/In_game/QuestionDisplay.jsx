@@ -1,4 +1,3 @@
-import ExampleImg from '../Icons&Images/godzillaxHenry.jpg';
 
 function QuestionDisplay() {
     return (
