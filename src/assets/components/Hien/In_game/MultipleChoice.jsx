@@ -1,8 +1,8 @@
-import QuestionDisplay from './In_Game_Question_Display';
-import InGameTopBar from './In_Game_Top_Bar';
-import AnswerDeck from './Answer_Deck';
+import QuestionDisplay from './QuestionDisplay';
+import InGameTopBar from './GameTopBar';
+import AnswerDeck from './AnswerDeck';
 
-function Game_MultipleChoice_Answer(){
+function MultipleChoice(){
     return(
         <>
             <div className="w-full h-screen overflow-hidden">
@@ -16,4 +16,4 @@ function Game_MultipleChoice_Answer(){
     )
 }
 
-export default Game_MultipleChoice_Answer;
+export default MultipleChoice;
