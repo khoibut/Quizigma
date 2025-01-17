@@ -1,3 +1,4 @@
+import React from 'react';
 import TopBar from './TopBar.jsx'
 import SideBar from './SideBar.jsx';
 import TemplateQuiz_v2_1 from "./Template_Quizzes_v2/TemplateQuiz_v2_1.jsx"
@@ -9,7 +10,17 @@ import TemplateQuiz_v2_6 from "./Template_Quizzes_v2/TemplateQuiz_v2_6.jsx"
 import TemplateQuiz_v2_7 from "./Template_Quizzes_v2/TemplateQuiz_v2_7.jsx"
 import TemplateQuiz_v2_8 from "./Template_Quizzes_v2/TemplateQuiz_v2_8.jsx"
 import TemplateQuiz_v2_9 from "./Template_Quizzes_v2/TemplateQuiz_v2_9.jsx"
+import axios from 'axios';
+
 function Discovery_Page(){
+    let user
+    React.useEffect(() => {
+        let token = localStorage.getItem('token')
+        axios.get('https://quizigmaapi.onrender.com/api/v1/acc/auth', token)
+        .then(function(response) {
+            console.log(response)
+        })
+    })
     return(
         <>
             <div className='w-full h-screen overflow-hidden relative'>

@@ -6,6 +6,8 @@ import EditQuestion from "./EditQuesion.jsx"
 import Modal from "react-modal"
 import { NavLink } from "react-router" 
 import AddFromDiscovery from "./AddFromDiscovery.jsx"
+import axios from "axios"
+import React from "react"
 
 
 function MultiChoiceOption( {correct, option} ) {
@@ -19,7 +21,7 @@ function MultiChoiceOption( {correct, option} ) {
                     {/* info container */}
                     <div className="option-info">
                         <div className="font-semibold text-lg mb-2">{option}</div>
-                        <div className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold">Correct</div>
+                        <div className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</div>
                     </div>
                 </div>
             </>
@@ -32,15 +34,15 @@ function MultiChoiceOption( {correct, option} ) {
                 <div className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl">image here</div> 
                 
                 {/* info container */}
-                <div className="option-info">
+                <div className="overflow-auto max-sm:w-[200px] w-full">
                     <div className="font-semibold text-lg mb-2">{option}</div>
-                    <div className="rounded-full bg-[#E54C38] text-white text-center py-1 px-4 font-bold">Wrong</div>
+                    <div className="rounded-full bg-[#E54C38] text-white text-center py-1 px-4 font-bold w-fit">Wrong</div>
                 </div>
             </div>
         </>
     )
 }
-function MultiChoiceQuestion({question}) {
+function MultiChoiceQuestion({question, questionsList, setQuestions, selectedQuestions, setSelectedQuestions}) {
     // check if option container is open
     const [active, setActive] = useState(false)
     const [editQuestionOpened, setEditQuestion] = useState(false)
@@ -52,7 +54,7 @@ function MultiChoiceQuestion({question}) {
     // open option container under the question
     function open() {
         if(!active) {
-            option.style.height = '250px'
+            option.style.height = '350px'
             option.style.paddingTop = '2rem'
             option.style.paddingBottom = '2rem'
         }
@@ -62,6 +64,9 @@ function MultiChoiceQuestion({question}) {
             option.style.paddingBottom = '0'
         }
         setActive(!active)
+    }
+    function deleteQuestion() {
+        setQuestions(questionsList.filter(q => q.id !== question.id))
     }
 
     return (
@@ -96,49 +101,49 @@ function MultiChoiceQuestion({question}) {
                     }
                 }}
             > 
-                <EditQuestion openFunction={setEditQuestion} question={question} />
+                <EditQuestion openFunction={setEditQuestion} question={question} questionsList={questionsList} setQuestions={setQuestions} questionNumber={questionsList.map(q => q.id).indexOf(question.id)} />
             </Modal>
 
             <div onClick={() => {open()}} className="flex mt-5 bg-[#6D96D9] items-center sm:rounded-l-full px-2 sm:px-10 py-2 gap-2 md:gap-10 min-h-fit h-[16vh] lg:h-[20vh]">
                 {/* check box to multi select */}
-                <input className="min-w-5 min-h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" onClick={(e) => {e.stopPropagation()}} />
+                <input className="min-w-5 min-h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" onClick={(e) => {e.stopPropagation(); e.target.checked ? setSelectedQuestions([...selectedQuestions, question.id]) : setSelectedQuestions(selectedQuestions.filter(q => q != question.id))}} />
                 {/* image container */}
                 <div className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center my-5">image here</div>
                 {/* question info */}
                 <div className="question">
-                    <div className="font-semibold text-xl">Question 1:</div>
+                    <div className="font-semibold text-xl">Question {questionsList.map(q => q.id).indexOf(question.id) + 1}:</div>
                     <div className="question-title">{question.question}</div>
                 </div>  
                 {/* question type, edit icon, remove icon */}
                 <div className="ml-auto gap-5 items-center sm:flex hidden">
                     <div className="px-4 py-2 rounded-full font-bold bg-red-400 text-white text-nowrap">Multiple choice</div>
                     <svg onClick={(e) => {setEditQuestion(true); e.stopPropagation()}} className="hover:scale-110 transition-all" xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
-                    <svg onClick={(e) => {e.stopPropagation()}} className="hover:scale-110 transition-all" xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                    <svg onClick={(e) => {e.stopPropagation(); deleteQuestion()}} className="hover:scale-110 transition-all" xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                 </div>
                 {/* editing question icon for when screen is on mobile/small, the element above this one will be hidden */}
                 <div className="ml-auto gap-5 items-center flex sm:hidden">
-                    <svg onClick={(e) => {e.stopPropagation(); questionPopup.style.transform  = "translateY(0)"}} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg>
+                    <svg onClick={(e) => {e.stopPropagation(); questionPopup.style.transform  = "translateY(-10%)"; questionPopup.style.bottom = 'auto'}} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg>
                 </div>
             </div>
             {/* options container */}
             <div ref={(current) => (option = current)} className="shadow-xl sm:ml-20 px-2 sm:px-8 rounded-b-lg h-0 overflow-auto duration-300 transition-all flex flex-col">
                 <div className="option-list">
                     {question.options.map(option => {
-                        return <MultiChoiceOption correct={option.correct} option={option.option}  />
+                        return <MultiChoiceOption correct={question.answers.includes(option.id)} option={option.option}  />
                     })}
                 </div>
             </div>
             {/* more editing question pop up for mobile/ small screen */}
-            <div ref={(e) => {questionPopup = e}} className="sm:hidden z-20 translate-y-[100%] transition-all fixed w-full bg-[#556265] rounded-t-xl p-3 py-5 bottom-0 h-[50vh]">
-                <svg className="mb-3" onClick={() => {questionPopup.style.transform = 'translateY(100%)'}} xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#fff"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+            <div ref={(e) => {questionPopup = e}} className="sm:hidden h-full z-20 translate-y-[100%] transition-all fixed w-full bg-[#556265] rounded-t-xl p-3 py-5 bottom-0">
+                <svg className="mb-3" onClick={() => {questionPopup.style.bottom = '0'; questionPopup.style.transform = 'translateY(100%)'}} xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#fff"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
                 <div className="px-4 py-2 rounded-full font-bold bg-red-400 text-white text-nowrap max-w-[500px] w-fit my-4">Multiple choice</div>
-                <button onClick={() => {setEditQuestion(true); questionPopup.style.transform = 'translateY(100%)'}} className="hover:bg-[#fef2f29c] my-1 p-3 rounded-md bg-[#fef2f250] text-white font-medium w-full text-start ps-6">Edit</button>
-                <button className="hover:bg-[#fef2f29c] my-1 p-3 rounded-md bg-[#fef2f250] text-white font-medium w-full text-start ps-6">Delete</button>
+                <button onClick={() => {setEditQuestion(true)}} className="hover:bg-[#fef2f29c] my-1 p-3 rounded-md bg-[#fef2f250] text-white font-medium w-full text-start ps-6">Edit</button>
+                <button onClick={deleteQuestion} className="hover:bg-[#fef2f29c] my-1 p-3 rounded-md bg-[#fef2f250] text-white font-medium w-full text-start ps-6">Delete</button>
             </div>
         </>
     )
 }
-function TextAnswerQuestion({question}) {
+function TextAnswerQuestion({question, questionsList, setQuestions, selectedQuestions, setSelectedQuestions}) {
     // check if answer key container is open
     const [active, setActive] = useState(false)
     const [editQuestionOpened, setEditQuestion] = useState(false)
@@ -161,6 +166,9 @@ function TextAnswerQuestion({question}) {
         }
         setActive(!active)
     }
+    function deleteQuestion() {
+        setQuestions(questionsList.filter(q => q.id !== question.id))
+    }
 
     return (
         <>
@@ -194,28 +202,28 @@ function TextAnswerQuestion({question}) {
                     }
                 }}
             > 
-                <EditQuestion openFunction={setEditQuestion} question={question} />
+                <EditQuestion openFunction={setEditQuestion} question={question} questionsList={questionsList} setQuestions={setQuestions} questionNumber={questionsList.map(q => q.id).indexOf(question.id)} />
             </Modal>
             <div className="mt-5">
                 <div onClick={() => {open()}} className="flex bg-[#6D96D9] items-center sm:rounded-l-full px-2 sm:px-10 py-2 gap-2 md:gap-10 min-h-fit h-[16vh] lg:h-[20vh]">
                     {/* check box to multi select */}
-                    <input className="min-w-5 min-h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" onClick={(e) => {e.stopPropagation()}} />
+                    <input className="min-w-5 min-h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" onClick={(e) => {e.stopPropagation(); e.target.checked ? setSelectedQuestions([...selectedQuestions, question.id]) : setSelectedQuestions(selectedQuestions.filter(q => q != question.id))}} />
                     {/* image container */}
                     <div className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center my-5">image here</div>
                     {/* question info */}
                     <div className="question">
-                        <div className="font-semibold text-xl">Question 1:</div>
+                        <div className="font-semibold text-xl">Question {questionsList.map(q => q.id).indexOf(question.id) + 1}:</div>
                         <div className="question-title">{question.question}</div>
                     </div>
                     {/* question type, edit icon, remove icon */}
                     <div className="ml-auto sm:flex hidden gap-5 items-center">
                         <div className="px-4 py-2 rounded-full font-bold bg-red-400 text-white text-nowrap">Type answer</div>
                         <svg onClick={(e) => {setEditQuestion(true); e.stopPropagation()}} className="hover:scale-110 transition-all" xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
-                        <svg onClick={(e) => {e.stopPropagation()}} className="hover:scale-110 transition-all" xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                        <svg onClick={(e) => {e.stopPropagation(); deleteQuestion()}} className="hover:scale-110 transition-all" xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                     </div>
                     {/* editing question icon for when screen is on mobile/small, the element above this one will be hidden */}
                     <div className="ml-auto gap-5 items-center flex sm:hidden">
-                        <svg onClick={(e) => {e.stopPropagation(); questionPopup.style.transform  = "translateY(0)"}} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg>
+                        <svg onClick={(e) => {e.stopPropagation(); questionPopup.style.transform  = "translateY(-10%)"; questionPopup.style.bottom = 'auto'}} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg>
                     </div>
                 </div>
                 {/* answer key container */}
@@ -224,21 +232,13 @@ function TextAnswerQuestion({question}) {
                 </div>
             </div>
             {/* more editing question pop up for mobile/ small screen */}
-            <div ref={(e) => {questionPopup = e}} className="sm:hidden z-20 translate-y-[100%] transition-all fixed w-full bg-[#556265] rounded-t-xl p-3 py-5 bottom-0 h-[50vh]">
-                <svg className="mb-3" onClick={() => {questionPopup.style.transform = 'translateY(100%)'}} xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#fff"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+            <div ref={(e) => {questionPopup = e}} className="sm:hidden h-full z-20 translate-y-[100%] transition-all fixed w-full bg-[#556265] rounded-t-xl p-3 py-5 bottom-0">
+                <svg className="mb-3" onClick={() => {questionPopup.style.bottom = '0'; questionPopup.style.transform = 'translateY(100%)'}} xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#fff"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
                 <div className="px-4 py-2 rounded-full font-bold bg-red-400 text-white text-nowrap max-w-[500px] w-fit my-4">Type answer</div>
-                <button onClick={() => {setEditQuestion(true); questionPopup.style.transform = 'translateY(100%)'}} className="hover:bg-[#fef2f29c] my-1 p-3 rounded-md bg-[#fef2f250] text-white font-medium w-full text-start ps-6">Edit</button>
-                <button className="hover:bg-[#fef2f29c] my-1 p-3 rounded-md bg-[#fef2f250] text-white font-medium w-full text-start ps-6">Delete</button>
+                <button onClick={() => {setEditQuestion(true)}} className="hover:bg-[#fef2f29c] my-1 p-3 rounded-md bg-[#fef2f250] text-white font-medium w-full text-start ps-6">Edit</button>
+                <button onClick={deleteQuestion} className="hover:bg-[#fef2f29c] my-1 p-3 rounded-md bg-[#fef2f250] text-white font-medium w-full text-start ps-6">Delete</button>
             </div>
         </>
-    )
-}
-function EditQuestionPopup({question}) {
-    let questionPopup
-    return (
-        <div ref={(e) => {questionPopup = e}} className="sm:hidden translate-y-[100%] transition-all fixed w-full bg-[#556265] rounded-lg p-4 bottom-0 h-[60vh]">
-            <div onClick={() => {questionPopup.style.transform = 'translateY(100%)'}}>X</div>
-        </div>
     )
 }
 
@@ -249,45 +249,22 @@ function QuestionDisplay() {
     const [discoveryAddOpened, setDiscoveryAdd] = useState(false)
     let sidebar
     const [sidebarOpen, setSidebarOpen] = useState(true)
-    // questions array
-    const [questions, setQuestions] = useState([
-        {
-        question: "Who is freddy nut bar" ,
-        image: "",
-        setId: 1,
-        options: [
-            {
-                option: "FNAF",
-                correct: true,
-                image: ""
-            },
-            
-            {
-                option: "my mom",
-                correct: false,
-                image: ""
-            },
-            
-            {
-                option: "cock bu ah",
-                correct: true,
-                image: ""
-            }
-        ]
-        },
-        {
-            question: "Are you gay",
-            image: "",
-            setId: 0,
-            options: [
-                {
-                    option: "balls",
-                    correct: true,
-                    image: ""
-                }
-            ]
-        }
-    ])
+    const [selectedQuestions, setSelectedQuestions] = useState([])
+    const [quiz, setQuiz] = useState({})
+    const [loading, setLoading] = useState(true)
+
+    async function getQuiz() {
+        axios.get('https://quizigmaapi.onrender.com/api/v1/set', {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
+        .then(function(response) {
+            setQuiz(response.data[response.data.length - 1])
+        })
+        .finally(function () {
+            setLoading(false)
+        })
+    }
+    React.useEffect(() => {
+        getQuiz();
+    }, [])
 
     // open sidebar only for medium screen and below
     function openSideBar() {
@@ -298,7 +275,20 @@ function QuestionDisplay() {
 
         setSidebarOpen(!sidebarOpen)
     }
+    function saveQuiz() {
+        console.log(quiz)
+    }
+    function multiDelete() {
+        // alert(selectedQuestions)
+        // console.log(questions.filter(question => !selectedQuestions.includes(question.id)))
+        // setQuestions(questions.filter(question => !selectedQuestions.includes(question.id)))
+        // setSelectedQuestions([])
+        // console.log(selectedQuestions)
+    }
 
+    if(loading) {
+        return <div className="h-screen w-screen flex justify-center items-center md:text-xl font-bold uppercase animate-spin bg-[url(../Icons&Images/mita.jpg)]">Loading...</div>
+    }
     return (
         <>  
             {/* add question from quiz online */}
@@ -398,16 +388,16 @@ function QuestionDisplay() {
                     }
                 }}
             > 
-                <AddQuestion ref={(current) => (addQuestion = current)} openFunction={setAddQuestion} questions={questions} setQuestions={setQuestions} />
+                <AddQuestion ref={(current) => (addQuestion = current)} openFunction={setAddQuestion} quiz={quiz} render={getQuiz} />
             </Modal>
 
             <Title />
-            <div className="grid lg:grid-cols-[auto_1fr] min-h-screen">
+            <div className="grid lg:grid-cols-[auto_1fr] max-sm:h-screen">
                 {/* sidebar containing quiz info, editing quiz option */}
-                <div ref={(current) => {sidebar = current}} className="overflow-hidden z-20 fixed inset-0 max-lg:w-0 lg:sticky w-[300px] h-screen bg-[#B1E5FF] flex flex-col transition-all animate-openLeft">
+                <div ref={(current) => {sidebar = current}} className="overflow-hidden z-20 fixed inset-0 max-lg:w-0 lg:sticky w-[300px] bg-[#B1E5FF] top-0 lg:h-screen flex flex-col transition-all animate-openLeft">
                     {/* quiz info */}
-                    <div className="w-[90%] h-36 bg-black rounded-xl self-center my-5 ">image here</div>
-                    <div className="self-center font-bold text-lg mb-5 text-nowrap">Hiter trivia</div>
+                    <div className="w-[90%] h-36 rounded-xl self-center my-5 bg-black" style={{ backgroundColor: `url(${quiz.image})` }}></div>
+                    <div className="self-center font-bold text-lg mb-5 text-nowrap">{quiz.name}</div>
                     
                     {/* option-buttons container add question, add question from discovery online, edit quiz info, import file, export file, exit question editor */}
                     <div className="options">
@@ -422,7 +412,7 @@ function QuestionDisplay() {
                     </div>
                 </div>
 
-                <div className="h-full mb-10">
+                <div className="g:h-full">
                     {/* top bar containing search bar, filter bar, delete question that has been selected, save quiz */}
                     <div className="bg-[#A3D5FF] gap-4 flex items-center p-4 mb-5 sticky top-0 flex-wrap z-10">
                         {/* search bar */}
@@ -430,24 +420,24 @@ function QuestionDisplay() {
                         {/* filter */}
                         <button className="px-5 sm:px-10 py-2 rounded-full font-bold bg-red-400 text-white hover:bg-rose-500 hover:scale-105 transition-all">FILTER</button>
                         {/* delete questions */}
-                        <div className="group px-5 sm:px-10 py-2 rounded-full font-bold bg-red-400 text-white hover:bg-rose-500 hover:scale-105 transition-all">
+                        <div onClick={multiDelete} className="group px-5 sm:px-10 py-2 rounded-full font-bold bg-red-400 text-white hover:bg-rose-500 hover:scale-105 transition-all">
                             <svg className="hover:scale-110 transition-all group" xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                         </div>
                         {/* save button, when on smaller screen will turn the word save into an icon */}
-                        <button className="px-5 sm:px-10 py-2 rounded-full font-bold bg-red-400 text-white hover:bg-rose-500 hover:scale-105 transition-all">
+                        <button onClick={saveQuiz} className="px-5 sm:px-10 py-2 rounded-full font-bold bg-red-400 text-white hover:bg-rose-500 hover:scale-105 transition-all">
                             <span className="hidden md:block">SAVE</span>
                             <svg className="md:hidden" xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#fff"><path d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM480-240q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"/></svg>
                         </button>
                     </div>
 
                     {/* questions container */}
-                    <div className="sm:pl-8 overflow-hidden animate-dropdown">
-                        {questions.map(question => {
-                            if(question.setId == 0) {
-                                return <TextAnswerQuestion question={question}  />
+                    <div className="sm:pl-8 overflow-hidden max-sm:h-full animate-dropdown max-sm:w-full pb-20">
+                        {quiz.questions.map(question => {
+                            if(question.options.length === 1) {
+                                return <TextAnswerQuestion setSelectedQuestions={setSelectedQuestions} selectedQuestions={selectedQuestions} question={question} questionsList={quiz.questions} />
                             }
                             else {
-                                return <MultiChoiceQuestion question={question}  />
+                                return <MultiChoiceQuestion setSelectedQuestions={setSelectedQuestions} selectedQuestions={selectedQuestions} question={question} questionsList={quiz.questions} />
                             }
                         })}
                     </div>

@@ -6,7 +6,7 @@ import AddQuestion from './components/QuestionSystem/AddQuiz.jsx'
 import QuestionDisplay from './components/QuestionSystem/QuestionDisplay.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
 import Discovery from './components/Discovery_Page/DiscoveryPage.jsx'
-import Test from './components/Test.jsx'
+// import Test from './components/Test.jsx'
 import AddQuiz from './components/QuestionSystem/AddQuiz.jsx';
 import "./index.css"
 import HostGame from './components/Game/HostGame.jsx'
@@ -15,6 +15,7 @@ import JoinGame from './components/Game/JoinGame.jsx'
 import WaitingRoom from './components/Game/WaitingRoom.jsx'
 import HostingRoom from './components/Game/HostRoom.jsx'
 import Library from './components/Library_Page/LibraryPage.jsx'
+import ResultScreen from './components/In_game/ResultScreen.jsx';
 import StatManagement from './components/Game/HostGameStat.jsx'
 import PlayerStat from './components/Game/PlayerStat.jsx'
 import GamePage from './pages/gamePage.jsx'
@@ -41,7 +42,7 @@ function App() {
           <Route path='discovery' element={<Discovery />} />
           {/* <Route path='sidebar' element={<SideBar />}/> */}
           <Route path='library' element={<Library />} />
-          <Route path='game_multiple_choice' element={<MultipleChoice />} />
+          <Route path='game/result' element={<ResultScreen correct={true} />}/>
           <Route path='game_text' element={<TextAnswer />} />
           <Route path='code_testing' element={<Test />} />
         </Routes>
