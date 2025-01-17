@@ -249,61 +249,22 @@ function QuestionDisplay() {
     const [discoveryAddOpened, setDiscoveryAdd] = useState(false)
     let sidebar
     const [sidebarOpen, setSidebarOpen] = useState(true)
-    const [questionIdCount, setQuestionIdCount] = useState(0)
     const [selectedQuestions, setSelectedQuestions] = useState([])
-    const [quiz, setQuiz] = useState()
-    // questions array
-    const [questions, setQuestions] = useState([
-        // {
-        //     id: 0,
-        //     question: "Who is freddy nut bar" ,
-        //     image: "",
-        //     setId: 0,
-        //     options: [
-        //         {
-        //             option: "FNAF",
-        //             id: 0,
-        //             image: ""
-        //         },
-                
-        //         {
-        //             option: "my mom",
-        //             id: 1,
-        //             image: ""
-        //         },
-                
-        //         {
-        //             option: "cock bu ah",
-        //             id: 2,
-        //             image: ""
-        //         }
-        //     ],
-        //     answers: [0,2]
-        // },
-        // {
-        //     id: 1,
-        //     question: "Are you gay",
-        //     image: "",
-        //     setId: 0,
-        //     options: [
-        //         {
-        //             option: "balls",
-        //             id: 0,
-        //             image: ""
-        //         }
-        //     ],
-        //     answers: [0]
-        // }
-    ])
+    const [quiz, setQuiz] = useState({})
+    const [loading, setLoading] = useState(true)
 
-    React.useEffect(() => {
+    async function getQuiz() {
         axios.get('https://quizigmaapi.onrender.com/api/v1/set', {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
         .then(function(response) {
-            // console.log(response)
             setQuiz(response.data[response.data.length - 1])
-            // console.log(quiz)
         })
-    })
+        .finally(function () {
+            setLoading(false)
+        })
+    }
+    React.useEffect(() => {
+        getQuiz();
+    }, [])
 
     // open sidebar only for medium screen and below
     function openSideBar() {
@@ -315,17 +276,19 @@ function QuestionDisplay() {
         setSidebarOpen(!sidebarOpen)
     }
     function saveQuiz() {
-        console.log(questions)
         console.log(quiz)
     }
     function multiDelete() {
         // alert(selectedQuestions)
         // console.log(questions.filter(question => !selectedQuestions.includes(question.id)))
-        setQuestions(questions.filter(question => !selectedQuestions.includes(question.id)))
-        setSelectedQuestions([])
+        // setQuestions(questions.filter(question => !selectedQuestions.includes(question.id)))
+        // setSelectedQuestions([])
         // console.log(selectedQuestions)
     }
 
+    if(loading) {
+        return <div className="h-screen w-screen flex justify-center items-center md:text-xl font-bold uppercase animate-spin bg-[url(../Icons&Images/mita.jpg)]">Loading...</div>
+    }
     return (
         <>  
             {/* add question from quiz online */}
@@ -425,7 +388,7 @@ function QuestionDisplay() {
                     }
                 }}
             > 
-                <AddQuestion ref={(current) => (addQuestion = current)} openFunction={setAddQuestion} questions={questions} setQuestions={setQuestions} questionId={questionIdCount} setQuestionId={setQuestionIdCount} />
+                <AddQuestion ref={(current) => (addQuestion = current)} openFunction={setAddQuestion} quiz={quiz} render={getQuiz} />
             </Modal>
 
             <Title />
@@ -433,7 +396,7 @@ function QuestionDisplay() {
                 {/* sidebar containing quiz info, editing quiz option */}
                 <div ref={(current) => {sidebar = current}} className="overflow-hidden z-20 fixed inset-0 max-lg:w-0 lg:sticky w-[300px] bg-[#B1E5FF] top-0 lg:h-screen flex flex-col transition-all animate-openLeft">
                     {/* quiz info */}
-                    <div className="w-[90%] h-36 rounded-xl self-center my-5 " style={{ backgroundColor: `url(${quiz.image})` }}></div>
+                    <div className="w-[90%] h-36 rounded-xl self-center my-5 bg-black" style={{ backgroundColor: `url(${quiz.image})` }}></div>
                     <div className="self-center font-bold text-lg mb-5 text-nowrap">{quiz.name}</div>
                     
                     {/* option-buttons container add question, add question from discovery online, edit quiz info, import file, export file, exit question editor */}
@@ -469,12 +432,12 @@ function QuestionDisplay() {
 
                     {/* questions container */}
                     <div className="sm:pl-8 overflow-hidden max-sm:h-full animate-dropdown max-sm:w-full pb-20">
-                        {questions.map(question => {
+                        {quiz.questions.map(question => {
                             if(question.options.length === 1) {
-                                return <TextAnswerQuestion setSelectedQuestions={setSelectedQuestions} selectedQuestions={selectedQuestions} question={question} questionsList={questions} setQuestions={setQuestions} />
+                                return <TextAnswerQuestion setSelectedQuestions={setSelectedQuestions} selectedQuestions={selectedQuestions} question={question} questionsList={quiz.questions} />
                             }
                             else {
-                                return <MultiChoiceQuestion setSelectedQuestions={setSelectedQuestions} selectedQuestions={selectedQuestions} question={question} questionsList={questions} setQuestions={setQuestions} />
+                                return <MultiChoiceQuestion setSelectedQuestions={setSelectedQuestions} selectedQuestions={selectedQuestions} question={question} questionsList={quiz.questions} />
                             }
                         })}
                     </div>

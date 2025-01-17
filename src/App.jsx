@@ -6,7 +6,7 @@ import AddQuestion from './components/QuestionSystem/AddQuiz.jsx'
 import QuestionDisplay from './components/QuestionSystem/QuestionDisplay.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
 import Discovery from './components/Discovery_Page/DiscoveryPage.jsx'
-import Test from './components/Test.jsx'
+// import Test from './components/Test.jsx'
 import AddQuiz from './components/QuestionSystem/AddQuiz.jsx';
 import "./index.css"
 import HostGame from './components/Game/HostGame.jsx'
@@ -43,7 +43,7 @@ function App() {
           <Route path='game/hosting/*' element={<HostingRoom />} />
           <Route path='game_multiple_choice' element={<Game_MultipleChoice />} />
           <Route path='game_text' element={<Game_Text />} />
-          <Route path='code_testing' element={<Test />}/>
+          {/* <Route path='code_testing' element={<Test />}/> */}
           <Route path='game/result' element={<ResultScreen correct={true} />}/>
         </Routes>
       </BrowserRouter>
