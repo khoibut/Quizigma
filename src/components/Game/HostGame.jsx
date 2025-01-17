@@ -213,7 +213,6 @@ function HostGame() {
     }
 
     function startGame() {
-        localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3IiwiaWF0IjoxNzM1MDE1MDY4fQ.k5gwjnOWJSSMHkgmWThL2N3Z0f-t8xOUTwnkMG-ePsg')
         const roomDTO = {
             setId: setId.setId,
             timeLimit: timeLimit.current.value
