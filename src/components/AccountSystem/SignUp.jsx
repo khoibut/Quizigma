@@ -70,7 +70,7 @@ function SignUp() {
             numberError.style.display = 'none'
         }
         // contains 1 speacial character?
-        if(!(user.password.includes('$') || user.password.includes('&') || user.password.includes('%') || user.password.includes('!') || user.password.includes('@') || user.password.includes('?')) || user.password === '') {
+        if(!(user.password.includes('$') || user.password.includes('&') || user.password.includes('%') || user.password.includes('!') || user.password.includes('@') || user.password.includes('?') || user.password.includes('*')) || user.password === '') {
             specialError.style.display = 'block'
             passwordFlag = false
         }
@@ -106,12 +106,13 @@ function SignUp() {
         }
 
         if(flag) {
-            axios.post('https://quizigmaapi.onrender.com/api/v1/acc', user)
+            axios.post('http://localhost:8080/api/v1/acc', user)
             .then(function (response) {
                 emailError.style.display = 'none'
                 usernameError.style.display = 'none'
                 localStorage.setItem('token', response.data.token)
-                navigate("/discovery")
+                localStorage.setItem('username', user.username)
+                navigate("/library")
             })
             .catch(function(error) {
                 if(error.response.data.error === 'Username already exists') {
@@ -167,7 +168,7 @@ function SignUp() {
                         <div ref={(current) => (numberError = current)} className="hidden">• A number</div>
                         <div ref={(current) => (lowerError = current)} className="hidden">• A lowecase letter</div>
                         <div ref={(current) => (upperError = current)} className="hidden">• A uppercase letter</div>
-                        <div ref={(current) => (specialError = current)} className="hidden">• A specialize letter [$&%!@?]</div>
+                        <div ref={(current) => (specialError = current)} className="hidden">• A specialize letter [$&%!@?*]</div>
                     </div>
                     
                     <label className="mt-2 text-xl" for="repassword">Re-enter password</label>

@@ -29,7 +29,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route index element={<LandingPage />} />
-          <Route path='questionlist' element={<QuestionDisplay />} />
+          <Route path='questionlist/:setId' element={<QuestionDisplay />} />
           <Route path='host/:setId' element={<HostGame />} />
           <Route path='signin' element={<SignIn />} />
           <Route path='signup' element={<SignUp />} />
@@ -44,7 +44,6 @@ function App() {
           <Route path='library' element={<Library />} />
           <Route path='game/result' element={<ResultScreen correct={true} />}/>
           <Route path='game_text' element={<TextAnswer />} />
-          <Route path='code_testing' element={<Test />} />
         </Routes>
       </BrowserRouter>
 

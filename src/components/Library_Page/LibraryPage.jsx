@@ -1,17 +1,18 @@
 import TopBar from '../Discovery_Page/TopBar.jsx'
 import SideBar from '../Discovery_Page/SideBar.jsx'
-import LibTemplateQuiz1 from "./Library_Temp_Quizzes/LibTemplateQuiz1.jsx"
-import LibTemplateQuiz2 from "./Library_Temp_Quizzes/LibTemplateQuiz2.jsx"
-import LibTemplateQuiz3 from "./Library_Temp_Quizzes/LibTemplateQuiz3.jsx"
-import LibTemplateQuiz4 from "./Library_Temp_Quizzes/LibTemplateQuiz4.jsx"
-import LibTemplateQuiz5 from "./Library_Temp_Quizzes/LibTemplateQuiz5.jsx"
-import LibTemplateQuiz6 from "./Library_Temp_Quizzes/LibTemplateQuiz6.jsx"
-import LibTemplateQuiz7 from "./Library_Temp_Quizzes/LibTemplateQuiz7.jsx"
-import LibTemplateQuiz8 from "./Library_Temp_Quizzes/LibTemplateQuiz8.jsx"
-import LibTemplateQuiz9 from "./Library_Temp_Quizzes/LibTemplateQuiz9.jsx"
-
-function LibraryPage(){
-    return(
+import TemplateQuiz from '../Library_Page/Library_Temp_Quizzes/LibTemplateQuiz1.jsx'
+import { useState } from 'react'
+import { useEffect } from 'react'
+import axios from 'axios'
+function LibraryPage() {
+    const [sets, setSets] = useState([])
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/v1/set', { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {
+            console.log(response.data)
+            setSets(response.data)
+        })
+    }, [])
+    return (
         <>
             <div className='w-full h-[100vh] overflow-hidden relative'>
                 <TopBar />
@@ -24,17 +25,14 @@ function LibraryPage(){
                                 <span className='text-white md:text-3xl text-2xl font-bold md:tracking-[2vh] tracking-[1vh] animate-slidein200'>LIBRARY</span>
                             </div>
                         </div>
-                        
-                        <div className='rounded-3xl flex flex-wrap overflow-auto md:pb-[17vh] pb-[15vh] h-full bg-gradient-to-b from-[#1F509A] to-white snap-y justify-between'>
-                            <LibTemplateQuiz1 />
-                            <LibTemplateQuiz2 />
-                            <LibTemplateQuiz3 />
-                            <LibTemplateQuiz4 />
-                            <LibTemplateQuiz5 />
-                            <LibTemplateQuiz6 />
-                            <LibTemplateQuiz7 />
-                            <LibTemplateQuiz8 />
-                            <LibTemplateQuiz9 />
+
+                        <div className='rounded-3xl flex flex-wrap overflow-auto md:pb-[17vh] pb-[15vh] h-full gap-x-10'>
+                            {sets.map((set) => {
+                                console.log(set)
+                                return (
+                                    <TemplateQuiz set={set} sets={sets} setSets={setSets} />
+                                )
+                            })}
                         </div>
                     </div>
                 </div>

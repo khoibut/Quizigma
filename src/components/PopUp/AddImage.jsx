@@ -5,8 +5,19 @@ function AddImage( {addButton, imageContainer} ) {
     const [image, setImage] = useState('')
 
     function displayImage(e) {
-        console.log(e.target.files);
-        setImage(URL.createObjectURL(e.target.files[0]));
+        const file = e.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onloadend = () => {
+                const base64Image = reader.result;
+                console.log(base64Image);
+                setImage(base64Image);
+            };
+            
+            reader.readAsDataURL(file); // This converts the file to Base64
+        }
     }
     function addImage() {
         imageContainer(image)

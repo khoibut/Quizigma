@@ -3,7 +3,6 @@ import PlayIcon from "../Icons&Images/Play icon.png"
 import DiscoveryIcon from "../Icons&Images/DiscoveryIcon.png"
 import LibraryIcon from "../Icons&Images/LibraryIcon.png"
 import AddIcon from "../Icons&Images/AddIcon.png"
-import PlayerProfile from "../Icons&Images/mita.jpg"
 import { NavLink, useLocation } from "react-router";
 import React, { useState } from "react";
 
@@ -28,11 +27,10 @@ function SideBar(){
                 <div className="bg-white max-w-[420px] grow shrink flex-2">
                     <div className="max-w-[420px] max-h-[300px] grow min-w-[100px] min-h-[150px] shrink flex items-center justify-center flex-wrap">
                         <div className="rounded-full bg-gray-200 border-[5px] border-teal-700 w-[20vh] h-[20vh] mt-1 flex justify-center items-center overflow-hidden">
-                            <img src={PlayerProfile} alt=''/>
                         </div>
                         <div className="rounded-r-2xl bg-teal-500 md:w-[15vh] max-h-[20vh] grow mb-2 flex justify-center items-center 
                         font-bold flex-wrap p-2 mt-2">
-                            Mita
+                            {localStorage.getItem('username')}
                         </div>
                     </div>
 
@@ -82,8 +80,7 @@ function SideBar(){
                         <NavLink to='/addquiz' end>
                             <button className="bg-[#21DC6F] h-[80px] w-[140px] 
                             rounded-r-full flex justify-center items-center 
-                            md:hover:border-emerald-700 md:hover:border-r-[15px] md:hover:border-t-[15px]
-                            md:hover:border-b-[15px] md:hover:w-[200px] text-2xl hover:text-3xl transition ease-in duration-500">
+                             text-2xl transition ease-in duration-500">
                                 <div className="font-bold text-white">New Quiz</div>
                             </button>
                         </NavLink>
