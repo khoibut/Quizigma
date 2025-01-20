@@ -1,5 +1,4 @@
-import In_Game_Top_Bar from "./In_Game_Top_Bar"
-
+import GameTopBar from "./GameTopBar"
 function ResultScreen({correct}) {
     let correctText = ["Skibidi Rizz", "Aura moment", "727 WYSI", "Holy gojira", "Femboy in a meter radius"]
     let wrongText = ["Negitive aura", "I heard you were very strong", "Sussy baka", "My mother is kinda homeless"]
@@ -7,7 +6,7 @@ function ResultScreen({correct}) {
     if(correct) {    
         return (
             <>  
-                <In_Game_Top_Bar />
+                <GameTopBar />
                 <div className="bg-[#BAE5EE] h-[90vh] w-full flex justify-center items-center">
                     <div className="text-center text-7xl font-semibold animate-bigWiggle text-white drop-shadow-xl flex items-center">
                         <span>{correctText[(Math.floor(Math.random() * 6))]} </span>
@@ -20,7 +19,7 @@ function ResultScreen({correct}) {
     else {
         return (
             <>  
-                <In_Game_Top_Bar />
+                <GameTopBar />
                 <div className="bg-[#F0A2A4] h-[90vh] w-full flex justify-center items-center">
                     <div className="text-center text-7xl font-semibold animate-bigWiggle text-white drop-shadow-xl flex items-center">
                         <span>{wrongText[(Math.floor(Math.random() * 5))]}</span>

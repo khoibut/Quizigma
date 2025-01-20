@@ -1,18 +1,20 @@
+import axios from "axios";
 import { useState } from "react"
+import { useParams } from "react-router";
 
-function OptionStatus( {status, changeStatus, correctOptions,  setCorrectOptions, optionId} ) {
-    if(status) {
-        return <button type="button" onClick={() => {changeStatus(false); setCorrectOptions(correctOptions => correctOptions.filter(option => option != optionId))}} className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</button>
+function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions, optionIndex }) {
+    if (status) {
+        return <button type="button" onClick={() => { changeStatus(false); setCorrectOptions(correctOptions => correctOptions.filter(option => option != optionIndex)) }} className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</button>
     }
     else {
-        return <button type="button" onClick={() => {changeStatus(true); setCorrectOptions([...correctOptions, optionId])}} className="rounded-full bg-[#E54C38] text-white text-center py-1 px-4 font-bold w-fit">Incorrect</button>
+        return <button type="button" onClick={() => { changeStatus(true); setCorrectOptions([...correctOptions, optionIndex]) }} className="rounded-full bg-[#E54C38] text-white text-center py-1 px-4 font-bold w-fit">Incorrect</button>
     }
 }
 
-function MultiChoiceOption( prop ) {
-    const [displayAnswer, setDisplayAnswer] = useState(prop.correctOptions.includes(prop.option.id))
+function MultiChoiceOption(prop) {
+    const [displayAnswer, setDisplayAnswer] = useState(prop.correctOptions.includes(prop.index))
 
-    let button = <OptionStatus status={displayAnswer} changeStatus={setDisplayAnswer} correctOptions={prop.correctOptions} optionId={prop.option.id} setCorrectOptions={prop.setCorrectOptions} />
+    let button = <OptionStatus status={displayAnswer} changeStatus={setDisplayAnswer} correctOptions={prop.correctOptions} optionIndex={prop.index} setCorrectOptions={prop.setCorrectOptions} />
 
     return (
         <>
@@ -22,27 +24,27 @@ function MultiChoiceOption( prop ) {
                     <div className="font-semibold text-lg mb-2">{prop.option.option}</div>
                     {button}
                 </div>
-                <div onClick={() => {prop.delete(prop.option.id)}} className="self-center ml-auto">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="hover:scale-110 transition-all"  height="32px" viewBox="0 -960 960 960" width="32px" fill="#000000"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                <div onClick={() => { prop.delete(prop.option, prop.index) }} className="self-center ml-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="hover:scale-110 transition-all" height="32px" viewBox="0 -960 960 960" width="32px" fill="#000000"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
                 </div>
             </div>
         </>
     )
 }
 
-function TypeAnswerOption( prop ) {
+function TypeAnswerOption(prop) {
     return (
         <>
             <div className="font-bold text-white text-xl">ANSWER</div>
-            <textarea onChange={(current) => {prop.setAnswer(current.target.value)}} className="w-full min-h-40 rounded-lg p-4 ps-6 outline-none">{prop.answer}</textarea>
+            <textarea onChange={(current) => { prop.setAnswer(current.target.value) }} className="w-full min-h-40 rounded-lg p-4 ps-6 outline-none">{prop.answer}</textarea>
         </>
     )
 }
 
-function EditQuestion( {openFunction, question, setQuestions, questionsList ,questionNumber} ) {
+function EditQuestion({ openFunction, question, render, questionsList, questionNumber }) {
     const [displayAnswer, setDisplayAnswer] = useState(true)
     //display correc or wrong for multiple choice option
-    const [typeAnswer, setTypeAnswer] = useState(question.options.length === 1 ? true : false)
+    const [typeAnswer, setTypeAnswer] = useState(question.type == "TA" ? true : false)
     //check if currently typing answer
     const [options, setOptions] = useState(question.options)
     //options for multiple choice
@@ -51,80 +53,105 @@ function EditQuestion( {openFunction, question, setQuestions, questionsList ,que
     let [questionTitle, setQuestionTitle] = useState(question.question)
     let optionName
     let [correctOptions, setCorrectOptions] = useState(question.answers)
-    const [idCount, setIdCount] = useState(options[options.length - 1].id + 1)
 
     function saveQuestion() {
-        if(questionTitle === '') {
+        if (questionTitle === '') {
             alert("Question title can't be empty")
             return false
         }
         let newQuestionsList = [...questionsList]
-        if(typeAnswer) {
-            newQuestionsList[question.id] = 
+        if (typeAnswer) {
+            var newQuestion =
             {
                 id: question.id,
                 question: questionTitle,
-                image: "",
-                setId: 0,
+                type: "TA",
+                image: null,
+                setId: question.setId,
                 options: [
                     {
-                    option: answer,
-                    id: 0,
-                    image: ""
+                        option: answer,
+                        id: options[0].id,
+                        image: null
                     }
                 ],
-                answers: [0]
+                answers: []
             }
+            newQuestionsList.forEach((question, index) => {
+                if (question.id === newQuestion.id) {
+                    newQuestionsList[index] = newQuestion
+                }
+            })
         }
         else {
-            if(options.length < 2) {
+            if (options.length < 2) {
                 alert("Multiple choice need at least 2 options")
                 return false
             }
-            if(correctOptions.length === 0) {
+            if (correctOptions.length === 0) {
                 alert("Multiple choice need at least 1 correct option")
                 return false
             }
-            newQuestionsList[question.id] =
+            var newQuestion =
             {
                 id: question.id,
                 question: questionTitle,
-                image: "",
-                setId: 0,
+                type: "MCQ",
+                image: null,
+                setId: question.setId,
                 options: options,
                 answers: correctOptions
             }
+            newQuestionsList.forEach((question, index) => {
+                if (question.id === newQuestion.id) {
+                    newQuestionsList[index] = newQuestion
+                }
+            })
         }
-        setQuestions(newQuestionsList)
-        openFunction(false)
+        console.log(newQuestion)
+        axios.patch(`http://localhost:8080/api/v1/${question.setId}/question`, newQuestion, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        }).then((response) => {
+            console.log(response)
+            openFunction(false)
+            render()
+        })
     }
     function addOption() {
-        if(optionName.value == '') return false
-        if(displayAnswer) {
-            setCorrectOptions([...correctOptions, idCount])
+        if (optionName.value == '') return false
+        if (displayAnswer) {
+            setCorrectOptions([...correctOptions, options.length+1])
         }
         setOptions([...options, {
             option: optionName.value,
-            id: idCount,
             image: ""
-        }])         
-        setIdCount(idCount + 1)
+        }])
         optionName.value = ''
     }
-    function deleteOption(id) {
-        if(options.length === 1) {
-            alert("Add more options")
-            return false
+    function deleteOption(deleteOption, index) {
+        if (options.length === 1) {
+            alert("Multiple choice questions must have at least one option");
+            return;
         }
-        setOptions(options => options.filter(option => option.id !== id))
-        setCorrectOptions(correctOptions => correctOptions.filter(option => option != id))
+
+        // Update `options` and `correctOptions`
+        setCorrectOptions((prevCorrectOptions) =>
+            prevCorrectOptions
+                .filter((idx) => idx !== index) // Remove the deleted option's index
+                .map((idx) => (idx > index ? idx - 1 : idx)) // Shift remaining indices
+        );
+        const updatedOptions = options.filter((_, idx) => idx !== index-1);
+        setOptions(updatedOptions);
+
     }
     // function changeType() {
     //     setTypeAnswer(!typeAnswer)
     // }
 
-    if(typeAnswer) {
-        return(
+    if (typeAnswer) {
+        return (
             <>
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
                     <div className="flex gap-4 items-center justify-between rounded-md my-4 p-5 md:p-10 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
@@ -135,7 +162,7 @@ function EditQuestion( {openFunction, question, setQuestions, questionsList ,que
                             <button className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
                         </div>
                         <div className="flex gap-4 flex-wrap">
-                            <button onClick={() => {openFunction(false)}} className="px-6 py-3 rounded-lg bg-violet-600 text-white hover:bg-blue-500 hover:scale-105 transition-all">EXIT</button>
+                            <button onClick={() => { openFunction(false) }} className="px-6 py-3 rounded-lg bg-violet-600 text-white hover:bg-blue-500 hover:scale-105 transition-all">EXIT</button>
                             {/* <select onChange={changeType} className="bg-[#FF6663] px-6 rounded-lg text-white py-3">
                                 <option value={1} selected>Multiple choice</option>
                                 <option value={0}>Text answer</option>
@@ -143,12 +170,12 @@ function EditQuestion( {openFunction, question, setQuestions, questionsList ,que
                             <button onClick={saveQuestion} className="bg-[#FF6663] px-6 rounded-lg hover:scale-105 hover:bg-red-600 transition-all text-white py-3">SAVE</button>
                         </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
                         <div className="h- full bg-black rounded-lg">IMAGE</div>
                         <div className="w-full bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
                             <div>Question {questionNumber + 1}:</div>
-                            <input className="flex-grow ps-4 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => {setQuestionTitle(e.target.value)}} />
+                            <input className="flex-grow ps-4 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => { setQuestionTitle(e.target.value) }} />
                         </div>
                     </div>
                     <div className="mx-4 sm:mx-10 overflow-y-auto">
@@ -159,8 +186,9 @@ function EditQuestion( {openFunction, question, setQuestions, questionsList ,que
         )
     }
     else {
-        return(
+        return (
             <>
+                {console.log(correctOptions)}
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
                     <div className="flex items-center gap-4 justify-between rounded-md my-4 p-5 md:p-10 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
                         <div className="flex gap-2 bg-[#BFF4FF] p-2 sm:p-4 rounded-lg">
@@ -171,7 +199,7 @@ function EditQuestion( {openFunction, question, setQuestions, questionsList ,que
                             <button type="button" onClick={addOption} className="ml-auto rounded-lg bg-[#B9E42A] h-8 w-8 hover:scale-105 transition-all">+</button>
                         </div>
                         <div className="flex gap-4 flex-wrap">
-                            <button onClick={() => {openFunction(false)}} className="px-6 py-3 rounded-lg bg-violet-600 text-white hover:bg-blue-500 hover:scale-105 transition-all">EXIT</button>
+                            <button onClick={() => { openFunction(false) }} className="px-6 py-3 rounded-lg bg-violet-600 text-white hover:bg-blue-500 hover:scale-105 transition-all">EXIT</button>
                             {/* <select onChange={changeType} className="bg-[#FF6663] px-6 rounded-lg text-white py-3">
                                 <option value={1} selected>Multiple choice</option>
                                 <option value={0}>Text answer</option>
@@ -179,21 +207,21 @@ function EditQuestion( {openFunction, question, setQuestions, questionsList ,que
                             <button onClick={saveQuestion} className="bg-[#FF6663] px-6 rounded-lg hover:scale-105 hover:bg-red-600 transition-all text-white py-3">SAVE</button>
                         </div>
                     </div>
-                    
+
                     <div className="flex justify-center mb-6 mx-2 gap-2">
-                    <input ref={(current) => (optionName = current)} onKeyDown={(e) => {if(e.key == 'Enter') addOption()}} name="option" type="text" placeholder="Input option here" className="block outline-none w-full p-3 ps-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-blue-500" />
+                        <input ref={(current) => (optionName = current)} onKeyDown={(e) => { if (e.key == 'Enter') addOption() }} name="option" type="text" placeholder="Input option here" className="block outline-none w-full p-3 ps-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-blue-500" />
                         <OptionStatus status={displayAnswer} changeStatus={setDisplayAnswer} />
                     </div>
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
                         <div className="h- full bg-black rounded-lg">IMAGE</div>
                         <div className="w-full bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
                             <div>Question {questionNumber + 1}:</div>
-                            <input className="flex-grow ps-4 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => {setQuestionTitle(e.target.value)}} />
+                            <input className="flex-grow ps-4 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => { setQuestionTitle(e.target.value) }} />
                         </div>
                     </div>
                     <div className="mx-2 sm:mx-10 overflow-y-auto min-sm:border-t min-sm:   border-black">
-                        {options.map(option => {
-                            return <MultiChoiceOption delete={deleteOption} option={option} correctOptions={correctOptions} setCorrectOptions={setCorrectOptions} />
+                        {options.map((option, index) => {
+                            return <MultiChoiceOption key={option.option} index={index + 1} delete={deleteOption} option={option} correctOptions={correctOptions} setCorrectOptions={setCorrectOptions} />
                         })}
                     </div>
                 </div>

@@ -31,11 +31,12 @@ function SignIn() {
         }
 
         if(flag) {
-            axios.post('https://quizigmaapi.onrender.com/api/v1/acc/auth', user)
+            axios.post('http://localhost:8080/api/v1/acc/auth', user)
             .then(function(response) {
                 wrongEmailOrPasswordError.style.display = 'none'
                 localStorage.setItem('token', response.data.token)
-                navigate("/discovery")
+                localStorage.setItem('username', response.data.username)
+                navigate("/library")
             })
             .catch(function(error) {
                 if(error.response.data.error === "Invalid email or password") {
