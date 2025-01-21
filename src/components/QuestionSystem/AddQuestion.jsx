@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useState } from "react"
 import { useParams } from "react-router";
-
+import AddImage from "../PopUp/AddImage";
+import Modal from "react-modal";
 function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions, optionId }) {
-    console.log(correctOptions)
     if (status) {
         return <button type="button" onClick={() => { changeStatus(false); setCorrectOptions(correctOptions => correctOptions.filter(option => option != optionId)) }} className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</button>
     }
@@ -14,11 +14,50 @@ function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions,
 
 function MultiChoiceOption(prop) {
     const [displayAnswer, setDisplayAnswer] = useState(prop.correctOptions.includes(prop.optionsList.indexOf(prop.option)))
-
+    const [addImage, setAddImage] = useState(false)
+    const [image, setImage] = useState(null)
+    function addImageToOption(base64Image) {
+        prop.option.image = base64Image
+        prop.optionsList[prop.optionsList.indexOf(prop.option)] = prop.option
+        prop.setOptions(prop.optionsList)
+        setImage(base64Image)
+    }
     return (
         <>
+            <Modal
+                isOpen={addImage}
+                style={{
+                    overlay: {
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: '#fff',
+                        zIndex: 100
+                    },
+                    content: {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        right: '0',
+                        bottom: '0',
+                        border: 'none',
+                        background: 'none',
+                        overflow: 'auto',
+                        WebkitOverflowScrolling: 'touch',
+                        borderRadius: '4px',
+                        outline: 'none',
+                        padding: '0'
+                    }
+                }}
+            >
+                <AddImage addButton={setAddImage} imageContainer={addImageToOption} />
+            </Modal>
             <div className="flex gap-2 sm:gap-8 border-b-2 py-3 sm:px-1">
-                <div className="max-sm:max-w-[100px] max-sm:w-[30%] sm:h-[100px] aspect-[4/3] bg-black rounded-xl">image here</div>
+                <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="max-sm:max-w-[100px] max-sm:w-[30%] sm:h-[100px] aspect-[4/3] bg-black rounded-xl bg-center bg-contain bg-no-repeat"></div>
                 <div className="overflow-auto w-[50%] flex flex-col">
                     <div className="font-semibold text-lg mb-2">{prop.option.option}</div>
                     <OptionStatus status={displayAnswer} changeStatus={setDisplayAnswer} correctOptions={prop.correctOptions} optionId={prop.optionsList.indexOf(prop.option)} setCorrectOptions={prop.setCorrectOptions} />
@@ -51,6 +90,9 @@ function AddQuestion({ openFunction, quiz, render }) {
     const [answer, setAnswer] = useState("")
     //answer for typing answer question
     const [questionTitle, setQuestionTitle] = useState("")
+
+    const [addImage, setAddImage] = useState(false)
+    const [image, setImage] = useState(null)
     let optionName
     const [correctOptions, setCorrectOptions] = useState([])
 
@@ -63,8 +105,8 @@ function AddQuestion({ openFunction, quiz, render }) {
         if (typeAnswer) {
             question = {
                 question: questionTitle,
-                type:"TA",
-                image: "",
+                type: "TA",
+                image: image,
                 options: [
                     {
                         option: answer,
@@ -87,10 +129,13 @@ function AddQuestion({ openFunction, quiz, render }) {
             correctOptions.forEach((option) => {
                 answers.push(option + 1)
             })
+            options.forEach((option) => {
+                delete option.id
+            })
             question = {
                 question: questionTitle,
                 type: "MCQ",
-                image: "null",
+                image: image,
                 options: options,
                 answers: answers
             }
@@ -107,8 +152,9 @@ function AddQuestion({ openFunction, quiz, render }) {
             setCorrectOptions([...correctOptions, options.length])
         }
         setOptions([...options, {
+            id: options.length + 1,
             option: optionName.value,
-            image: ""
+            image: null
         }])
         optionName.value = ''
     }
@@ -121,8 +167,6 @@ function AddQuestion({ openFunction, quiz, render }) {
         const adjustedCorrectOptions = newCorrectOptions.map(option => option > id ? option - 1 : option)
         setCorrectOptions(adjustedCorrectOptions)
         setOptions(newOptions)
-        console.log(options)
-        console.log(correctOptions)
         // alert(id)
         // setCorrectOptions(correctOptions => correctOptions.filter(option => option != id))
         // setCorrectOptions(correctOptions => correctOptions.map(option => option > id ? option - 1 : option))
@@ -134,6 +178,38 @@ function AddQuestion({ openFunction, quiz, render }) {
     if (typeAnswer) {
         return (
             <>
+                <Modal
+                    isOpen={addImage}
+                    style={{
+                        overlay: {
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: '#fff',
+                            zIndex: 100
+                        },
+                        content: {
+                            display: 'flex',
+                            justifyContent: 'center',
+                            position: 'absolute',
+                            top: '0',
+                            left: '0',
+                            right: '0',
+                            bottom: '0',
+                            border: 'none',
+                            background: 'none',
+                            overflow: 'auto',
+                            WebkitOverflowScrolling: 'touch',
+                            borderRadius: '4px',
+                            outline: 'none',
+                            padding: '0'
+                        }
+                    }}
+                >
+                    <AddImage addButton={setAddImage} imageContainer={setImage} />
+                </Modal>
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
                     <div className="flex items-center justify-between gap-4 rounded-md my-4 p-2 sm:p-6 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
                         <div className="flex gap-2 bg-[#BFF4FF] p-2 sm:p-4 rounded-lg">
@@ -153,7 +229,7 @@ function AddQuestion({ openFunction, quiz, render }) {
                     </div>
 
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
-                        <div className="h- full bg-black rounded-lg">IMAGE</div>
+                        <div onClick={()=>{setAddImage(true)}} style={{backgroundImage:`url(${image})`}} className="h- full bg-black rounded-lg bg-center bg-no-repeat bg-contain"></div>
                         <div className="w-full bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
                             <div>Question {quiz.questions.length + 1}:</div>
                             <input className="flex-grow ps-4 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => { setQuestionTitle(e.target.value) }} />
@@ -169,6 +245,38 @@ function AddQuestion({ openFunction, quiz, render }) {
     else {
         return (
             <>
+                <Modal
+                    isOpen={addImage}
+                    style={{
+                        overlay: {
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: '#fff',
+                            zIndex: 100
+                        },
+                        content: {
+                            display: 'flex',
+                            justifyContent: 'center',
+                            position: 'absolute',
+                            top: '0',
+                            left: '0',
+                            right: '0',
+                            bottom: '0',
+                            border: 'none',
+                            background: 'none',
+                            overflow: 'auto',
+                            WebkitOverflowScrolling: 'touch',
+                            borderRadius: '4px',
+                            outline: 'none',
+                            padding: '0'
+                        }
+                    }}
+                >
+                    <AddImage addButton={setAddImage} imageContainer={setImage} />
+                </Modal>
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
                     <div className="flex items-center justify-between gap-4 rounded-md my-4 p-2 sm:p-6 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
                         <div className="flex gap-2 bg-[#BFF4FF] p-2 sm:p-4 rounded-lg">
@@ -193,7 +301,7 @@ function AddQuestion({ openFunction, quiz, render }) {
                         <OptionStatus status={displayAnswer} changeStatus={setDisplayAnswer} />
                     </div>
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
-                        <div className="bg-black rounded-lg">IMAGE</div>
+                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="bg-black rounded-lg bg-contain bg-no-repeat bg-center"></div>
                         <div className="w-full bg-[#e7e2e2] rounded-lg p-2 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
                             <div>Question {quiz.questions.length + 1}:</div>
                             <input className="flex-grow ps-4 p-2 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => { setQuestionTitle(e.target.value) }} />
@@ -201,7 +309,7 @@ function AddQuestion({ openFunction, quiz, render }) {
                     </div>
                     <div className="mx-2 sm:mx-10 overflow-y-auto min-sm:border-t min-sm:   border-black">
                         {options.map(option => {
-                            return <MultiChoiceOption delete={deleteOption} option={option} optionsList={options} correctOptions={correctOptions} setCorrectOptions={setCorrectOptions} />
+                            return <MultiChoiceOption setOptions={setOptions} key={option.id} delete={deleteOption} option={option} optionsList={options} correctOptions={correctOptions} setCorrectOptions={setCorrectOptions} />
                         })}
                     </div>
                 </div>

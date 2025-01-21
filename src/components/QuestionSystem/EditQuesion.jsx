@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useState } from "react"
 import { useParams } from "react-router";
-
+import Modal from "react-modal"
+import AddImage from "../PopUp/AddImage";
 function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions, optionIndex }) {
     if (status) {
         return <button type="button" onClick={() => { changeStatus(false); setCorrectOptions(correctOptions => correctOptions.filter(option => option != optionIndex)) }} className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</button>
@@ -13,13 +14,51 @@ function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions,
 
 function MultiChoiceOption(prop) {
     const [displayAnswer, setDisplayAnswer] = useState(prop.correctOptions.includes(prop.index))
-
+    const [addImage, setAddImage] = useState(false)
+    const [image, setImage] = useState(prop.option.image)
     let button = <OptionStatus status={displayAnswer} changeStatus={setDisplayAnswer} correctOptions={prop.correctOptions} optionIndex={prop.index} setCorrectOptions={prop.setCorrectOptions} />
-
+    function addImageToOption(base64Image) {
+        prop.option.image = base64Image
+        prop.options[prop.options.indexOf(prop.option)] = prop.option
+        prop.setOptions(prop.options)
+        setImage(base64Image)
+    }
     return (
         <>
+            <Modal
+                isOpen={addImage}
+                style={{
+                    overlay: {
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: '#fff',
+                        zIndex: 100
+                    },
+                    content: {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        right: '0',
+                        bottom: '0',
+                        border: 'none',
+                        background: 'none',
+                        overflow: 'auto',
+                        WebkitOverflowScrolling: 'touch',
+                        borderRadius: '4px',
+                        outline: 'none',
+                        padding: '0'
+                    }
+                }}
+            >
+                <AddImage addButton={setAddImage} imageContainer={addImageToOption} />
+            </Modal>
             <div className="flex gap-2 sm:gap-8 border-b-2 py-3 sm:px-1">
-                <div className="max-sm:max-w-[100px] max-sm:w-[30%] sm:h-[100px] aspect-[4/3] bg-black rounded-xl">image here</div>
+                <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="max-sm:max-w-[100px] max-sm:w-[30%] sm:h-[100px] aspect-[4/3] bg-black rounded-xl bg-center bg-no-repeat bg-contain"></div>
                 <div className="overflow-auto w-[50%] flex flex-col">
                     <div className="font-semibold text-lg mb-2">{prop.option.option}</div>
                     {button}
@@ -53,6 +92,8 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
     let [questionTitle, setQuestionTitle] = useState(question.question)
     let optionName
     let [correctOptions, setCorrectOptions] = useState(question.answers)
+    const [addImage, setAddImage] = useState(false)
+    const [image, setImage] = useState(question.image)
 
     function saveQuestion() {
         if (questionTitle === '') {
@@ -66,7 +107,7 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                 id: question.id,
                 question: questionTitle,
                 type: "TA",
-                image: null,
+                image: image,
                 setId: question.setId,
                 options: [
                     {
@@ -92,12 +133,19 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                 alert("Multiple choice need at least 1 correct option")
                 return false
             }
+            options.forEach((option, index) => {
+                if (option.original == false) {
+                    delete options[index].id
+                    delete options[index].original
+                }
+            })
+            console.log(options)
             var newQuestion =
             {
                 id: question.id,
                 question: questionTitle,
                 type: "MCQ",
-                image: null,
+                image: image,
                 setId: question.setId,
                 options: options,
                 answers: correctOptions
@@ -122,9 +170,11 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
     function addOption() {
         if (optionName.value == '') return false
         if (displayAnswer) {
-            setCorrectOptions([...correctOptions, options.length+1])
+            setCorrectOptions([...correctOptions, options.length + 1])
         }
         setOptions([...options, {
+            original: false,
+            id: options.length + 1,
             option: optionName.value,
             image: ""
         }])
@@ -142,7 +192,7 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                 .filter((idx) => idx !== index) // Remove the deleted option's index
                 .map((idx) => (idx > index ? idx - 1 : idx)) // Shift remaining indices
         );
-        const updatedOptions = options.filter((_, idx) => idx !== index-1);
+        const updatedOptions = options.filter((_, idx) => idx !== index - 1);
         setOptions(updatedOptions);
 
     }
@@ -153,6 +203,38 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
     if (typeAnswer) {
         return (
             <>
+                <Modal
+                    isOpen={addImage}
+                    style={{
+                        overlay: {
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: '#fff',
+                            zIndex: 100
+                        },
+                        content: {
+                            display: 'flex',
+                            justifyContent: 'center',
+                            position: 'absolute',
+                            top: '0',
+                            left: '0',
+                            right: '0',
+                            bottom: '0',
+                            border: 'none',
+                            background: 'none',
+                            overflow: 'auto',
+                            WebkitOverflowScrolling: 'touch',
+                            borderRadius: '4px',
+                            outline: 'none',
+                            padding: '0'
+                        }
+                    }}
+                >
+                    <AddImage addButton={setAddImage} imageContainer={setImage} />
+                </Modal>
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
                     <div className="flex gap-4 items-center justify-between rounded-md my-4 p-5 md:p-10 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
                         <div className="flex gap-2 bg-[#BFF4FF] p-2 sm:p-4 rounded-lg">
@@ -172,7 +254,7 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                     </div>
 
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
-                        <div className="h- full bg-black rounded-lg">IMAGE</div>
+                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="h- full bg-black rounded-lg bg-contain bg-center bg-no-repeat"></div>
                         <div className="w-full bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
                             <div>Question {questionNumber + 1}:</div>
                             <input className="flex-grow ps-4 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => { setQuestionTitle(e.target.value) }} />
@@ -188,6 +270,38 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
     else {
         return (
             <>
+                <Modal
+                    isOpen={addImage}
+                    style={{
+                        overlay: {
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: '#fff',
+                            zIndex: 100
+                        },
+                        content: {
+                            display: 'flex',
+                            justifyContent: 'center',
+                            position: 'absolute',
+                            top: '0',
+                            left: '0',
+                            right: '0',
+                            bottom: '0',
+                            border: 'none',
+                            background: 'none',
+                            overflow: 'auto',
+                            WebkitOverflowScrolling: 'touch',
+                            borderRadius: '4px',
+                            outline: 'none',
+                            padding: '0'
+                        }
+                    }}
+                >
+                    <AddImage addButton={setAddImage} imageContainer={setImage} />
+                </Modal>
                 {console.log(correctOptions)}
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
                     <div className="flex items-center gap-4 justify-between rounded-md my-4 p-5 md:p-10 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
@@ -213,7 +327,7 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                         <OptionStatus status={displayAnswer} changeStatus={setDisplayAnswer} />
                     </div>
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
-                        <div className="h- full bg-black rounded-lg">IMAGE</div>
+                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="h- full bg-black rounded-lg bg-contain bg-no-repeat bg-center    "></div>
                         <div className="w-full bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
                             <div>Question {questionNumber + 1}:</div>
                             <input className="flex-grow ps-4 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => { setQuestionTitle(e.target.value) }} />
@@ -221,7 +335,7 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                     </div>
                     <div className="mx-2 sm:mx-10 overflow-y-auto min-sm:border-t min-sm:   border-black">
                         {options.map((option, index) => {
-                            return <MultiChoiceOption key={option.option} index={index + 1} delete={deleteOption} option={option} correctOptions={correctOptions} setCorrectOptions={setCorrectOptions} />
+                            return <MultiChoiceOption key={option.id} index={index + 1} delete={deleteOption} option={option} options={options} setOptions={setOptions} correctOptions={correctOptions} setCorrectOptions={setCorrectOptions} />
                         })}
                     </div>
                 </div>

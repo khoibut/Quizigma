@@ -57,7 +57,13 @@ function MultiChoiceOption({ correct, option, index }) {
                 <div className="flex gap-10 border-b-2 py-3">
                     <div className="h-[100px] aspect-[4/3] bg-black rounded-xl">image here</div>
                     <div className="option-info">
-                        <div className="font-semibold text-lg mb-2">{`${index}. ${option}`}</div>
+                        <div
+                            className="font-semibold text-lg mb-2"
+                            dangerouslySetInnerHTML={{
+                                __html: `${option}`
+                            }}
+                        ></div>
+
                         <div className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold">Correct</div>
                     </div>
                 </div>
@@ -69,7 +75,12 @@ function MultiChoiceOption({ correct, option, index }) {
             <div className="flex gap-10 border-b-2 py-3">
                 <div className="h-[100px] aspect-[4/3] bg-black rounded-xl">image here</div>
                 <div className="option-info">
-                    <div className="font-semibold text-lg mb-2">{`${index}. ${option}`}</div>
+                <div
+                            className="font-semibold text-lg mb-2"
+                            dangerouslySetInnerHTML={{
+                                __html: `${option}`
+                            }}
+                        ></div>
                     <div className="rounded-full bg-[#E54C38] text-white text-center py-1 px-4 font-bold">Wrong</div>
                 </div>
             </div>
@@ -84,6 +95,8 @@ function MultiChoiceQuestion({ question, index }) {
 
     function open() {
         if (!active) {
+            const contentHeight = option.scrollHeight + 4 * 16;
+            option.style.height = `${contentHeight}px`
             option.style.paddingTop = '2rem'
             option.style.paddingBottom = '2rem'
         }
@@ -102,8 +115,7 @@ function MultiChoiceQuestion({ question, index }) {
                     <div className="h-[100px] sm:w-auto sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center">image here</div>
                     <div className="max-sm:basis-full">
                         <div className="font-semibold text-xl">{`Question ${index}:`}</div>
-                        <div className="question-title">{question.question}</div>
-
+                        <div dangerouslySetInnerHTML={{ __html: question.question }} className="question-title" />
                     </div>
                     <div className="ml-auto flex gap-5 items-center">
                         <div className="px-10 py-2 rounded-full font-bold bg-red-400 text-white text-nowrap">Multiple choice</div>
@@ -238,11 +250,11 @@ function HostGame() {
                 {/* top bar quiz info and start button */}
                 <div className="flex items-center gap-8 bg-[#3272E8] rounded-lg sm:h-[18vh] p-5 max-sm:flex-wrap">
                     {/* image container */}
-                    <div className="h-[80px] sm:h-full aspect-video bg-contain bg-center bg-no-repeat bg-[url()] rounded-md" style={{backgroundImage:`url(${set?.image})`}}></div>
+                    <div className="h-[80px] sm:h-full aspect-video bg-contain bg-center bg-no-repeat bg-[url()] rounded-md" style={{ backgroundImage: `url(${set?.image})` }}></div>
                     {/* quiz info */}
                     <div>
-                        <div className="font-bold text-xl text-white">{set ? set.name: "Loading"}</div>
-                        <div className="text-md text-white">Questions: {set ? set.questions.length: "Loading"}</div>
+                        <div className="font-bold text-xl text-white">{set ? set.name : "Loading"}</div>
+                        <div className="text-md text-white">Questions: {set ? set.questions.length : "Loading"}</div>
                         <div className="text-md text-white">{`${localStorage.getItem("username")}`}</div>
                     </div>
                     <button onClick={startGame} className="max-sm:basis-full px-8 md:px-10 py-2 rounded-full md:font-bold bg-red-400 text-white ml-auto hover:bg-rose-500 hover:scale-105 transition-all">START</button>

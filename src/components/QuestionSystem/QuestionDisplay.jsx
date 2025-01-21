@@ -8,7 +8,8 @@ import { NavLink, useParams } from "react-router"
 import AddFromDiscovery from "./AddFromDiscovery.jsx"
 import axios from "axios"
 import React from "react"
-
+import ImportQuiz from "./ImportQuiz.jsx"
+import { useRef } from "react"
 
 function MultiChoiceOption({ correct, option }) {
     if (correct) {
@@ -16,11 +17,11 @@ function MultiChoiceOption({ correct, option }) {
             <>
                 <div className="flex gap-10 border-b-2 py-3">
                     {/* image */}
-                    <div className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl">image here</div>
+                    <div style={{ backgroundImage: `url(${option.image})` }} className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl bg-contain bg-center bg-no-repeat"></div>
 
                     {/* info container */}
                     <div className="option-info">
-                        <div className="font-semibold text-lg mb-2">{option}</div>
+                        <div dangerouslySetInnerHTML={{ __html: option.option }} className="font-semibold text-lg mb-2"></div>
                         <div className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</div>
                     </div>
                 </div>
@@ -31,18 +32,18 @@ function MultiChoiceOption({ correct, option }) {
         <>
             <div className="flex gap-10 border-b-2 py-3">
                 {/* image */}
-                <div className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl">image here</div>
+                <div style={{ backgroundImage: `url(${option.image})` }} className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl bg-contain bg-center bg-no-repeat"></div>
 
                 {/* info container */}
                 <div className="overflow-auto max-sm:w-[200px] w-full">
-                    <div className="font-semibold text-lg mb-2">{option}</div>
+                    <div dangerouslySetInnerHTML={{ __html: option.option }} className="font-semibold text-lg mb-2"></div>
                     <div className="rounded-full bg-[#E54C38] text-white text-center py-1 px-4 font-bold w-fit">Wrong</div>
                 </div>
             </div>
         </>
     )
 }
-function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQuestions, setSelectedQuestions ,render}) {
+function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQuestions, setSelectedQuestions, render }) {
     // check if option container is open
     const [active, setActive] = useState(false)
     const [editQuestionOpened, setEditQuestion] = useState(false)
@@ -68,8 +69,8 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
     }
     function deleteQuestion() {
         console.log(question.id)
-        const requestData={
-            id:question.id
+        const requestData = {
+            id: question.id
         }
         axios.delete(`http://localhost:8080/api/v1/${setId}/question`, {
             headers: {
@@ -77,10 +78,10 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
             },
             data: requestData // Add the body here
         })
-        .then(response => {
-            console.log('Question deleted successfully:', response.data);
-            render()
-        })
+            .then(response => {
+                console.log('Question deleted successfully:', response.data);
+                render()
+            })
     }
 
     return (
@@ -120,13 +121,16 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
 
             <div onClick={() => { open() }} className="flex mt-5 bg-[#6D96D9] items-center sm:rounded-l-full px-2 sm:px-10 py-2 gap-2 md:gap-10 min-h-fit h-[16vh] lg:h-[20vh]">
                 {/* check box to multi select */}
-                <input className="min-w-5 min-h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" onClick={(e) => { e.stopPropagation(); e.target.checked ? setSelectedQuestions([...selectedQuestions, question.id]) : setSelectedQuestions(selectedQuestions.filter(q => q != question.id)) }} />
+                <input className="min-w-5 min-h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" value={false} onClick={(e) => { e.stopPropagation(); e.target.checked ? setSelectedQuestions([...selectedQuestions, question.id]) : setSelectedQuestions(selectedQuestions.filter(q => q != question.id)) }} />
                 {/* image container */}
-                <div className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center my-5">image here</div>
+                <div style={{ backgroundImage: `url(${question.image})` }} className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center my-5 bg-contain bg-no-repeat bg-center"></div>
                 {/* question info */}
                 <div className="question">
                     <div className="font-semibold text-xl">Question {questionsList.map(q => q.id).indexOf(question.id) + 1}:</div>
-                    <div className="question-title">{question.question}</div>
+                    <div
+                        className="question-title"
+                        dangerouslySetInnerHTML={{ __html: question.question }}
+                    />
                 </div>
                 {/* question type, edit icon, remove icon */}
                 <div className="ml-auto gap-5 items-center sm:flex hidden">
@@ -143,7 +147,7 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
             <div ref={(current) => (option = current)} className="shadow-xl sm:ml-20 px-2 sm:px-8 rounded-b-lg h-0 overflow-auto duration-300 transition-all flex flex-col">
                 <div className="option-list">
                     {question.options.map((option, index) => {
-                        return <MultiChoiceOption correct={question.answers.includes(index + 1)} option={option.option} />
+                        return <MultiChoiceOption correct={question.answers.includes(index + 1)} option={option} />
                     })}
                 </div>
             </div>
@@ -157,7 +161,8 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
         </>
     )
 }
-function TextAnswerQuestion({render, question, questionsList, setQuestions, selectedQuestions, setSelectedQuestions }) {
+function TextAnswerQuestion({ render, question, questionsList, setQuestions, selectedQuestions, setSelectedQuestions }) {
+    const setId = useParams().setId
     // check if answer key container is open
     const [active, setActive] = useState(false)
     const [editQuestionOpened, setEditQuestion] = useState(false)
@@ -181,7 +186,20 @@ function TextAnswerQuestion({render, question, questionsList, setQuestions, sele
         setActive(!active)
     }
     function deleteQuestion() {
-        setQuestions(questionsList.filter(q => q.id !== question.id))
+        console.log(question.id)
+        const requestData = {
+            id: question.id
+        }
+        axios.delete(`http://localhost:8080/api/v1/${setId}/question`, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('token')}`
+            },
+            data: requestData // Add the body here
+        })
+            .then(response => {
+                console.log('Question deleted successfully:', response.data);
+                render()
+            })
     }
 
     return (
@@ -223,11 +241,14 @@ function TextAnswerQuestion({render, question, questionsList, setQuestions, sele
                     {/* check box to multi select */}
                     <input className="min-w-5 min-h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" onClick={(e) => { e.stopPropagation(); e.target.checked ? setSelectedQuestions([...selectedQuestions, question.id]) : setSelectedQuestions(selectedQuestions.filter(q => q != question.id)) }} />
                     {/* image container */}
-                    <div className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center my-5">image here</div>
+                    <div style={{ backgroundImage: `url(${question.image})` }} className="sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center my-5 bg-contain bg-center bg-no-repeat"></div>
                     {/* question info */}
                     <div className="question">
                         <div className="font-semibold text-xl">Question {questionsList.map(q => q.id).indexOf(question.id) + 1}:</div>
-                        <div className="question-title">{question.question}</div>
+                        <div
+                            className="question-title"
+                            dangerouslySetInnerHTML={{ __html: question.question }}
+                        />
                     </div>
                     {/* question type, edit icon, remove icon */}
                     <div className="ml-auto sm:flex hidden gap-5 items-center">
@@ -259,9 +280,12 @@ function TextAnswerQuestion({render, question, questionsList, setQuestions, sele
 function QuestionDisplay() {
     // let editPopUp = <EditQuestionPopup />;
     const setId = useParams().setId
+    const searchBar = useRef();
+    const [search, setSearch] = useState('')
     const [editQuizOpened, setEditQuiz] = useState(false);
     const [addQuestionOpened, setAddQuestion] = useState(false);
     const [discoveryAddOpened, setDiscoveryAdd] = useState(false)
+    const [importQuizOpened, setImportQuiz] = useState(false)
     let sidebar
     const [sidebarOpen, setSidebarOpen] = useState(true)
     const [selectedQuestions, setSelectedQuestions] = useState([])
@@ -273,6 +297,7 @@ function QuestionDisplay() {
             .then(function (response) {
                 response.data.forEach(set => {
                     if (set.id == setId) {
+                        set.questions.sort((a, b) => a.id - b.id)
                         setQuiz(set)
                     }
                 })
@@ -298,11 +323,17 @@ function QuestionDisplay() {
         console.log(quiz)
     }
     function multiDelete() {
-        // alert(selectedQuestions)
-        // console.log(questions.filter(question => !selectedQuestions.includes(question.id)))
-        // setQuestions(questions.filter(question => !selectedQuestions.includes(question.id)))
-        // setSelectedQuestions([])
-        // console.log(selectedQuestions)
+        console.log(selectedQuestions)
+        selectedQuestions.forEach(id => {
+            axios.delete(`http://localhost:8080/api/v1/${setId}/question`, {
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`
+                },
+                data: { id: id }
+            })
+        })
+        setSelectedQuestions([])
+        setQuiz({ ...quiz, questions: quiz.questions.filter(q => !selectedQuestions.includes(q.id)) })
     }
 
     if (loading) {
@@ -410,6 +441,38 @@ function QuestionDisplay() {
                 <AddQuestion ref={(current) => (addQuestion = current)} openFunction={setAddQuestion} quiz={quiz} render={getQuiz} />
             </Modal>
 
+            <Modal
+                isOpen={importQuizOpened}
+                style={{
+                    overlay: {
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        zIndex: 20,
+                        background: '#00000060'
+                    },
+                    content: {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        right: '0',
+                        bottom: '0',
+                        border: 'none',
+                        background: 'none',
+                        overflow: 'auto',
+                        WebkitOverflowScrolling: 'touch',
+                        borderRadius: '4px',
+                        outline: 'none',
+                        padding: '0'
+                    }
+                }}
+            >
+                <ImportQuiz openFunction={setImportQuiz} />
+            </Modal>
             <Title />
             <div className="grid lg:grid-cols-[auto_1fr] max-sm:h-screen">
                 {/* sidebar containing quiz info, editing quiz option */}
@@ -423,7 +486,7 @@ function QuestionDisplay() {
                         <button onClick={() => { setAddQuestion(true) }} className="bg-[#F8858B] my-2 min-w-[100px] w-[70%] p-3 rounded-r-full text-nowrap font-semibold hover:w-[85%] transition-all">Add question</button>
                         <button onClick={() => { setDiscoveryAdd(true) }} className="bg-[#F8858B] my-2 min-w-[100px] w-[70%] p-3 rounded-r-full text-nowrap font-semibold hover:w-[85%] transition-all">Add from discovery</button>
                         <button onClick={() => { setEditQuiz(true) }} className="bg-[#F8858B] my-2 min-w-[100px] w-[70%] p-3 rounded-r-full text-nowrap font-semibold hover:w-[85%] transition-all">Edit quiz</button>
-                        <button className="bg-[#F8858B] my-2 min-w-[100px] w-[70%] p-3 rounded-r-full text-nowrap font-semibold hover:w-[85%] transition-all">Import</button>
+                        <button onClick={() => { setImportQuiz(true) }} className="bg-[#F8858B] my-2 min-w-[100px] w-[70%] p-3 rounded-r-full text-nowrap font-semibold hover:w-[85%] transition-all">Import</button>
                         <button className="bg-[#F8858B] my-2 min-w-[100px] w-[70%] p-3 rounded-r-full text-nowrap font-semibold hover:w-[85%] transition-all">Export</button>
                         <NavLink to="/" end>
                             <button className="bg-[#F8858B] my-2 min-w-[100px] w-[70%] p-3 rounded-r-full text-nowrap font-semibold hover:w-[85%] transition-all">Exit</button>
@@ -435,9 +498,9 @@ function QuestionDisplay() {
                     {/* top bar containing search bar, filter bar, delete question that has been selected, save quiz */}
                     <div className="bg-[#A3D5FF] gap-4 flex items-center p-4 mb-5 sticky top-0 flex-wrap z-10">
                         {/* search bar */}
-                        <input className="outline-none max-sm:basis-full px-4 py-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-xl bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-blue-500" placeholder="Search" />
+                        <input ref={searchBar} className="outline-none max-sm:basis-full px-4 py-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-xl bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-blue-500" placeholder="Search" />
                         {/* filter */}
-                        <button className="px-5 sm:px-10 py-2 rounded-full font-bold bg-red-400 text-white hover:bg-rose-500 hover:scale-105 transition-all">FILTER</button>
+                        <button onClick={() => { setSearch(searchBar.current.value) }} className="px-5 sm:px-10 py-2 rounded-full font-bold bg-red-400 text-white hover:bg-rose-500 hover:scale-105 transition-all">SEARCH</button>
                         {/* delete questions */}
                         <div onClick={multiDelete} className="group px-5 sm:px-10 py-2 rounded-full font-bold bg-red-400 text-white hover:bg-rose-500 hover:scale-105 transition-all">
                             <svg className="hover:scale-110 transition-all group" xmlns="http://www.w3.org/2000/svg" height="26px" viewBox="0 -960 960 960" width="26px" fill="#fff"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
@@ -452,11 +515,13 @@ function QuestionDisplay() {
                     {/* questions container */}
                     <div className="sm:pl-8 overflow-hidden max-sm:h-full animate-dropdown max-sm:w-full pb-20">
                         {quiz.questions.map(question => {
-                            if (question.type === "TA") {
-                                return <TextAnswerQuestion setSelectedQuestions={setSelectedQuestions} selectedQuestions={selectedQuestions} question={question} questionsList={quiz.questions} render={getQuiz} />
-                            }
-                            else {
-                                return <MultiChoiceQuestion setSelectedQuestions={setSelectedQuestions} selectedQuestions={selectedQuestions} question={question} questionsList={quiz.questions} render={getQuiz} />
+                            if (search === '' || question.question.toLowerCase().includes(search.toLowerCase())) {
+                                if (question.type === "TA") {
+                                    return <TextAnswerQuestion key={question.id} setSelectedQuestions={setSelectedQuestions} selectedQuestions={selectedQuestions} question={question} questionsList={quiz.questions} render={getQuiz} />
+                                }
+                                else {
+                                    return <MultiChoiceQuestion key={question.id} setSelectedQuestions={setSelectedQuestions} selectedQuestions={selectedQuestions} question={question} questionsList={quiz.questions} render={getQuiz} />
+                                }
                             }
                         })}
                     </div>

@@ -12,7 +12,6 @@ function AddImage( {addButton, imageContainer} ) {
             
             reader.onloadend = () => {
                 const base64Image = reader.result;
-                console.log(base64Image);
                 setImage(base64Image);
             };
             
@@ -35,7 +34,7 @@ function AddImage( {addButton, imageContainer} ) {
                     {/* <img className="rounded-lg object-cover" src={image} alt="" /> */}
                     <div style={(image == '' ? {display: "block"} :{display: "none"})}>Drag and drop image here </div>
                     <div style={(image == '' ? {display: "block"} :{display: "none"})}>or click here to add from file</div>
-                    <input onChange={(e) => (displayImage(e))} accept=".png, .jpeg, .jpg, .webp, .jfif" className="hidden" type="file" />
+                    <input onChange={(e) => (displayImage(e))} accept="image/*" className="hidden" type="file" />
                 </label>
             </div>
         </>
