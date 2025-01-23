@@ -6,9 +6,9 @@ function MultipleChoice({question, player, roomId, stompClient}) {
     return(
         <>
             <div className="w-full h-screen overflow-hidden">
-                <InGameTopBar player={player} roomId={roomId}/>
+                <InGameTopBar player={player} roomId={roomId} stompClient={stompClient}/>
 
-                <QuestionDisplay text={question.question} />
+                <QuestionDisplay question={question} />
 
                 <AnswerDeck player={player} question={question} roomId={roomId} stompClient={stompClient}/>
             </div>

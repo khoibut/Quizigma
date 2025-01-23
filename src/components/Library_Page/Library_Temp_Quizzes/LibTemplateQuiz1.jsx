@@ -53,7 +53,7 @@ function TemplateQuiz({set,sets, setSets}){
                         <button className="bg-white h-5/6 w-1/2 rounded-3xl scale-90 flex items-center justify-center hover:scale-100 transition ease-out duration-500 hover:animate-rgbBorder hover:border-[3px]">
                             <span className="text-lg font-bold text-gray-700">Assign</span>
                         </button>
-                        <button className="bg-white h-5/6 w-1/2 rounded-3xl scale-90 flex items-center justify-center hover:scale-100 transition ease-out duration-500 hover:animate-rgbBorder hover:border-[3px]">
+                        <button onClick={()=>{window.location.href=`/host/${set.id}`}} className="bg-white h-5/6 w-1/2 rounded-3xl scale-90 flex items-center justify-center hover:scale-100 transition ease-out duration-500 hover:animate-rgbBorder hover:border-[3px]">
                             <span className="text-lg font-bold text-gray-700">Host</span>
                         </button>
                     </div>

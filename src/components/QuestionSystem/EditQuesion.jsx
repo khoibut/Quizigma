@@ -3,6 +3,8 @@ import { useState } from "react"
 import { useParams } from "react-router";
 import Modal from "react-modal"
 import AddImage from "../PopUp/AddImage";
+import { withReact } from "slate-react";
+import { withHistory } from "slate-history";
 function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions, optionIndex }) {
     if (status) {
         return <button type="button" onClick={() => { changeStatus(false); setCorrectOptions(correctOptions => correctOptions.filter(option => option != optionIndex)) }} className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</button>
@@ -81,6 +83,7 @@ function TypeAnswerOption(prop) {
 }
 
 function EditQuestion({ openFunction, question, render, questionsList, questionNumber }) {
+    const [editor] = useState(()=>{withReact(withHistory(createEditor()))})
     const [displayAnswer, setDisplayAnswer] = useState(true)
     //display correc or wrong for multiple choice option
     const [typeAnswer, setTypeAnswer] = useState(question.type == "TA" ? true : false)

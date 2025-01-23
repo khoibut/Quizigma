@@ -3,7 +3,7 @@ function TopBar(){
         <>
             {/* <!-- top bar --> */}
             <div class="font-bold bg-[#338ACB] h-[60px] flex w-full items-center">
-                <div class="text-4xl pl-5 items-center">
+                <div onClick={()=>{window.location.href="/"}} class="text-4xl pl-5 items-center cursor-pointer">
                     Quizigma
                 </div>
 

@@ -17,6 +17,9 @@
     "react-dom": "^18.3.1",
     "react-modal": "^3.16.3",
     "react-router": "^7.0.2",
+    "slate": "^0.112.0",
+    "slate-history": "^0.110.3",
+    "slate-react": "^0.112.1",
     "sockjs-client": "^1.6.1"
   },
   "devDependencies": {

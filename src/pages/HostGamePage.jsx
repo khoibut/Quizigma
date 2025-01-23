@@ -9,6 +9,7 @@ function HostGamePage() {
     const [players, setPlayers] = useState([])
     const roomId = useParams().roomId;
     const [stompClient, setStompClient] = useState(null);
+    const [time, setTime] = useState(0);
     function disconnect() {
         stompClient.disconnect();
     }
@@ -22,7 +23,7 @@ function HostGamePage() {
                     roomId={roomId}
                 />
             case 'stat':
-                return <HostGameStat players={players} roomId={roomId} stompClient={stompClient} />
+                return <HostGameStat players={players} roomId={roomId} stompClient={stompClient} time={time} />
         }
     }
     useEffect(() => {
@@ -39,7 +40,6 @@ function HostGamePage() {
             setStompClient(stompClient);
             stompClient.subscribe('/queue/creator/' + roomId, function (message) {
                 const messageBody = JSON.parse(message.body);
-                console.log(messageBody);
                 if (messageBody.type == 'players') {
                     let decodedPlayers = messageBody.players
                     decodedPlayers.forEach(player => {
@@ -53,10 +53,14 @@ function HostGamePage() {
                 if (messageBody.type == 'error') {
                     window.location.href = "/join";
                 }
-                if(messageBody.type=='end'){
+                if (messageBody.type == 'end') {
                     console.log('Game ended')
                     stompClient.disconnect()
-                    window.location.href="/join"
+                    window.location.href = "/join"
+                }
+                if (messageBody.type == 'timer') {
+                    console.log(messageBody.time)
+                    setTime(messageBody.time)
                 }
             });
             stompClient.publish({ destination: '/quizz/creator/join', body: JSON.stringify({ room: roomId, creator: localStorage.getItem('token') }) });

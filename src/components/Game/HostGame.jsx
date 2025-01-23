@@ -3,23 +3,19 @@ import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { useRef } from "react";
 import axios from "axios";
-function LiveGame({ timeLimit }) {
+function LiveGame({ timeLimit, lateJoin }) {
     return (
         <div className="flex flex-col gap-4">
             {/* Maximun score input */}
-            <div>
-                <span className="font-semibold text-lg">Max Score: </span>
-                <input className="p-1 ps-3 outline-none rounded-lg" type="text"></input>
-            </div>
             {/* Game length */}
             <div>
                 <span class="font-semibold text-lg">Time: </span>
-                <input ref={timeLimit} class="p-1 ps-3 outline-none rounded-lg" type="text"></input>
+                <input ref={timeLimit} className="p-1 ps-3 outline-none rounded-lg" type="text"></input>
             </div>
             {/* Late join check box */}
             <div className="flex items-center gap-4">
                 <span className="font-semibold text-lg">Allow late join: </span>
-                <input className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox" />
+                <input ref={lateJoin} className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox"></input>
             </div>
         </div>
     )
@@ -55,12 +51,12 @@ function MultiChoiceOption({ correct, option, index }) {
         return (
             <>
                 <div className="flex gap-10 border-b-2 py-3">
-                    <div className="h-[100px] aspect-[4/3] bg-black rounded-xl">image here</div>
+                    <div style={{ backgroundImage: `url(${option.image})` }} className="h-[100px] aspect-[4/3] bg-black rounded-xl bg-center bg-contain bg-no-repeat"></div>
                     <div className="option-info">
                         <div
                             className="font-semibold text-lg mb-2"
                             dangerouslySetInnerHTML={{
-                                __html: `${option}`
+                                __html: `${option.option}`
                             }}
                         ></div>
 
@@ -73,14 +69,14 @@ function MultiChoiceOption({ correct, option, index }) {
     return (
         <>
             <div className="flex gap-10 border-b-2 py-3">
-                <div className="h-[100px] aspect-[4/3] bg-black rounded-xl">image here</div>
+                <div style={{ backgroundImage: `url(${option.image})` }} className="h-[100px] aspect-[4/3] bg-black rounded-xl bg-contain bg-center bg-no-repeat"></div>
                 <div className="option-info">
-                <div
-                            className="font-semibold text-lg mb-2"
-                            dangerouslySetInnerHTML={{
-                                __html: `${option}`
-                            }}
-                        ></div>
+                    <div
+                        className="font-semibold text-lg mb-2"
+                        dangerouslySetInnerHTML={{
+                            __html: `${option.option}`
+                        }}
+                    ></div>
                     <div className="rounded-full bg-[#E54C38] text-white text-center py-1 px-4 font-bold">Wrong</div>
                 </div>
             </div>
@@ -112,7 +108,7 @@ function MultiChoiceQuestion({ question, index }) {
         <>
             <div className="group mt-4">
                 <div onClick={() => { open() }} className="flex bg-[#6D96D9] items-center px-8 py-4 gap-2 sm:gap-10 max-sm:flex-wrap">
-                    <div className="h-[100px] sm:w-auto sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center">image here</div>
+                    <div style={{ backgroundImage: `url(${question.image})` }} className="h-[100px] sm:w-auto sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center bg-contain bg-no-repeat bg-center"></div>
                     <div className="max-sm:basis-full">
                         <div className="font-semibold text-xl">{`Question ${index}:`}</div>
                         <div dangerouslySetInnerHTML={{ __html: question.question }} className="question-title" />
@@ -124,10 +120,10 @@ function MultiChoiceQuestion({ question, index }) {
                 <div ref={(current) => (option = current)} className="shadow-xl px-8 rounded-b-lg h-0 overflow-auto duration-300 transition-all flex flex-col">
                     <div className="option-list">
                         {question.options.map((option, index) => {
-                            if (question.answers.includes(index)) {
-                                return <MultiChoiceOption correct={false} option={option.option} index={index + 1} />
+                            if (question.answers.includes(index + 1)) {
+                                return <MultiChoiceOption correct={true} option={option} index={index + 1} />
                             } else {
-                                return <MultiChoiceOption correct={true} option={option.option} index={index + 1} />
+                                return <MultiChoiceOption correct={false} option={option} index={index + 1} />
                             }
                         })}
 
@@ -163,7 +159,7 @@ function TextAnswerQuestion({ question, index }) {
         <>
             <div onClick={() => { open() }} className="group mt-4">
                 <div onClick={() => { open() }} className="flex bg-[#6D96D9] items-center px-8 py-4 gap-2 sm:gap-10 max-sm:flex-wrap">
-                    <div className="h-[100px] sm:w-auto sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center">image here</div>
+                    <div style={{ backgroundImage: `url(${question.image})` }} className="h-[100px] sm:w-auto sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center bg-contain bg-center bg-no-repeat"></div>
                     <div className="max-sm:basis-full">
                         <div className="font-semibold text-xl">{`Question ${index}:`}</div>
                         <div className="question-title">{question.question}</div>
@@ -173,7 +169,7 @@ function TextAnswerQuestion({ question, index }) {
                     </div>
                 </div>
                 <div ref={(current) => (option = current)} className="shadow-xl px-8 rounded-b-lg h-0 overflow-auto duration-300 transition-all flex flex-col">
-                    <div className="bg-[#00000020] min-h-[180px] h-fit p-8 rounded-xl">The answer is my cock</div>
+                    <div className="bg-[#00000020] min-h-[180px] h-fit p-8 rounded-xl">{question.options[0].option}</div>
                 </div>
             </div>
         </>
@@ -183,9 +179,10 @@ function TextAnswerQuestion({ question, index }) {
 function HostGame() {
     const setId = useParams()
     const timeLimit = useRef()
+    const lateJoin = useRef()
     const [questions, setQuestions] = useState([])
     const [set, setSet] = useState(null)
-    const [typeOfHost, setTypeOfHost] = useState(<LiveGame timeLimit={timeLimit} />)
+    const [typeOfHost, setTypeOfHost] = useState(<LiveGame timeLimit={timeLimit} lateJoin={lateJoin} />)
     let liveGameButton
     let assignmentButton
     const navigate = useNavigate()
@@ -203,7 +200,7 @@ function HostGame() {
 
     // switch, toggle game mode styling
     function liveGame() {
-        setTypeOfHost(<LiveGame timeLimit={timeLimit} />)
+        setTypeOfHost(<LiveGame timeLimit={timeLimit} lateJoin={lateJoin} />)
         liveGameButton.style.borderRadius = '0 9999px 9999px 0'
         liveGameButton.style.boxShadow = '6px 0 2px rgba(0,0,15,0.5)'
         liveGameButton.style.zIndex = '10'
@@ -227,8 +224,10 @@ function HostGame() {
     function startGame() {
         const roomDTO = {
             setId: setId.setId,
-            timeLimit: timeLimit.current.value
+            timeLimit: timeLimit.current.value,
+            lateJoin: lateJoin.current.checked
         }
+
         axios.post('http://localhost:8080/api/v1/room', roomDTO,
             {
                 headers:
@@ -245,7 +244,6 @@ function HostGame() {
     }
     return (
         <>
-            {console.log(set?.image)}
             <div className="p-2 flex flex-col">
                 {/* top bar quiz info and start button */}
                 <div className="flex items-center gap-8 bg-[#3272E8] rounded-lg sm:h-[18vh] p-5 max-sm:flex-wrap">

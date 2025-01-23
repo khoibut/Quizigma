@@ -1,6 +1,22 @@
+import { useEffect } from 'react';
 import ExampleProfilePic from '../Icons&Images/godzilla.jpg';
-
-function GameTopBar({player, roomId}){
+import { useState } from 'react';
+function GameTopBar({player, roomId, stompClient}) {
+    const [time, setTime] = useState(0);
+    function formatSecondsToMinutes(seconds) {
+        const minutes = Math.floor(seconds / 60); // Get the whole minutes
+        const remainingSeconds = seconds % 60; // Get the remaining seconds
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`; // Format as MM:SS
+    }
+    useEffect(() => {
+        stompClient.subscribe('/topic/player/' + roomId, (message) => {
+            const messageBody = JSON.parse(message.body)
+            if(messageBody.type=="timer"){
+                console.log(messageBody.time)
+                setTime(messageBody.time)
+            }
+        })
+    },[])
     return(
         <>
             <div className="bg-green-500 w-full max-h-[50vh] flex justify-between items-center flex-wrap ">
@@ -14,6 +30,9 @@ function GameTopBar({player, roomId}){
                 </div>
 
                 <div className="flex items-center">
+                <div className=" ml-8 text-xl font-medium overflow-hidden max-w-[30vh] max-h-[8vh]">
+                        {formatSecondsToMinutes(time)}
+                    </div>
                     <div className=" ml-8 text-xl font-medium overflow-hidden max-w-[30vh] max-h-[8vh]">
                         {player.name}
                     </div>

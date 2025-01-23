@@ -101,6 +101,10 @@ function GamePage() {
                 stompClient.subscribe(`/queue/${roomId}/${encodedName}`, (message) => {
                     const messageBody = JSON.parse(message.body)
                     console.log(messageBody)
+                    if(messageBody.type=='questions'){
+                        setQuestions(messageBody.questions)
+                        setView('quiz')
+                    }
                     if(messageBody.type=='correct'){
                         setView('correct')
                     }

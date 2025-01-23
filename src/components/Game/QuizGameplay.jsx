@@ -15,7 +15,7 @@ function QuizGameplay({ question, roomId, player, stompClient }) {
     }
     useEffect(() => {
         getQuestionType()
-    })
+    }, [question])
     function renderView() {
         if(view==='multipleChoice'){
             return <MultipleChoice question={question} player={player} roomId={roomId} stompClient={stompClient}/>

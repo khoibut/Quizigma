@@ -1,8 +1,11 @@
 import axios from "axios";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router";
 import AddImage from "../PopUp/AddImage";
 import Modal from "react-modal";
+import { Slate, Editable, withReact, useSlate } from "slate-react";
+import { createEditor, Editor, Transforms, Text } from "slate";
+import { withHistory } from "slate-history";
 function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions, optionId }) {
     if (status) {
         return <button type="button" onClick={() => { changeStatus(false); setCorrectOptions(correctOptions => correctOptions.filter(option => option != optionId)) }} className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</button>
@@ -78,8 +81,111 @@ function TypeAnswerOption(prop) {
         </>
     )
 }
-
+function Leaf({ attributes, children, leaf }) {
+    if (leaf.bold) {
+        children = <strong>{children}</strong>
+    }
+    if (leaf.italic) {
+        children = <em>{children}</em>
+    }
+    if (leaf.underline) {
+        children = <u>{children}</u>
+    }
+    return <span {...attributes}>{children}</span>
+}
 function AddQuestion({ openFunction, quiz, render }) {
+    const [editor] = useState(() => withReact(withHistory(createEditor())));
+    const [isStyleMarkActive, setIsStyleMarkActive] = useState({ bold: false, italic: false, underline: false })
+    const [value, setValue] = useState([
+        {
+            type: 'paragraph',
+            children: [{ text: 'Type something here...' }],
+        },
+    ]);
+
+    const initialValue = [
+        {
+            type: 'paragraph',
+            children: [{ text: '' }],
+        },
+    ]
+    function isMarkActive(editor, format) {
+        const marks = Editor.marks(editor)
+        return marks ? marks[format] === true : false
+    }
+    function offAllMarks(editor) {
+        Editor.removeMark(editor, 'bold')
+        Editor.removeMark(editor, 'italic')
+        Editor.removeMark(editor, 'underline')
+    }
+
+    function toggleMark(format) {
+        const isActive = isMarkActive(editor, format)
+        if (isActive) {
+            Editor.removeMark(editor, format)
+        } else {
+            Editor.addMark(editor, format, true)
+        }
+    }
+
+    function hotKeys(e) {
+        if (e.ctrlKey) {
+            switch (e.key) {
+                case 'b': {
+                    e.preventDefault()
+                    toggleMark('bold')
+                    setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                    break
+                }
+                case 'i': {
+                    e.preventDefault()
+                    toggleMark('italic')
+                    setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                    break
+                }
+                case 'u': {
+                    e.preventDefault()
+                    toggleMark('underline')
+                    setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                    break
+                }
+                case ' ': {
+                    e.preventDefault()
+                    setIsStyleMarkActive({ bold: false, italic: false, underline: false })
+                    offAllMarks(editor)
+                    break
+                }
+            }
+        }
+    }
+
+    function serializeParagraph(paragraph) {
+        return paragraph.children.map((child) => {
+            if(Text.isText(child)){
+                let text = child.text
+                if(child.bold){
+                    text = `<strong>${text}</strong>`
+                }
+                if(child.italic){
+                    text = `<em>${text}</em>`
+                }
+                if(child.underline){
+                    text = `<u>${text}</u>`
+                }
+                return text
+            }
+            return ''
+        }).join('')
+    }
+
+    function serializeToHTML(value){
+        return value.map((node) => {
+            if(node.type === 'paragraph'){
+                return `<p>${serializeParagraph(node)}</p>`
+            }
+            return ''
+        }).join('\n')
+    }
     const setId = useParams().setId
     const [displayAnswer, setDisplayAnswer] = useState(true)
     //display correc or wrong for multiple choice option
@@ -88,8 +194,6 @@ function AddQuestion({ openFunction, quiz, render }) {
     const [options, setOptions] = useState([])
     //options for multiple choice
     const [answer, setAnswer] = useState("")
-    //answer for typing answer question
-    const [questionTitle, setQuestionTitle] = useState("")
 
     const [addImage, setAddImage] = useState(false)
     const [image, setImage] = useState(null)
@@ -98,7 +202,9 @@ function AddQuestion({ openFunction, quiz, render }) {
 
     function addQuestion() {
         let question
-        if (questionTitle === '') {
+        offAllMarks(editor)
+        let questionTitle = serializeToHTML(value)
+        if ( questionTitle === '') {
             alert("Question title can't be empty")
             return false
         }
@@ -125,6 +231,7 @@ function AddQuestion({ openFunction, quiz, render }) {
                 alert("Multiple choice need at least 1 correct option")
                 return false
             }
+            console.log(questionTitle)
             let answers = []
             correctOptions.forEach((option) => {
                 answers.push(option + 1)
@@ -213,9 +320,24 @@ function AddQuestion({ openFunction, quiz, render }) {
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
                     <div className="flex items-center justify-between gap-4 rounded-md my-4 p-2 sm:p-6 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
                         <div className="flex gap-2 bg-[#BFF4FF] p-2 sm:p-4 rounded-lg">
-                            <button className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><b>B</b></button>
-                            <button className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><i>I</i></button>
-                            <button className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><u>U</u></button>
+                            <button onClick={(e) => {
+                                e.preventDefault()
+                                toggleMark('bold')
+                                setIsStyleMarkActive({ bold: !isStyleMarkActive.bold, italic: false, underline: false })
+                            }}
+                                className={`{${isStyleMarkActive.bold ? 'bg-gray-400' : ''}} hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg`}><b>B</b></button>
+                            <button onClick={(e) => {
+                                e.preventDefault()
+                                toggleMark('italic')
+                                setIsStyleMarkActive({ bold: false, italic: !isStyleMarkActive.italic, underline: false })
+                            }}
+                                className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><i>I</i></button>
+                            <button onClick={(e) => {
+                                e.preventDefault()
+                                toggleMark('underline')
+                                setIsStyleMarkActive({ bold: false, italic: false, underline: !isStyleMarkActive.underline })
+                            }}
+                                className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><u>U</u></button>
                             <button className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
                         </div>
                         <div className="flex gap-2 sm:gap-4 flex-wrap">
@@ -229,10 +351,12 @@ function AddQuestion({ openFunction, quiz, render }) {
                     </div>
 
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
-                        <div onClick={()=>{setAddImage(true)}} style={{backgroundImage:`url(${image})`}} className="h- full bg-black rounded-lg bg-center bg-no-repeat bg-contain"></div>
-                        <div className="w-full bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
+                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="h- full bg-black rounded-lg bg-center bg-no-repeat bg-contain max-h-20"></div>
+                        <div className="w-full break-words overflow-auto bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
                             <div>Question {quiz.questions.length + 1}:</div>
-                            <input className="flex-grow ps-4 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => { setQuestionTitle(e.target.value) }} />
+                            <Slate editor={editor} initialValue={initialValue} onChange={newValue => setValue(newValue)}>
+                                <Editable className="focus:outline-none outline-none border-none" onKeyDown={hotKeys} placeholder="Input question here" renderLeaf={props => <Leaf {...props} />} />
+                            </Slate>
                         </div>
                     </div>
                     <div className="mx-4 sm:mx-10 overflow-y-auto">
@@ -245,6 +369,7 @@ function AddQuestion({ openFunction, quiz, render }) {
     else {
         return (
             <>
+            {console.log(value)}
                 <Modal
                     isOpen={addImage}
                     style={{
@@ -280,9 +405,23 @@ function AddQuestion({ openFunction, quiz, render }) {
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
                     <div className="flex items-center justify-between gap-4 rounded-md my-4 p-2 sm:p-6 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
                         <div className="flex gap-2 bg-[#BFF4FF] p-2 sm:p-4 rounded-lg">
-                            <button className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><b>B</b></button>
-                            <button className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><i>I</i></button>
-                            <button className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><u>U</u></button>
+                            <button onMouseDown={(e) => {
+                                e.preventDefault();
+                                toggleMark('bold');
+                                setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                            }}
+                                className={`hover:bg-gray-400 ${isStyleMarkActive.bold ? "bg-gray-400" : ''} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><b>B</b></button>
+                            <button onMouseDown={(e) => {
+                                e.preventDefault();
+                                toggleMark('italic')
+                                setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                            }}
+                                className={`hover:bg-gray-400 ${isStyleMarkActive.italic ? "bg-gray-400" : ""} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><i>I</i></button>
+                            <button onMouseDown={(e) => {
+                                e.preventDefault();
+                                toggleMark('underline')
+                                setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                            }} className={`hover:bg-gray-400 ${isStyleMarkActive.underline ? "bg-gray-400" : ''} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><u>U</u></button>
                             <button className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
                             <button type="button" onClick={addOption} className="ml-auto rounded-lg bg-[#B9E42A] h-8 w-8 hover:scale-105 transition-all">+</button>
                         </div>
@@ -301,10 +440,17 @@ function AddQuestion({ openFunction, quiz, render }) {
                         <OptionStatus status={displayAnswer} changeStatus={setDisplayAnswer} />
                     </div>
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
-                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="bg-black rounded-lg bg-contain bg-no-repeat bg-center"></div>
+                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="bg-black rounded-lg bg-contain bg-no-repeat bg-center max-h-20"></div>
                         <div className="w-full bg-[#e7e2e2] rounded-lg p-2 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
                             <div>Question {quiz.questions.length + 1}:</div>
-                            <input className="flex-grow ps-4 p-2 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => { setQuestionTitle(e.target.value) }} />
+                            <div className="flex-grow whitespace-normal break-words ps-4 p-2 bg-transparent outline-none group-hover w-full focus:outline-none outline-none border-none">
+                                <Slate editor={editor} initialValue={initialValue} onChange={newValue => setValue(newValue)}>
+                                    <Editable className="focus:outline-none outline-none border-none" onKeyDown={hotKeys}
+                                        placeholder="Input question here"
+                                        renderLeaf={props => <Leaf {...props} />}
+                                    />
+                                </Slate>
+                            </div>
                         </div>
                     </div>
                     <div className="mx-2 sm:mx-10 overflow-y-auto min-sm:border-t min-sm:   border-black">

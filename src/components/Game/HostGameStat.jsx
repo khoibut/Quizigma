@@ -18,8 +18,13 @@ function Player({ name, total, rank, correct, score }) {
         </>
     )
 }
-function HostGameStat({ players, roomId, stompClient }) {
+function HostGameStat({ players, roomId, stompClient, time }) {
     const [sortedPlayers, setSortedPlayers] = useState([])
+    function formatSecondsToMinutes(seconds) {
+        const minutes = Math.floor(seconds / 60); // Get the whole minutes
+        const remainingSeconds = seconds % 60; // Get the remaining seconds
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`; // Format as MM:SS
+    }
     function endGame() {
         console.log("Ending game")
         stompClient.publish({ destination: '/quizz/creator/end', body: JSON.stringify({room:roomId}) })
@@ -35,6 +40,9 @@ function HostGameStat({ players, roomId, stompClient }) {
                     <div className="flex items-center gap-4 sm:gap-8 bg-[#3272E8] rounded-lg min-h-fit h-[18vh] p-2 sm:p-5">
                         <div>
                             <div className="text-md text-white">{"#" + roomId}</div>
+                        </div>
+                        <div>
+                            <div className="text-md text-white">{formatSecondsToMinutes(time)}</div>
                         </div>
                         <button onClick={endGame} className="px-5 sm:px-10 py-2 rounded-full font-bold bg-red-400 text-white ml-auto hover:bg-rose-500 hover:scale-105 transition-all">END</button>
                     </div>
