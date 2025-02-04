@@ -6,6 +6,9 @@ import Modal from "react-modal";
 import { Slate, Editable, withReact, useSlate } from "slate-react";
 import { createEditor, Editor, Transforms, Text } from "slate";
 import { withHistory } from "slate-history";
+import { EditableMathField, StaticMathField } from "react-mathquill";
+import { addStyles } from "react-mathquill";
+addStyles();
 function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions, optionId }) {
     if (status) {
         return <button type="button" onClick={() => { changeStatus(false); setCorrectOptions(correctOptions => correctOptions.filter(option => option != optionId)) }} className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</button>
@@ -81,6 +84,25 @@ function TypeAnswerOption(prop) {
         </>
     )
 }
+
+const MathElement = ({ attributes, children, element }) => {
+    return (
+        <span {...attributes} contentEditable={false}>
+            <EditableMathField
+                latex={element.latex || ""}
+                onChange={(mathField) => {
+                    const path = ReactEditor.findPath(editor, element);
+                    Transforms.setNodes(
+                        editor,
+                        { latex: mathField.latex() },
+                        { at: path }
+                    );
+                }}
+            />
+            {children}
+        </span>
+    );
+};
 function Leaf({ attributes, children, leaf }) {
     if (leaf.bold) {
         children = <strong>{children}</strong>
@@ -91,8 +113,20 @@ function Leaf({ attributes, children, leaf }) {
     if (leaf.underline) {
         children = <u>{children}</u>
     }
+    if (leaf.math) {
+        children = <MathElement {...{ attributes, children, element: leaf }} />
+    }
     return <span {...attributes}>{children}</span>
 }
+const withInlineMath = (editor) => {
+    const { isInline } = editor;
+
+    editor.isInline = (element) => {
+        return element.type === "math" ? true : isInline(element);
+    };
+
+    return editor;
+};
 function AddQuestion({ openFunction, quiz, render }) {
     const [editor] = useState(() => withReact(withHistory(createEditor())));
     const [isStyleMarkActive, setIsStyleMarkActive] = useState({ bold: false, italic: false, underline: false })
@@ -127,26 +161,34 @@ function AddQuestion({ openFunction, quiz, render }) {
             Editor.addMark(editor, format, true)
         }
     }
+    const insertMath = () => {
+        const mathNode = {
+            type: "math",
+            latex: "",
+            children: [{ text: "" }], // Empty text node for Slate compatibility
+        };
 
+        Transforms.insertNodes(editor, mathNode);
+    };
     function hotKeys(e) {
         if (e.ctrlKey) {
             switch (e.key) {
                 case 'b': {
                     e.preventDefault()
                     toggleMark('bold')
-                    setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                    setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
                     break
                 }
                 case 'i': {
                     e.preventDefault()
                     toggleMark('italic')
-                    setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                    setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
                     break
                 }
                 case 'u': {
                     e.preventDefault()
                     toggleMark('underline')
-                    setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                    setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
                     break
                 }
                 case ' ': {
@@ -161,15 +203,15 @@ function AddQuestion({ openFunction, quiz, render }) {
 
     function serializeParagraph(paragraph) {
         return paragraph.children.map((child) => {
-            if(Text.isText(child)){
+            if (Text.isText(child)) {
                 let text = child.text
-                if(child.bold){
+                if (child.bold) {
                     text = `<strong>${text}</strong>`
                 }
-                if(child.italic){
+                if (child.italic) {
                     text = `<em>${text}</em>`
                 }
-                if(child.underline){
+                if (child.underline) {
                     text = `<u>${text}</u>`
                 }
                 return text
@@ -178,9 +220,9 @@ function AddQuestion({ openFunction, quiz, render }) {
         }).join('')
     }
 
-    function serializeToHTML(value){
+    function serializeToHTML(value) {
         return value.map((node) => {
-            if(node.type === 'paragraph'){
+            if (node.type === 'paragraph') {
                 return `<p>${serializeParagraph(node)}</p>`
             }
             return ''
@@ -204,7 +246,7 @@ function AddQuestion({ openFunction, quiz, render }) {
         let question
         offAllMarks(editor)
         let questionTitle = serializeToHTML(value)
-        if ( questionTitle === '') {
+        if (questionTitle === '') {
             alert("Question title can't be empty")
             return false
         }
@@ -369,7 +411,7 @@ function AddQuestion({ openFunction, quiz, render }) {
     else {
         return (
             <>
-            {console.log(value)}
+                {console.log(value)}
                 <Modal
                     isOpen={addImage}
                     style={{
@@ -408,21 +450,24 @@ function AddQuestion({ openFunction, quiz, render }) {
                             <button onMouseDown={(e) => {
                                 e.preventDefault();
                                 toggleMark('bold');
-                                setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                                setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
                             }}
                                 className={`hover:bg-gray-400 ${isStyleMarkActive.bold ? "bg-gray-400" : ''} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><b>B</b></button>
                             <button onMouseDown={(e) => {
                                 e.preventDefault();
                                 toggleMark('italic')
-                                setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                                setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
                             }}
                                 className={`hover:bg-gray-400 ${isStyleMarkActive.italic ? "bg-gray-400" : ""} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><i>I</i></button>
                             <button onMouseDown={(e) => {
                                 e.preventDefault();
                                 toggleMark('underline')
-                                setIsStyleMarkActive({bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline')})
+                                setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
                             }} className={`hover:bg-gray-400 ${isStyleMarkActive.underline ? "bg-gray-400" : ''} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><u>U</u></button>
-                            <button className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                insertMath(editor)
+                            }} className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
                             <button type="button" onClick={addOption} className="ml-auto rounded-lg bg-[#B9E42A] h-8 w-8 hover:scale-105 transition-all">+</button>
                         </div>
                         <div className="flex gap-2 sm:gap-4 flex-wrap">

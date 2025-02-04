@@ -3,8 +3,24 @@ import { useState } from "react"
 import { useParams } from "react-router";
 import Modal from "react-modal"
 import AddImage from "../PopUp/AddImage";
-import { withReact } from "slate-react";
 import { withHistory } from "slate-history";
+import { createEditor } from "slate";
+import { Slate, Editable, withReact } from "slate-react";
+import { Editor } from "slate";
+import { Text } from "slate";
+function Leaf({ attributes, children, leaf }) {
+    if (leaf.bold) {
+        children = <strong>{children}</strong>
+    }
+    if (leaf.italic) {
+        children = <em>{children}</em>
+    }
+    if (leaf.underline) {
+        children = <u>{children}</u>
+    }
+    return <span {...attributes}>{children}</span>
+}
+
 function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions, optionIndex }) {
     if (status) {
         return <button type="button" onClick={() => { changeStatus(false); setCorrectOptions(correctOptions => correctOptions.filter(option => option != optionIndex)) }} className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</button>
@@ -62,7 +78,7 @@ function MultiChoiceOption(prop) {
             <div className="flex gap-2 sm:gap-8 border-b-2 py-3 sm:px-1">
                 <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="max-sm:max-w-[100px] max-sm:w-[30%] sm:h-[100px] aspect-[4/3] bg-black rounded-xl bg-center bg-no-repeat bg-contain"></div>
                 <div className="overflow-auto w-[50%] flex flex-col">
-                    <div className="font-semibold text-lg mb-2">{prop.option.option}</div>
+                    <div dangerouslySetInnerHTML={{__html:prop.option.option}} className="font-semibold text-lg mb-2"></div>
                     {button}
                 </div>
                 <div onClick={() => { prop.delete(prop.option, prop.index) }} className="self-center ml-auto">
@@ -83,7 +99,128 @@ function TypeAnswerOption(prop) {
 }
 
 function EditQuestion({ openFunction, question, render, questionsList, questionNumber }) {
-    const [editor] = useState(()=>{withReact(withHistory(createEditor()))})
+    const [editor] = useState(() => withReact(withHistory(createEditor())));
+    const [isStyleMarkActive, setIsStyleMarkActive] = useState({ bold: false, italic: false, underline: false })
+    const [value, setValue] = useState([
+        {
+            type: 'paragraph',
+            children: [{ text: question.question }],
+        },
+    ])
+
+    function isMarkActive(editor, format) {
+        const marks = Editor.marks(editor)
+        return marks ? marks[format] === true : false
+    }
+
+    function toggleMark(format) {
+        const isActive = isMarkActive(editor, format)
+        if (isActive) {
+            Editor.removeMark(editor, format)
+        } else {
+            Editor.addMark(editor, format, true)
+        }
+    }
+
+    function hotKeys(event) {
+        if (event.key === 'b' && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault()
+            toggleMark('bold')
+            setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+        }
+        if (event.key === 'i' && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault()
+            toggleMark('italic')
+            setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+        }
+        if (event.key === 'u' && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault()
+            toggleMark('underline')
+            setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+        }
+        if (event.key === ' ' && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault()
+            offAllMarks(editor)
+            setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+        }
+    }
+
+    function offAllMarks(editor) {
+        Editor.removeMark(editor, 'bold')
+        Editor.removeMark(editor, 'italic')
+        Editor.removeMark(editor, 'underline')
+    }
+
+    const deserializeParagraph = (element) => {
+        const children = Array.from(element.childNodes).map((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                return { text: node.textContent }; // Plain text node
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+                // Recursively process child nodes
+                const childText = node.textContent || "";
+
+                // Check for styling and set appropriate flags
+                const bold = node.tagName === "STRONG" || node.style.fontWeight === "bold";
+                const italic = node.tagName === "EM" || node.style.fontStyle === "italic";
+                const underline = node.tagName === "U" || node.style.textDecoration.includes("underline");
+
+                // Combine styles if the element contains nested styles (e.g., <strong><u>text</u></strong>)
+                const nestedStyles = deserializeParagraph(node); // Recursive call for nested styles
+                const combinedChildren = nestedStyles.children.map((child) => ({
+                    ...child,
+                    bold: bold || child.bold,
+                    italic: italic || child.italic,
+                    underline: underline || child.underline,
+                }));
+
+                return combinedChildren.length > 0
+                    ? combinedChildren[0]
+                    : { text: childText, bold, italic, underline };
+            }
+            return null; // Ignore unsupported nodes
+        });
+
+        return { type: "paragraph", children: children.flat().filter(Boolean) };
+    };
+
+
+    // Deserialize entire HTML string into Slate value
+    const deserializeHTML = (html) => {
+        const container = document.createElement("div");
+        container.innerHTML = html; // Parse HTML into DOM
+
+        return Array.from(container.childNodes)
+            .filter((node) => node.nodeName === "P") // Only handle <p> elements
+            .map((paragraphNode) => deserializeParagraph(paragraphNode));
+    };
+    function serializeParagraph(paragraph) {
+        return paragraph.children.map((child) => {
+            if (Text.isText(child)) {
+                let text = child.text
+                if (child.bold) {
+                    text = `<strong>${text}</strong>`
+                }
+                if (child.italic) {
+                    text = `<em>${text}</em>`
+                }
+                if (child.underline) {
+                    text = `<u>${text}</u>`
+                }
+                return text
+            }
+            return ''
+        }).join('')
+    }
+
+    function serializeToHTML(value) {
+        return value.map((node) => {
+            if (node.type === 'paragraph') {
+                return `<p>${serializeParagraph(node)}</p>`
+            }
+            return ''
+        }).join('\n')
+    }
+    const initialValue = deserializeHTML(question.question)
     const [displayAnswer, setDisplayAnswer] = useState(true)
     //display correc or wrong for multiple choice option
     const [typeAnswer, setTypeAnswer] = useState(question.type == "TA" ? true : false)
@@ -99,10 +236,7 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
     const [image, setImage] = useState(question.image)
 
     function saveQuestion() {
-        if (questionTitle === '') {
-            alert("Question title can't be empty")
-            return false
-        }
+        let questionTitle = serializeToHTML(value)
         let newQuestionsList = [...questionsList]
         if (typeAnswer) {
             var newQuestion =
@@ -257,10 +391,17 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                     </div>
 
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
-                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="h- full bg-black rounded-lg bg-contain bg-center bg-no-repeat"></div>
-                        <div className="w-full bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
-                            <div>Question {questionNumber + 1}:</div>
-                            <input className="flex-grow ps-4 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => { setQuestionTitle(e.target.value) }} />
+                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="bg-black rounded-lg bg-contain bg-no-repeat bg-center max-h-20"></div>
+                        <div className="w-full bg-[#e7e2e2] rounded-lg p-2 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
+                            <div>Question {questionNumber+1}:</div>
+                            <div className="flex-grow whitespace-normal break-words ps-4 p-2 bg-transparent outline-none group-hover w-full focus:outline-none outline-none border-none">
+                                <Slate editor={editor} initialValue={initialValue} onChange={newValue => setValue(newValue)}>
+                                    <Editable className="focus:outline-none outline-none border-none" onKeyDown={hotKeys}
+                                        placeholder="Input question here"
+                                        renderLeaf={props => <Leaf {...props} />}
+                                    />
+                                </Slate>
+                            </div>
                         </div>
                     </div>
                     <div className="mx-4 sm:mx-10 overflow-y-auto">
@@ -309,9 +450,23 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
                     <div className="flex items-center gap-4 justify-between rounded-md my-4 p-5 md:p-10 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
                         <div className="flex gap-2 bg-[#BFF4FF] p-2 sm:p-4 rounded-lg">
-                            <button className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><b>B</b></button>
-                            <button className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><i>I</i></button>
-                            <button className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><u>U</u></button>
+                            <button onMouseDown={(e) => {
+                                e.preventDefault();
+                                toggleMark('bold');
+                                setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+                            }}
+                                className={`hover:bg-gray-400 ${isStyleMarkActive.bold ? "bg-gray-400" : ''} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><b>B</b></button>
+                            <button onMouseDown={(e) => {
+                                e.preventDefault();
+                                toggleMark('italic')
+                                setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+                            }}
+                                className={`hover:bg-gray-400 ${isStyleMarkActive.italic ? "bg-gray-400" : ""} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><i>I</i></button>
+                            <button onMouseDown={(e) => {
+                                e.preventDefault();
+                                toggleMark('underline')
+                                setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+                            }} className={`hover:bg-gray-400 ${isStyleMarkActive.underline ? "bg-gray-400" : ''} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><u>U</u></button>
                             <button className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
                             <button type="button" onClick={addOption} className="ml-auto rounded-lg bg-[#B9E42A] h-8 w-8 hover:scale-105 transition-all">+</button>
                         </div>
@@ -330,10 +485,17 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                         <OptionStatus status={displayAnswer} changeStatus={setDisplayAnswer} />
                     </div>
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
-                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="h- full bg-black rounded-lg bg-contain bg-no-repeat bg-center    "></div>
-                        <div className="w-full bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
-                            <div>Question {questionNumber + 1}:</div>
-                            <input className="flex-grow ps-4 bg-transparent outline-none group-hover w-full" type="text" value={questionTitle} placeholder="Input question here" onChange={(e) => { setQuestionTitle(e.target.value) }} />
+                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="bg-black rounded-lg bg-contain bg-no-repeat bg-center max-h-20"></div>
+                        <div className="w-full bg-[#e7e2e2] rounded-lg p-2 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
+                            <div>Question {questionNumber+1}:</div>
+                            <div className="flex-grow whitespace-normal break-words ps-4 p-2 bg-transparent outline-none group-hover w-full focus:outline-none outline-none border-none">
+                                <Slate editor={editor} initialValue={initialValue} onChange={newValue => setValue(newValue)}>
+                                    <Editable className="focus:outline-none outline-none border-none" onKeyDown={hotKeys}
+                                        placeholder="Input question here"
+                                        renderLeaf={props => <Leaf {...props} />}
+                                    />
+                                </Slate>
+                            </div>
                         </div>
                     </div>
                     <div className="mx-2 sm:mx-10 overflow-y-auto min-sm:border-t min-sm:   border-black">

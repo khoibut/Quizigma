@@ -320,7 +320,7 @@ function QuestionDisplay() {
         setSidebarOpen(!sidebarOpen)
     }
     function saveQuiz() {
-        console.log(quiz)
+        window.location.href="/library"
     }
     function multiDelete() {
         console.log(selectedQuestions)

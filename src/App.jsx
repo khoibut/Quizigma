@@ -23,7 +23,6 @@ import MultipleChoice from './components/In_game/MultipleChoice.jsx';
 import TextAnswer from './components/In_game/TextAnswer.jsx';
 import HostGamePage from './pages/HostGamePage.jsx';
 function App() {
-
   return (
     <>
       <BrowserRouter>
