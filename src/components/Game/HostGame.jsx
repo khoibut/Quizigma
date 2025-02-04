@@ -162,7 +162,7 @@ function TextAnswerQuestion({ question, index }) {
                     <div style={{ backgroundImage: `url(${question.image})` }} className="h-[100px] sm:w-auto sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center bg-contain bg-center bg-no-repeat"></div>
                     <div className="max-sm:basis-full">
                         <div className="font-semibold text-xl">{`Question ${index}:`}</div>
-                        <div className="question-title">{question.question}</div>
+                        <div dangerouslySetInnerHTML={{__html:question.question}} className="question-title"></div>
                     </div>
                     <div className="ml-auto flex gap-5 items-center">
                         <div className="px-10 py-2 rounded-full font-bold bg-red-400 text-white text-nowrap">Type answer</div>
