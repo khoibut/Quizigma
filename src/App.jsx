@@ -22,6 +22,7 @@ import GamePage from './pages/gamePage.jsx'
 import MultipleChoice from './components/In_game/MultipleChoice.jsx';
 import TextAnswer from './components/In_game/TextAnswer.jsx';
 import HostGamePage from './pages/HostGamePage.jsx';
+import MathEquationDisplay from './components/QuestionSystem/MathEquationDisplay.jsx';
 function App() {
   return (
     <>
@@ -43,6 +44,7 @@ function App() {
           <Route path='library' element={<Library />} />
           <Route path='game/result' element={<ResultScreen correct={true} />}/>
           <Route path='game_text' element={<TextAnswer />} />
+          <Route path='math' element={<MathEquationDisplay />} />
         </Routes>
       </BrowserRouter>
 
