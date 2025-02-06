@@ -14,13 +14,6 @@ import axios from 'axios';
 
 function Discovery_Page(){
     let user
-    React.useEffect(() => {
-        let token = localStorage.getItem('token')
-        axios.get('https://quizigmaapi.onrender.com/api/v1/acc/auth', token)
-        .then(function(response) {
-            console.log(response)
-        })
-    })
     return(
         <>
             <div className='w-full h-screen overflow-hidden relative'>

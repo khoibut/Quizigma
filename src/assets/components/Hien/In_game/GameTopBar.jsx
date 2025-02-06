@@ -1,6 +1,5 @@
-import ExampleProfilePic from '../Icons&Images/godzilla.jpg';
 
-function In_Game_Top_Bar(){
+function GameTopBar(){
     return(
         <>
             <div className="bg-green-500 w-full max-h-[50vh] flex justify-between items-center flex-wrap ">
@@ -18,7 +17,6 @@ function In_Game_Top_Bar(){
                         godzilla
                     </div>
                     <div className="w-[8vh] h-[8vh] rounded-full bg-white m-2 overflow-hidden">
-                        <img src={ExampleProfilePic} alt="Profile Picture" className="w-full h-full object-fill" />
                     </div>
                 </div>
             </div>
@@ -26,4 +24,4 @@ function In_Game_Top_Bar(){
     )
 }
 
-export default In_Game_Top_Bar;
+export default GameTopBar;

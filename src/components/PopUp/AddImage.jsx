@@ -5,8 +5,18 @@ function AddImage( {addButton, imageContainer} ) {
     const [image, setImage] = useState('')
 
     function displayImage(e) {
-        console.log(e.target.files);
-        setImage(URL.createObjectURL(e.target.files[0]));
+        const file = e.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onloadend = () => {
+                const base64Image = reader.result;
+                setImage(base64Image);
+            };
+            
+            reader.readAsDataURL(file); // This converts the file to Base64
+        }
     }
     function addImage() {
         imageContainer(image)
@@ -24,7 +34,7 @@ function AddImage( {addButton, imageContainer} ) {
                     {/* <img className="rounded-lg object-cover" src={image} alt="" /> */}
                     <div style={(image == '' ? {display: "block"} :{display: "none"})}>Drag and drop image here </div>
                     <div style={(image == '' ? {display: "block"} :{display: "none"})}>or click here to add from file</div>
-                    <input onChange={(e) => (displayImage(e))} accept=".png, .jpeg, .jpg, .webp, .jfif" className="hidden" type="file" />
+                    <input onChange={(e) => (displayImage(e))} accept="image/*" className="hidden" type="file" />
                 </label>
             </div>
         </>

@@ -1,5 +1,4 @@
-import In_Game_Top_Bar from "./In_Game_Top_Bar"
-
+import GameTopBar from "./GameTopBar"
 function ResultScreen({correct}) {
     let correctText = ["Skibidi Rizz", "Aura moment", "727 WYSI", "Holy gojira", "Femboy in a meter radius"]
     let wrongText = ["Negitive aura", "I heard you were very strong", "Sussy baka", "My mother is kinda homeless"]
