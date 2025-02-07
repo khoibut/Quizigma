@@ -55,8 +55,6 @@ function HostGamePage() {
                 }
                 if (messageBody.type == 'end') {
                     console.log('Game ended')
-                    stompClient.disconnect()
-                    window.location.href = "/join"
                 }
                 if (messageBody.type == 'timer') {
                     console.log(messageBody.time)
