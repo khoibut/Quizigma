@@ -188,7 +188,7 @@ function HostGame() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/v1/set", { headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` } }).then((response) => {
+        axios.get("https://quizigmaapi.onrender.com/api/v1/set", { headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` } }).then((response) => {
             response.data.forEach((set) => {
                 if (set.id == setId.setId) {
                     setSet(set);
@@ -228,7 +228,7 @@ function HostGame() {
             lateJoin: lateJoin.current.checked
         }
 
-        axios.post('http://localhost:8080/api/v1/room', roomDTO,
+        axios.post('https://quizigmaapi.onrender.com/api/v1/room', roomDTO,
             {
                 headers:
                 {

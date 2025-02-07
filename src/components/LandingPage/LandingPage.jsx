@@ -11,6 +11,9 @@ import '../../assets/styles/App.css'
 
 
 function LandingPage() {
+    if(localStorage.getItem("token")){
+        window.location.href = "/library"
+    }
     return (
         <>
             <Title />

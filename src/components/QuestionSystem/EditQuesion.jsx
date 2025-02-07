@@ -294,7 +294,7 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
             })
         }
         console.log(newQuestion)
-        axios.patch(`http://localhost:8080/api/v1/${question.setId}/question`, newQuestion, {
+        axios.patch(`https://quizigmaapi.onrender.com/api/v1/${question.setId}/question`, newQuestion, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("token")}`,
             }

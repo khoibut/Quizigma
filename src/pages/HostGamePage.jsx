@@ -27,7 +27,7 @@ function HostGamePage() {
         }
     }
     useEffect(() => {
-        let socket = new SockJS(`http://localhost:8080/creator?room=${roomId}`);
+        let socket = new SockJS(`https://quizigmaapi.onrender.com/creator?room=${roomId}`);
         let stompClient = Stomp.over(socket);
         stompClient.heartbeatIncoming = 10000;
         stompClient.heartbeatOutgoing = 10000;

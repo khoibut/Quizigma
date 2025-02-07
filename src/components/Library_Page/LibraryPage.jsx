@@ -7,7 +7,7 @@ import axios from 'axios'
 function LibraryPage() {
     const [sets, setSets] = useState([])
     useEffect(() => {
-        axios.get('http://localhost:8080/api/v1/set', { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {
+        axios.get('https://quizigmaapi.onrender.com/api/v1/set', { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {
             console.log(response.data)
             setSets(response.data)
         })

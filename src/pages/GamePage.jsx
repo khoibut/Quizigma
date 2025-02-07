@@ -6,6 +6,7 @@ import { Stomp } from "@stomp/stompjs"
 import CorrectScreen from "../components/In_game/CorrectScreen"
 import QuizGameplay from "../components/Game/QuizGameplay"
 import ResultView from "../components/Game/ResultView"
+import PlayerStat from "../components/Game/PlayerStat"
 function GamePage() {
     const [player, setPlayer] = useState({
         playing: true,
@@ -49,9 +50,11 @@ function GamePage() {
                     stompClient={stompClientRef}
                 />
             case 'correct':
-                return <ResultView result='correct' setView={setView}/>
+                return <ResultView player={player} roomId={roomId} stompClient={stompClientRef} result='correct' setView={setView}/>
             case 'wrong':
-                return <ResultView result='wrong' setView={setView}/>
+                return <ResultView player={player} roomId={roomId} stompClient={stompClientRef} result='wrong' setView={setView}/>
+            case 'end':
+                return <PlayerStat player={player} players={players}/>
         }
     }
     useEffect(() => {
@@ -61,7 +64,7 @@ function GamePage() {
         if (!player.playing) {
             console.log(player.name)
             const encodedName = encodeURIComponent(player.name)
-            socket = new SockJS(`http://localhost:8080/player?room=${roomId}&player=${encodedName}`);
+            socket = new SockJS(`https://quizigmaapi.onrender.com/player?room=${roomId}&player=${encodedName}`);
             stompClient = Stomp.over(socket)
             stompClient.heartbeatIncoming = 10000
             stompClient.heartbeatOutgoing = 10000
@@ -91,8 +94,8 @@ function GamePage() {
                         setView('quiz')
                     }
                     if(messageBody.type=='end'){
-                        console.log('Game ended')
-                        stompClient.disconnect()
+                        setPlayers(messageBody.players)
+                        setView('end')
                     }
                     if(messageBody.type=='error'){
                         window.location.href="/join"

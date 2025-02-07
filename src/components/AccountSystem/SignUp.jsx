@@ -106,7 +106,7 @@ function SignUp() {
         }
 
         if(flag) {
-            axios.post('http://localhost:8080/api/v1/acc', user)
+            axios.post('https://quizigmaapi.onrender.com/api/v1/acc', user)
             .then(function (response) {
                 emailError.style.display = 'none'
                 usernameError.style.display = 'none'

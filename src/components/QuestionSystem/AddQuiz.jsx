@@ -18,7 +18,7 @@ function AddQuiz({ setIsOpen }) {
             image: image,
             questions: []
         }
-        axios.post('http://localhost:8080/api/v1/set', quiz, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
+        axios.post('https://quizigmaapi.onrender.com/api/v1/set', quiz, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
             console.log(response)
             navigate('/library')
         })

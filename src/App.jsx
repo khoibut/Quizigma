@@ -42,7 +42,7 @@ function App() {
           <Route path='discovery' element={<Discovery />} />
           {/* <Route path='sidebar' element={<SideBar />}/> */}
           <Route path='library' element={<Library />} />
-          <Route path='game/result' element={<ResultScreen correct={true} />}/>
+          <Route path='game/result' element={<ResultScreen correct={false} />}/>
           <Route path='game_text' element={<TextAnswer />} />
           <Route path='math' element={<MathEquationDisplay />} />
         </Routes>

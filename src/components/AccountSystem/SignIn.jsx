@@ -31,7 +31,7 @@ function SignIn() {
         }
 
         if(flag) {
-            axios.post('http://localhost:8080/api/v1/acc/auth', user)
+            axios.post('https://quizigmaapi.onrender.com/api/v1/acc/auth', user)
             .then(function(response) {
                 wrongEmailOrPasswordError.style.display = 'none'
                 localStorage.setItem('token', response.data.token)
