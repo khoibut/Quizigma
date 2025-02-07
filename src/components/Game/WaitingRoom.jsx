@@ -84,13 +84,8 @@ function WaitingRoom({ roomId, player, setPlayer, players, setPlayers }) {
                             </div>
                         </div>
                         
-                        <div className='flex gap-6 mb-4 flex-wrap'>
-                            <span className="font-semibold sm:text-lg">QR Code: </span>
-                            <span className="bg-white cursor-pointer p-1 ps-3 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] h-[70px] sm:h-[100px] aspect-square">idk</span>
-                        </div>
-                        
                         <div className="flex gap-2 max-sm:gap-6 mb-4 flex-wrap">
-                            <span className="font-semibold sm:text-lg">Assignment link: </span>
+                            <span className="font-semibold sm:text-lg">Link: </span>
                             <span onClick={() => {navigator.clipboard.write(`https://quizigma.vercel.app/game/${roomId}`);}} className="w-fit max-w-[200px] bg-white cursor-pointer p-1 px-4 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">{`https://quizigma.vercel.app/game/${roomId}`}</span>
                         </div>
                     <div className="w-full flex sm:flex-col gap-5 items-center">

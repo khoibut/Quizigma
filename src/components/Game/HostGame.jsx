@@ -35,8 +35,8 @@ function Assignment() {
             </div>
             {/* pre-generated link */}
             <div className="flex flex-col">
-                <div className="font-semibold text-lg">Assignment link: </div>
-                <div onClick={() => { navigator.clipboard.write('sex.com/sexsupersex'); }} className="bg-white cursor-pointer p-1 ps-3 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden w-full">sex.com/sexsupersex</div>
+                <div className="font-semibold text-lg">Link: </div>
+                <div onClick={() => { navigator.clipboard.write('sex.com/sexsupersex'); }} className="bg-white cursor-pointer p-1 ps-3 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] w-full">sex.com/sexsupersex</div>
             </div>
             {/* pre-generated qr code */}
             <div className='flex justify-between'>
