@@ -79,7 +79,7 @@ function WaitingRoom({ roomId, player, setPlayer, players, setPlayers }) {
                         <div className="flex max-sm:gap-4 mb-4 flex-wrap">
                             <div className="font-semibold sm:text-lg md:basis-full">Join by enter this code:</div>
                             <div className="flex items-center gap-1 flex-wrap">
-                                <span className="bg-white cursor-pointer p-1 px-4 w-fit rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">#123456</span>
+                                <span className="bg-white cursor-pointer p-1 px-4 w-fit rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">{'#'+roomId}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#000000"><path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/></svg>
                             </div>
                         </div>
@@ -91,7 +91,7 @@ function WaitingRoom({ roomId, player, setPlayer, players, setPlayers }) {
                         
                         <div className="flex gap-2 max-sm:gap-6 mb-4 flex-wrap">
                             <span className="font-semibold sm:text-lg">Assignment link: </span>
-                            <span onClick={() => {navigator.clipboard.write('sex.com/sexsupersex');}} className="w-fit max-w-[200px] bg-white cursor-pointer p-1 px-4 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">sex.com/sexsupersex</span>
+                            <span onClick={() => {navigator.clipboard.write(`https://quizigma.vercel.app/game/${roomId}`);}} className="w-fit max-w-[200px] bg-white cursor-pointer p-1 px-4 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">{`https://quizigma.vercel.app/game/${roomId}`}</span>
                         </div>
                     <div className="w-full flex sm:flex-col gap-5 items-center">
                         <div className="aspect-square w-[20%] sm:w-[50%] bg-black rounded-full "></div>
