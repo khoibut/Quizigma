@@ -18,7 +18,7 @@ import Library from './components/Library_Page/LibraryPage.jsx'
 import ResultScreen from './components/In_game/ResultScreen.jsx';
 import StatManagement from './components/Game/HostGameStat.jsx'
 import PlayerStat from './components/Game/PlayerStat.jsx'
-import GamePage from './pages/gamePage.jsx'
+import GamePage from './pages/GamePage.jsx'
 import MultipleChoice from './components/In_game/MultipleChoice.jsx';
 import TextAnswer from './components/In_game/TextAnswer.jsx';
 import HostGamePage from './pages/HostGamePage.jsx';
