@@ -32,14 +32,9 @@ function HostingRoom({ players, setPlayers, roomId, startGame }) {
                             </div>
                         </div>
                         
-                        <div className='flex gap-6 mb-4 flex-wrap'>
-                            <span className="font-semibold sm:text-lg">QR Code: </span>
-                            <span className="bg-white cursor-pointer p-1 ps-3 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] h-[70px] sm:h-[100px] aspect-square">idk</span>
-                        </div>
-                        
                         <div className="flex gap-2 max-sm:gap-6 mb-4 flex-wrap">
-                            <span className="font-semibold sm:text-lg">Assignment link: </span>
-                            <span onClick={() => {navigator.clipboard.write();}} className="w-fit max-w-[200px] bg-white cursor-pointer p-1 px-4 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden">{`.com/game/${roomId}`}</span>
+                            <span className="font-semibold sm:text-lg">Link: </span>
+                            <span onClick={() => {navigator.clipboard.write();}} className="w-fit bg-white cursor-pointer p-1 px-4 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)]">{`https://quizigma.vercel.app/game/${roomId}`}</span>
                         </div>
                     <div class="flex flex-col items-center">
                         <button onClick={startGame} class="w-full sm:w-fit bg-red-400 rounded-full py-2 px-16 text-white hover:bg-rose-500 hover:scale-105 transition-all">START</button>

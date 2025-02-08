@@ -4,10 +4,11 @@ import { useParams } from "react-router";
 import AddImage from "../PopUp/AddImage";
 import Modal from "react-modal";
 import { Slate, Editable, withReact, useSlate } from "slate-react";
-import { createEditor, Editor, Transforms, Text } from "slate";
+import { createEditor, Editor, Transforms, Text, Range, Point } from "slate";
 import { withHistory } from "slate-history";
 import { EditableMathField, StaticMathField } from "react-mathquill";
 import { addStyles } from "react-mathquill";
+import MathEquationDisplay from "./MathEquationDisplay";
 addStyles();
 function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions, optionId }) {
     if (status) {
@@ -84,24 +85,47 @@ function TypeAnswerOption(prop) {
         </>
     )
 }
+const withMath = (editor) => {
+    const { deleteBackward } = editor;
 
+    editor.deleteBackward = (unit) => {
+        const { selection } = editor;
+
+        if (selection && Range.isCollapsed(selection)) {
+            // Look for the closest math block at or before the cursor
+            const [match] = Editor.nodes(editor, {
+                match: (n) => n.type === 'math', // Match only 'math' type nodes
+                mode: 'highest', // Get the highest (closest) match
+            });
+
+            if (match) {
+                const [, path] = match;
+                const pointBefore = Editor.before(editor, selection.anchor, { unit: 'character' });
+
+                // Check if the cursor is at the very end of the math node
+                const pointAfter = Editor.after(editor, selection.anchor, { unit: 'character' });
+
+                // If the cursor is just after the math block (inside the next node or at the boundary)
+                if (pointAfter && Point.equals(pointBefore, pointAfter)) {
+                    // Remove the entire math node
+                    Transforms.removeNodes(editor, { at: path });
+                    return;
+                }
+            }
+        }
+
+        // Fallback to default behavior if no match or cursor is not at the end of the math node
+        deleteBackward(unit);
+    };
+
+    return editor;
+};
 const MathElement = ({ attributes, children, element }) => {
     return (
-        <span {...attributes} contentEditable={false}>
-            <EditableMathField
-                latex={element.latex || ""}
-                onChange={(mathField) => {
-                    const path = ReactEditor.findPath(editor, element);
-                    Transforms.setNodes(
-                        editor,
-                        { latex: mathField.latex() },
-                        { at: path }
-                    );
-                }}
-            />
-            {children}
+        <span {...attributes}>
+            <StaticMathField>{element.children[0].text}</StaticMathField>
         </span>
-    );
+    )
 };
 function Leaf({ attributes, children, leaf }) {
     if (leaf.bold) {
@@ -112,9 +136,6 @@ function Leaf({ attributes, children, leaf }) {
     }
     if (leaf.underline) {
         children = <u>{children}</u>
-    }
-    if (leaf.math) {
-        children = <MathElement {...{ attributes, children, element: leaf }} />
     }
     return <span {...attributes}>{children}</span>
 }
@@ -128,6 +149,7 @@ const withInlineMath = (editor) => {
     return editor;
 };
 function AddQuestion({ openFunction, quiz, render }) {
+    const [isMathOpen, setIsMathOpen] = useState(false)
     const [editor] = useState(() => withReact(withHistory(createEditor())));
     const [isStyleMarkActive, setIsStyleMarkActive] = useState({ bold: false, italic: false, underline: false })
     const [value, setValue] = useState([
@@ -161,15 +183,21 @@ function AddQuestion({ openFunction, quiz, render }) {
             Editor.addMark(editor, format, true)
         }
     }
-    const insertMath = () => {
-        const mathNode = {
-            type: "math",
-            latex: "",
-            children: [{ text: "" }], // Empty text node for Slate compatibility
-        };
-
-        Transforms.insertNodes(editor, mathNode);
+    const insertMath = (latex) => {
+        const newNode = {
+            type: 'math',
+            children: [{ text: latex }]
+        }
+        Transforms.insertNodes(editor, newNode)
     };
+    const renderElement = (props) => {
+        switch (props.element.type) {
+            case 'math':
+                return <MathElement {...props} />
+            default:
+                return <p className="inline" {...props.attributes}>{props.children}</p>
+        }
+    }
     function hotKeys(e) {
         if (e.ctrlKey) {
             switch (e.key) {
@@ -224,6 +252,8 @@ function AddQuestion({ openFunction, quiz, render }) {
         return value.map((node) => {
             if (node.type === 'paragraph') {
                 return `<p>${serializeParagraph(node)}</p>`
+            }else if (node.type === 'math') {
+                return `<StaticMathField>${node.children[0].text}</StaticMathField>`
             }
             return ''
         }).join('\n')
@@ -290,7 +320,7 @@ function AddQuestion({ openFunction, quiz, render }) {
             }
         }
         console.log(question)
-        axios.post(`http://localhost:8080/api/v1/${setId}/question`, question, { headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` } }).then((res) => {
+        axios.post(`https://quizigmaapi.onrender.com/api/v1/${setId}/question`, question, { headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` } }).then((res) => {
             render()
             openFunction(false)
         })
@@ -397,7 +427,13 @@ function AddQuestion({ openFunction, quiz, render }) {
                         <div className="w-full break-words overflow-auto bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
                             <div>Question {quiz.questions.length + 1}:</div>
                             <Slate editor={editor} initialValue={initialValue} onChange={newValue => setValue(newValue)}>
-                                <Editable className="focus:outline-none outline-none border-none" onKeyDown={hotKeys} placeholder="Input question here" renderLeaf={props => <Leaf {...props} />} />
+                                <Editable
+                                    className="focus:outline-none outline-none border-none"
+                                    onKeyDown={hotKeys}
+                                    placeholder="Input question here"
+                                    renderElement={renderElement}
+                                    renderLeaf={props => <Leaf {...props} />}
+                                />
                             </Slate>
                         </div>
                     </div>
@@ -412,6 +448,7 @@ function AddQuestion({ openFunction, quiz, render }) {
         return (
             <>
                 {console.log(value)}
+                <MathEquationDisplay insertMath={insertMath} isMathOpen={isMathOpen} setIsMathOpen={setIsMathOpen} />
                 <Modal
                     isOpen={addImage}
                     style={{
@@ -464,9 +501,8 @@ function AddQuestion({ openFunction, quiz, render }) {
                                 toggleMark('underline')
                                 setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
                             }} className={`hover:bg-gray-400 ${isStyleMarkActive.underline ? "bg-gray-400" : ''} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><u>U</u></button>
-                            <button onClick={(e) => {
-                                e.preventDefault();
-                                insertMath(editor)
+                            <button onClick={() => {
+                                setIsMathOpen(true)
                             }} className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
                             <button type="button" onClick={addOption} className="ml-auto rounded-lg bg-[#B9E42A] h-8 w-8 hover:scale-105 transition-all">+</button>
                         </div>
@@ -492,6 +528,7 @@ function AddQuestion({ openFunction, quiz, render }) {
                                 <Slate editor={editor} initialValue={initialValue} onChange={newValue => setValue(newValue)}>
                                     <Editable className="focus:outline-none outline-none border-none" onKeyDown={hotKeys}
                                         placeholder="Input question here"
+                                        renderElement={renderElement}
                                         renderLeaf={props => <Leaf {...props} />}
                                     />
                                 </Slate>

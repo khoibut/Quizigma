@@ -18,10 +18,11 @@ import Library from './components/Library_Page/LibraryPage.jsx'
 import ResultScreen from './components/In_game/ResultScreen.jsx';
 import StatManagement from './components/Game/HostGameStat.jsx'
 import PlayerStat from './components/Game/PlayerStat.jsx'
-import GamePage from './pages/gamePage.jsx'
+import GamePage from './pages/GamePage.jsx'
 import MultipleChoice from './components/In_game/MultipleChoice.jsx';
 import TextAnswer from './components/In_game/TextAnswer.jsx';
 import HostGamePage from './pages/HostGamePage.jsx';
+import MathEquationDisplay from './components/QuestionSystem/MathEquationDisplay.jsx';
 function App() {
   return (
     <>
@@ -41,8 +42,9 @@ function App() {
           <Route path='discovery' element={<Discovery />} />
           {/* <Route path='sidebar' element={<SideBar />}/> */}
           <Route path='library' element={<Library />} />
-          <Route path='game/result' element={<ResultScreen correct={true} />}/>
+          <Route path='game/result' element={<ResultScreen correct={false} />}/>
           <Route path='game_text' element={<TextAnswer />} />
+          <Route path='math' element={<MathEquationDisplay />} />
         </Routes>
       </BrowserRouter>
 

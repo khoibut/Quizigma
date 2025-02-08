@@ -72,7 +72,7 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
         const requestData = {
             id: question.id
         }
-        axios.delete(`http://localhost:8080/api/v1/${setId}/question`, {
+        axios.delete(`https://quizigmaapi.onrender.com/api/v1/${setId}/question`, {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem('token')}`
             },
@@ -190,7 +190,7 @@ function TextAnswerQuestion({ render, question, questionsList, setQuestions, sel
         const requestData = {
             id: question.id
         }
-        axios.delete(`http://localhost:8080/api/v1/${setId}/question`, {
+        axios.delete(`https://quizigmaapi.onrender.com/api/v1/${setId}/question`, {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem('token')}`
             },
@@ -293,7 +293,7 @@ function QuestionDisplay() {
     const [loading, setLoading] = useState(true)
 
     async function getQuiz() {
-        axios.get('http://localhost:8080/api/v1/set', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
+        axios.get('https://quizigmaapi.onrender.com/api/v1/set', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(function (response) {
                 response.data.forEach(set => {
                     if (set.id == setId) {
@@ -325,7 +325,7 @@ function QuestionDisplay() {
     function multiDelete() {
         console.log(selectedQuestions)
         selectedQuestions.forEach(id => {
-            axios.delete(`http://localhost:8080/api/v1/${setId}/question`, {
+            axios.delete(`https://quizigmaapi.onrender.com/api/v1/${setId}/question`, {
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem('token')}`
                 },

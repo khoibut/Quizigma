@@ -3,7 +3,7 @@ import axios from 'axios'
 function TemplateQuiz({set,sets, setSets}){
     function removeSet(){
         console.log(set.id)
-        axios.delete(`http://localhost:8080/api/v1/set?id=${set.id}`, { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {
+        axios.delete(`https://quizigmaapi.onrender.com/api/v1/set?id=${set.id}`, { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {
             setSets(sets.filter((s) => s.id !== set.id))
         })
     }

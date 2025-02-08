@@ -35,8 +35,8 @@ function Assignment() {
             </div>
             {/* pre-generated link */}
             <div className="flex flex-col">
-                <div className="font-semibold text-lg">Assignment link: </div>
-                <div onClick={() => { navigator.clipboard.write('sex.com/sexsupersex'); }} className="bg-white cursor-pointer p-1 ps-3 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] overflow-hidden w-full">sex.com/sexsupersex</div>
+                <div className="font-semibold text-lg">Link: </div>
+                <div onClick={() => { navigator.clipboard.write('sex.com/sexsupersex'); }} className="bg-white cursor-pointer p-1 ps-3 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] w-full">sex.com/sexsupersex</div>
             </div>
             {/* pre-generated qr code */}
             <div className='flex justify-between'>
@@ -188,7 +188,7 @@ function HostGame() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/v1/set", { headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` } }).then((response) => {
+        axios.get("https://quizigmaapi.onrender.com/api/v1/set", { headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` } }).then((response) => {
             response.data.forEach((set) => {
                 if (set.id == setId.setId) {
                     setSet(set);
@@ -228,7 +228,7 @@ function HostGame() {
             lateJoin: lateJoin.current.checked
         }
 
-        axios.post('http://localhost:8080/api/v1/room', roomDTO,
+        axios.post('https://quizigmaapi.onrender.com/api/v1/room', roomDTO,
             {
                 headers:
                 {

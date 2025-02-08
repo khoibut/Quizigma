@@ -17,7 +17,7 @@ function EditQuiz( {openFunction} ) {
             description: description.current.value,
             image:image
         }
-        axios.patch(`http://localhost:8080/api/v1/set?id=${setId}`, data,{ headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` } }).then((res) => {
+        axios.patch(`https://quizigmaapi.onrender.com/api/v1/set?id=${setId}`, data,{ headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` } }).then((res) => {
             console.log(res)
             openFunction(false)
             window.location.reload()
