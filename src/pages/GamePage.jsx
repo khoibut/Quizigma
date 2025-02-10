@@ -8,6 +8,7 @@ import QuizGameplay from "../components/Game/QuizGameplay"
 import ResultView from "../components/Game/ResultView"
 import PlayerStat from "../components/Game/PlayerStat"
 function GamePage() {
+    const baseUrl = import.meta.env.VITE_API_URL
     const [player, setPlayer] = useState({
         playing: true,
         name: '',
@@ -64,7 +65,7 @@ function GamePage() {
         if (!player.playing) {
             console.log(player.name)
             const encodedName = encodeURIComponent(player.name)
-            socket = new SockJS(`https://quizigmaapi.onrender.com/player?room=${roomId}&player=${encodedName}`);
+            socket = new SockJS(`${baseUrl}/player?room=${roomId}&player=${encodedName}`);
             stompClient = Stomp.over(socket)
             stompClient.heartbeatIncoming = 10000
             stompClient.heartbeatOutgoing = 10000

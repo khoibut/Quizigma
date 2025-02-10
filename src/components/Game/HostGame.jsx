@@ -177,6 +177,7 @@ function TextAnswerQuestion({ question, index }) {
 }
 
 function HostGame() {
+    const baseUrl = import.meta.env.VITE_API_URL
     const setId = useParams()
     const timeLimit = useRef()
     const lateJoin = useRef()
@@ -188,7 +189,7 @@ function HostGame() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        axios.get("https://quizigmaapi.onrender.com/api/v1/set", { headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` } }).then((response) => {
+        axios.get(`${baseUrl}/api/v1/set`, { headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` } }).then((response) => {
             response.data.forEach((set) => {
                 if (set.id == setId.setId) {
                     setSet(set);
@@ -228,7 +229,7 @@ function HostGame() {
             lateJoin: lateJoin.current.checked
         }
 
-        axios.post('https://quizigmaapi.onrender.com/api/v1/room', roomDTO,
+        axios.post(`${baseUrl}/api/v1/room`, roomDTO,
             {
                 headers:
                 {
