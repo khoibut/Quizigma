@@ -3,7 +3,7 @@ import { useParams } from 'react-router'
 import axios from 'axios'
 import { use } from 'react'
 function ImportQuiz({ openFunction }) {
-    const baseUrl = import.meta.env.API_URL
+    const baseUrl = import.meta.env.VITE_API_URL
     const setId = useParams().setId
     const url = useRef()
     const [type, setType] = useState("Quizizz")

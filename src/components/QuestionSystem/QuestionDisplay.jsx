@@ -44,7 +44,7 @@ function MultiChoiceOption({ correct, option }) {
     )
 }
 function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQuestions, setSelectedQuestions, render }) {
-    const baseUrl = import.meta.env.API_URL
+    const baseUrl = import.meta.env.VITE_API_URL
     // check if option container is open
     const [active, setActive] = useState(false)
     const [editQuestionOpened, setEditQuestion] = useState(false)
@@ -163,7 +163,7 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
     )
 }
 function TextAnswerQuestion({ render, question, questionsList, setQuestions, selectedQuestions, setSelectedQuestions }) {
-    const baseUrl = import.meta.env.API_URL
+    const baseUrl = import.meta.env.VITE_API_URL
     const setId = useParams().setId
     // check if answer key container is open
     const [active, setActive] = useState(false)
@@ -280,7 +280,7 @@ function TextAnswerQuestion({ render, question, questionsList, setQuestions, sel
 }
 
 function QuestionDisplay() {
-    const baseUrl = import.meta.env.API_URL
+    const baseUrl = import.meta.env.VITE_API_URL
     // let editPopUp = <EditQuestionPopup />;
     const setId = useParams().setId
     const searchBar = useRef();

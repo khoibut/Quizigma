@@ -6,7 +6,7 @@ import axios from "axios"
 
 // main account form
 function SignIn() {
-    const baseUrl = import.meta.env.API_URL
+    const baseUrl = import.meta.env.VITE_API_URL
     let username = useRef()
     let email = useRef()
     let password = useRef()

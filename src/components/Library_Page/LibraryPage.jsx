@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import axios from 'axios'
 function LibraryPage() {
-    const baseUrl = import.meta.env.API_URL
+    const baseUrl = import.meta.env.VITE_API_URL
     const [sets, setSets] = useState([])
     useEffect(() => {
         axios.get(`${baseUrl}/api/v1/set`, { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {

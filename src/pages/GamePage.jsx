@@ -8,7 +8,7 @@ import QuizGameplay from "../components/Game/QuizGameplay"
 import ResultView from "../components/Game/ResultView"
 import PlayerStat from "../components/Game/PlayerStat"
 function GamePage() {
-    const baseUrl = import.meta.env.API_URL
+    const baseUrl = import.meta.env.VITE_API_URL
     const [player, setPlayer] = useState({
         playing: true,
         name: '',

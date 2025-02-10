@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router"
 import axios from "axios"
 
 function AddQuiz({ setIsOpen }) {
-    const baseUrl = import.meta.env.API_URL
+    const baseUrl = import.meta.env.VITE_API_URL
     const [addImage, setAddImage] = useState(false)
     const [image, setImage] = useState('')
     let name

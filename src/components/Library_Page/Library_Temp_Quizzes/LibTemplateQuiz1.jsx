@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 function TemplateQuiz({set,sets, setSets}){
-    const baseUrl = import.meta.env.API_URL
+    const baseUrl = import.meta.env.VITE_API_URL
     function removeSet(){
         console.log(set.id)
         axios.delete(`${baseUrl}/api/v1/set?id=${set.id}`, { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {

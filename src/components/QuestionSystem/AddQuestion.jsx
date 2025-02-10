@@ -149,7 +149,7 @@ const withInlineMath = (editor) => {
     return editor;
 };
 function AddQuestion({ openFunction, quiz, render }) {
-    const baseUrl = import.meta.env.API_URL
+    const baseUrl = import.meta.env.VITE_API_URL
     const [isMathOpen, setIsMathOpen] = useState(false)
     const [editor] = useState(() => withReact(withHistory(createEditor())));
     const [isStyleMarkActive, setIsStyleMarkActive] = useState({ bold: false, italic: false, underline: false })
