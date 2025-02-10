@@ -35,7 +35,7 @@ function SideBar(){
                     </div>
 
                     <div className="bg-[#C6E3F1] items-center border-[8px] border-[#338ACB] max-w-[410px] min-h-[260px]
-                    shrink grow flex justify-evenly content-evenly flex-wrap mt-5 border-r border-l">
+                    shrink grow flex justify-evenly content-evenly flex-wrap mt-5 border-r border-l overflow-hidden">
                         <div className="flex flex-wrap justify-evenly grow">
                             <NavLink to='../discovery' end>
                                 <button className={`relative rounded-full font-bold text-white text-base w-[140px] h-[65px] flex flex-col items-center
@@ -73,7 +73,7 @@ function SideBar(){
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap md:mt-[50px] mt-2">
+                    <div className="flex md:mt-[50px] mt-2 overflow-hidden">
                         <div className="bg-[#006B2D] w-[80px] h-[80px] flex justify-center items-center">
                             <img src={AddIcon} alt="Add Icon" className="w-[50px] h-[50px]" />
                         </div>

@@ -36,11 +36,14 @@ function LandingPage() {
                         </button>
                     </div>
 
-                    <div className="flex flex-col justify-center items-center font-bold text-3xl mt-auto">
-                        <button className="bg-white hover:bg-gray-600 hover:text-white duration-200 rounded-full pr-[20px] pl-[20px] pt-[2px] pb-[2px]">
-                            Settings
-                        </button>
-                    </div>
+                    <NavLink className="w-full" to='blank_page' end>
+                        <div className="flex w-full text-3xl md:mt-[20px] mt-5">
+                            <button id="settings" class="bg-white hover:bg-gray-400 hover:text-white ease-in-out duration-300
+                            min-w-[100px] min-h-[60px] shrink max-w-full max-h-[75px] grow font-bold ">
+                                Settings
+                            </button>
+                        </div>
+                    </NavLink>
                 </div>
                 {/* landing paging card */}
                 <img src={landingPageBg} alt="Welcome to Quizigma" className="object-cover h-full max-sm:hidden" />
