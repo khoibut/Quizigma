@@ -149,6 +149,7 @@ const withInlineMath = (editor) => {
     return editor;
 };
 function AddQuestion({ openFunction, quiz, render }) {
+    const baseUrl = process.env.API_URL
     const [isMathOpen, setIsMathOpen] = useState(false)
     const [editor] = useState(() => withReact(withHistory(createEditor())));
     const [isStyleMarkActive, setIsStyleMarkActive] = useState({ bold: false, italic: false, underline: false })
@@ -320,7 +321,7 @@ function AddQuestion({ openFunction, quiz, render }) {
             }
         }
         console.log(question)
-        axios.post(`https://quizigmaapi.onrender.com/api/v1/${setId}/question`, question, { headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` } }).then((res) => {
+        axios.post(`${baseUrl}/api/v1/${setId}/question`, question, { headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` } }).then((res) => {
             render()
             openFunction(false)
         })

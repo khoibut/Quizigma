@@ -44,6 +44,7 @@ function MultiChoiceOption({ correct, option }) {
     )
 }
 function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQuestions, setSelectedQuestions, render }) {
+    const baseUrl = process.env.API_URL
     // check if option container is open
     const [active, setActive] = useState(false)
     const [editQuestionOpened, setEditQuestion] = useState(false)
@@ -72,7 +73,7 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
         const requestData = {
             id: question.id
         }
-        axios.delete(`https://quizigmaapi.onrender.com/api/v1/${setId}/question`, {
+        axios.delete(`${baseUrl}/api/v1/${setId}/question`, {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem('token')}`
             },
@@ -162,6 +163,7 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
     )
 }
 function TextAnswerQuestion({ render, question, questionsList, setQuestions, selectedQuestions, setSelectedQuestions }) {
+    const baseUrl = process.env.API_URL
     const setId = useParams().setId
     // check if answer key container is open
     const [active, setActive] = useState(false)
@@ -190,7 +192,7 @@ function TextAnswerQuestion({ render, question, questionsList, setQuestions, sel
         const requestData = {
             id: question.id
         }
-        axios.delete(`https://quizigmaapi.onrender.com/api/v1/${setId}/question`, {
+        axios.delete(`${baseUrl}/api/v1/${setId}/question`, {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem('token')}`
             },
@@ -278,6 +280,7 @@ function TextAnswerQuestion({ render, question, questionsList, setQuestions, sel
 }
 
 function QuestionDisplay() {
+    const baseUrl = process.env.API_URL
     // let editPopUp = <EditQuestionPopup />;
     const setId = useParams().setId
     const searchBar = useRef();
@@ -293,7 +296,7 @@ function QuestionDisplay() {
     const [loading, setLoading] = useState(true)
 
     async function getQuiz() {
-        axios.get('https://quizigmaapi.onrender.com/api/v1/set', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
+        axios.get(`${baseUrl}/api/v1/set`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(function (response) {
                 response.data.forEach(set => {
                     if (set.id == setId) {
@@ -325,7 +328,7 @@ function QuestionDisplay() {
     function multiDelete() {
         console.log(selectedQuestions)
         selectedQuestions.forEach(id => {
-            axios.delete(`https://quizigmaapi.onrender.com/api/v1/${setId}/question`, {
+            axios.delete(`${baseUrl}/api/v1/${setId}/question`, {
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem('token')}`
                 },

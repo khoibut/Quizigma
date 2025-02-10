@@ -5,9 +5,10 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import axios from 'axios'
 function LibraryPage() {
+    const baseUrl = process.env.API_URL
     const [sets, setSets] = useState([])
     useEffect(() => {
-        axios.get('https://quizigmaapi.onrender.com/api/v1/set', { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {
+        axios.get(`${baseUrl}/api/v1/set`, { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {
             console.log(response.data)
             setSets(response.data)
         })

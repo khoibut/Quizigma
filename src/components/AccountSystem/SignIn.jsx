@@ -6,6 +6,7 @@ import axios from "axios"
 
 // main account form
 function SignIn() {
+    const baseUrl = process.env.API_URL
     let username = useRef()
     let email = useRef()
     let password = useRef()
@@ -31,7 +32,7 @@ function SignIn() {
         }
 
         if(flag) {
-            axios.post('https://quizigmaapi.onrender.com/api/v1/acc/auth', user)
+            axios.post(`${baseUrl}/api/v1/acc/auth`, user)
             .then(function(response) {
                 wrongEmailOrPasswordError.style.display = 'none'
                 localStorage.setItem('token', response.data.token)

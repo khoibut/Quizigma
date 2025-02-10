@@ -99,6 +99,7 @@ function TypeAnswerOption(prop) {
 }
 
 function EditQuestion({ openFunction, question, render, questionsList, questionNumber }) {
+    const baseUrl = process.env.API_URL
     const [editor] = useState(() => withReact(withHistory(createEditor())));
     const [isStyleMarkActive, setIsStyleMarkActive] = useState({ bold: false, italic: false, underline: false })
     const [value, setValue] = useState([
@@ -294,7 +295,7 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
             })
         }
         console.log(newQuestion)
-        axios.patch(`https://quizigmaapi.onrender.com/api/v1/${question.setId}/question`, newQuestion, {
+        axios.patch(`${baseUrl}/api/v1/${question.setId}/question`, newQuestion, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("token")}`,
             }

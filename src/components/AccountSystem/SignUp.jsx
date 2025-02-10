@@ -28,6 +28,7 @@ function SignUp() {
         const navigate = useNavigate()
     
     function addAccount() {
+        const baseUrl = process.env.API_URL
         let flag = true
         let passwordFlag = true
         const user = {
@@ -106,7 +107,7 @@ function SignUp() {
         }
 
         if(flag) {
-            axios.post('https://quizigmaapi.onrender.com/api/v1/acc', user)
+            axios.post(`${baseUrl}/api/v1/acc`, user)
             .then(function (response) {
                 emailError.style.display = 'none'
                 usernameError.style.display = 'none'

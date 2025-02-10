@@ -5,6 +5,7 @@ import axios from "axios"
 import { useParams } from "react-router"
 
 function EditQuiz( {openFunction} ) {
+    const baseUrl = process.env.API_URL
     const [addImage, setAddImage] = useState(false)
     const [image, setImage] = useState('')
     const setId=useParams().setId
@@ -17,7 +18,7 @@ function EditQuiz( {openFunction} ) {
             description: description.current.value,
             image:image
         }
-        axios.patch(`https://quizigmaapi.onrender.com/api/v1/set?id=${setId}`, data,{ headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` } }).then((res) => {
+        axios.patch(`${baseUrl}/api/v1/set?id=${setId}`, data,{ headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` } }).then((res) => {
             console.log(res)
             openFunction(false)
             window.location.reload()
