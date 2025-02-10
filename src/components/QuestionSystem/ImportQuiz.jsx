@@ -42,6 +42,15 @@ function ImportQuiz({ openFunction }) {
             }).catch((error) => {
                 console.warn("error");
             })
+        } else if(type=="Spreadsheet"){
+            let file = document.getElementById("quiz-URL").files[0]
+            let formData = new FormData()
+            formData.append("file",file)
+            axios.post(`${baseUrl}/api/v1/import/spreadsheet?id=${setId}`, formData, { headers: headers }).then((response) => {
+                window.location.href = `/questionlist/${setId}`
+            }).catch((error) => {
+                console.warn("error");
+            })
         }
     }
     return (
