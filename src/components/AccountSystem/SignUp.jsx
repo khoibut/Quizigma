@@ -28,7 +28,7 @@ function SignUp() {
         const navigate = useNavigate()
     
     function addAccount() {
-        const baseUrl = process.env.API_URL
+        const baseUrl = import.meta.env.API_URL
         let flag = true
         let passwordFlag = true
         const user = {

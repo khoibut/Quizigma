@@ -5,7 +5,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import HostGameStat from "../components/Game/HostGameStat";
 function HostGamePage() {
-    const baseUrl=process.env.API_URL
+    const baseUrl=import.meta.env.API_URL
     const [view, setView] = useState('waiting')
     const [players, setPlayers] = useState([])
     const roomId = useParams().roomId;

@@ -99,7 +99,7 @@ function TypeAnswerOption(prop) {
 }
 
 function EditQuestion({ openFunction, question, render, questionsList, questionNumber }) {
-    const baseUrl = process.env.API_URL
+    const baseUrl = import.meta.env.API_URL
     const [editor] = useState(() => withReact(withHistory(createEditor())));
     const [isStyleMarkActive, setIsStyleMarkActive] = useState({ bold: false, italic: false, underline: false })
     const [value, setValue] = useState([

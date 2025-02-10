@@ -177,7 +177,7 @@ function TextAnswerQuestion({ question, index }) {
 }
 
 function HostGame() {
-    const baseUrl = process.env.API_URL
+    const baseUrl = import.meta.env.API_URL
     const setId = useParams()
     const timeLimit = useRef()
     const lateJoin = useRef()

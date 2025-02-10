@@ -5,7 +5,7 @@ import axios from "axios"
 import { useParams } from "react-router"
 
 function EditQuiz( {openFunction} ) {
-    const baseUrl = process.env.API_URL
+    const baseUrl = import.meta.env.API_URL
     const [addImage, setAddImage] = useState(false)
     const [image, setImage] = useState('')
     const setId=useParams().setId
