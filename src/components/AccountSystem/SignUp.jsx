@@ -112,6 +112,7 @@ function SignUp() {
                 usernameError.style.display = 'none'
                 localStorage.setItem('token', response.data.token)
                 localStorage.setItem('username', user.username)
+                localStorage.setItem('email', user.email)
                 navigate("/library")
             })
             .catch(function(error) {

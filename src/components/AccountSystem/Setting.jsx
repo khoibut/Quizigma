@@ -1,24 +1,129 @@
 import React, { useState } from 'react'
 import { NavLink, useNavigate, useSubmit } from "react-router"
+import axios from 'axios'
 
 function AccountSetting() {
     const [open, setOpen] = useState(false)
     const [confirmDelete, setConfirmDelete] = useState(false)
+    const [accountOption, setAccountOption] = useState()
     const navigate = useNavigate()
+    let newUsername, newEmail, newPassword
 
+    const renderContent = () => {
+        switch (accountOption) {
+            case 'chgUsername':
+                return (
+                    <>
+                        <ul className={`transition-all grid w-full ${open ? 'grid-rows-[1fr] pb-6 pt-2 border-b border-slate-400' : 'grid-rows-[0fr]'}`}>
+                            <div className='overflow-hidden flex flex-col gap-2 pl-6'>
+                                <label for="small-input" className="block text-sm font-medium text-gray-900 dark:text-white">Enter new username</label>
+                                <input ref={(e) => newUsername = e} type="text" placeholder="Your new username..." id="small-input" className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                                <li onClick={changeUsername} className='cursor-pointer text-center bg-blue-200 w-40 p-2 rounded-full hover:bg-violet-400 transition-all z-10'>Change username</li>
+                                <li onClick={openAccountInfo} className='cursor-pointer text-center bg-red-400 w-28 p-1 rounded-full hover:bg-red-500 transition-all z-10 text-sm'>Cancel</li>
+                            </div>
+                        </ul>  
+                    </>
+                )
+            case 'chgEmail':
+                return (
+                    <>
+                        <ul className={`transition-all grid w-full ${open ? 'grid-rows-[1fr] pb-6 pt-2 border-b border-slate-400' : 'grid-rows-[0fr]'}`}>
+                            <div className='overflow-hidden flex flex-col gap-2 pl-6'>
+                                <label for="small-input" className="block text-sm font-medium text-gray-900 dark:text-white">Enter new Email</label>
+                                <input ref={(e) => newEmail = e} type="text" placeholder="Your new email..." id="small-input" className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                                <li onClick={openChangeEmail} className='cursor-pointer text-center bg-blue-200 w-40 p-2 rounded-full hover:bg-violet-400 transition-all z-10'>Change email</li>
+                                <li onClick={openAccountInfo} className='cursor-pointer text-center bg-red-400 w-28 p-1 rounded-full hover:bg-red-500 transition-all z-10 text-sm'>Cancel</li>
+                            </div>
+                        </ul>  
+                    </>
+                )
+            case 'chgPassword':
+                return (
+                    <>
+                        <ul className={`transition-all grid w-full ${open ? 'grid-rows-[1fr] pb-6 pt-2 border-b border-slate-400' : 'grid-rows-[0fr]'}`}>
+                            <div className='overflow-hidden flex flex-col gap-2 pl-6'>
+                                <label for="small-input" className="block text-sm font-medium text-gray-900 dark:text-white">Enter new Password</label>
+                                <input ref={(e) => newPassword = e} type="text" placeholder="Your new password..." id="small-input" className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                                <li onClick={openChangeEmail} className='cursor-pointer text-center bg-blue-200 w-40 p-2 rounded-full hover:bg-violet-400 transition-all z-10'>Change password</li>
+                                <li onClick={openAccountInfo} className='cursor-pointer text-center bg-red-400 w-28 p-1 rounded-full hover:bg-red-500 transition-all z-10 text-sm'>Cancel</li>
+                            </div>
+                        </ul>   
+                    </>
+                )
+            default:
+                return (
+                    <>
+                     <ul className={`transition-all grid w-full ${open ? 'grid-rows-[1fr] pb-6 pt-2 border-b border-slate-400' : 'grid-rows-[0fr]'}`}>
+                            <div className='overflow-hidden flex flex-col gap-2 pl-6'>
+                                <li><span className='text-black/70 font-semibold'>Username: </span><span>{localStorage.getItem('username')}</span></li>
+                                <li><span className='text-black/70 font-semibold'>Email: </span><span>{localStorage.getItem('email')}</span></li>
+                                <li onClick={openChgUsername} className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] z-10'>Change username</li>
+                                <li onClick={openChangeEmail} className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] z-10'>Change email</li>
+                                <li onClick={openChangePassword} className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] z-10'>Change password</li>
+                            </div>
+                        </ul>   
+                    </>
+                )
+        }
+    }
     const logOut = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('username')
+        localStorage.removeItem('email')
 
         navigate('/')
     }
     const deleteAccount = () => {
         if(confirm("You are about to delete this account permanently")) {
-            alert('deleted')
+            // axios.post('https://quizigmaapi.onrender.com/api/v1/set', quiz, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
+            //     console.log(response)
+            //     navigate('/library')
+            // })
         }   
         else {
             setConfirmDelete(false)
         }
+    }
+    const openAccountInfo = () => {
+        setOpen(false)
+        setTimeout(() => {
+            setAccountOption('')
+            setOpen(true)
+        }, 300);
+    }
+    const openChgUsername = () => {
+        setOpen(false)
+        setTimeout(() => {
+            setAccountOption('chgUsername')
+            setOpen(true)
+        }, 300);
+    }
+    const openChangeEmail = () => {
+        setOpen(false);
+        setTimeout(() => {
+            setAccountOption('chgEmail')
+            setOpen(true);
+        }, 300);
+    }
+    const openChangePassword = () => {
+        setOpen(false);
+        setTimeout(() => {
+            setAccountOption('chgPassword')
+            setOpen(true);
+        }, 300);
+    }
+    
+    const changeUsername = () => {
+        axios.post('https://quizigmaapi.onrender.com/api/v1/acc', {username: newUsername}, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
+            console.log(response)
+        })
+        openAccountInfo()
+    }
+    const changeEmail = () => {
+        openAccountInfo()
+    }
+    const changePassword = () => {
+        openAccountInfo()
     }
 
     return (
@@ -31,15 +136,7 @@ function AccountSetting() {
                             <span>Account Information</span>
                             <svg className={`transition-transform ${open ? 'rotate-180' : ''} `} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
                         </button>
-                        <ul className={`transition-all grid w-full ${open ? 'grid-rows-[1fr] pb-6 pt-2 border-b border-slate-400' : 'grid-rows-[0fr]'}`}>
-                            <div className='overflow-hidden flex flex-col gap-2 pl-6'>
-                                <li><span className='text-black/70 font-semibold'>Username: </span><span>{localStorage.getItem('username')}</span></li>
-                                <li>Email:</li>
-                                <li className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] z-10'>Change username</li>
-                                <li className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] z-10'>Change email</li>
-                                <li className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] z-10'>Change password</li>
-                            </div>
-                        </ul>
+                        {renderContent()}
                     </li>
                     <li className="mt-2">
                         <button className='bg-[#8dd0d1] w-full rounded-lg p-2 pl-4 flex justify-between items-center hover:bg-[#92c6c8]'>Notification</button>
@@ -156,7 +253,7 @@ function ThemeSetting() {
 
 function Setting() {
     const [selectedOption, setSelectedOption] = useState('account')
-    let sidebar
+    let sidebar, content, sidebarBtn
 
     const renderContent = () => {
         switch (selectedOption) {
@@ -173,54 +270,70 @@ function Setting() {
         }
     }
     const openSidebar = () => {
-        sidebar.style.transform = 'translateX(0)';
-        sidebar.style.width = '280px';
-        sidebar.style.padding = '1rem';
+        if(screen.width <= 640) {
+            sidebar.style.transform = 'translateX(0)';
+            sidebar.style.width = '100%';
+            sidebar.style.padding = '1rem';
+            content.style.display = 'none';
+            sidebarBtn.style.display = 'none';
+        }
+    }
+    const closeSierbar = () => {
+        if(screen.width <= 640) {
+            sidebar.style.transform = 'translateX(-100%)';
+            sidebar.style.width = '0';
+            sidebar.style.paddingLeft = '0';
+            sidebar.style.paddingRight = '0';
+            content.style.display = 'block';
+            sidebarBtn.style.display = 'block';
+        }
     }
 
     return (
-        <div className="flex h-screen bg-gray-100">
-            <div ref={(e) => {sidebar = e}} className="w-[280px] shrink-0 bg-white shadow-lg p-4 overflow-hidden flex flex-col justify-between transition-all">
-                <div>
-                    <h2 className="text-2xl font-bold mb-4">Settings</h2>
-                    <ul className='gap-2 flex flex-col'>
-                        <li
-                            className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'account' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
-                            onClick={() => {setSelectedOption('account'); sidebar.style.transform = 'translateX(-100%)'; sidebar.style.width = '0'; sidebar.style.paddingLeft = '0'; sidebar.style.paddingRight = '0'}}
-                        >
-                            Account & Privacy
-                        </li>
-                        <li
-                            className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'setting' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
-                            onClick={() => {setSelectedOption('setting'); sidebar.style.transform = 'translateX(-100%)'; sidebar.style.width = '0'; sidebar.style.paddingLeft = '0'; sidebar.style.paddingRight = '0'}}
-                        >
-                            Setting
-                        </li>
-                        <li
-                            className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'language' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
-                            onClick={() => {setSelectedOption('language'); sidebar.style.transform = 'translateX(-100%)'; sidebar.style.width = '0'; sidebar.style.paddingLeft = '0'; sidebar.style.paddingRight = '0'}}
-                        >
-                            Language
-                        </li>
-                        <li
-                            className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'theme' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
-                            onClick={() => {setSelectedOption('theme'); sidebar.style.transform = 'translateX(-100%)'; sidebar.style.width = '0'; sidebar.style.paddingLeft = '0'; sidebar.style.paddingRight = '0'}}
-                        >
-                            Theme
-                        </li>
-                    </ul>
+        <>
+            <div className="flex h-screen bg-gray-100">
+                <div ref={(e) => {sidebar = e}} className="w-[280px] shrink-0 bg-white shadow-lg p-4 overflow-hidden flex flex-col justify-between transition-all max-sm:w-full">
+                    <div>
+                        <h2 className="text-2xl font-bold mb-4">Settings</h2>
+                        <ul className='gap-2 flex flex-col'>
+                            <li
+                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'account' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
+                                onClick={() => {setSelectedOption('account'); closeSierbar()}}
+                            >
+                                Account & Privacy
+                            </li>
+                            <li
+                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'setting' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
+                                onClick={() => {setSelectedOption('setting'); closeSierbar()}}
+                            >
+                                Setting
+                            </li>
+                            <li
+                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'language' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
+                                onClick={() => {setSelectedOption('language'); closeSierbar()}}
+                            >
+                                Language
+                            </li>
+                            <li
+                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'theme' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
+                                onClick={() => {setSelectedOption('theme'); closeSierbar()}}
+                            >
+                                Theme
+                            </li>
+                        </ul>
+                    </div>
+                    <NavLink to='/library' end> 
+                        <button className="p-2 bg-red-500 text-white w-full rounded-lg hover:bg-red-700 transition-all uppercase font-semibold active:bg-orange-600">Exit</button>
+                    </NavLink>
                 </div>
-                <NavLink to='/library' end> 
-                    <button className="p-2 bg-red-500 text-white w-full rounded-lg hover:bg-red-700 transition-all uppercase font-semibold active:bg-orange-600">Exit</button>
-                </NavLink>
+                <button ref={(e) => sidebarBtn = e} onClick={openSidebar} className='bg-white h-fit rounded-r-lg self-center hidden'>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000"><path d="M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z"/></svg>
+                </button>
+                <div ref={(e) => content = e} className="w-full p-4 sm:ml-4 max-sm:hidden">
+                    {renderContent()}
+                </div>
             </div>
-            <button onClick={openSidebar} className='bg-white h-fit rounded-r-lg self-center'>
-                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000"><path d="M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z"/></svg>
-            </button>
-            <div className="w-full p-4">
-                {renderContent()}
-            </div>
-        </div>
+        </>
     )
 }
 

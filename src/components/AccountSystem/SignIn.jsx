@@ -36,6 +36,7 @@ function SignIn() {
                 wrongEmailOrPasswordError.style.display = 'none'
                 localStorage.setItem('token', response.data.token)
                 localStorage.setItem('username', response.data.username)
+                localStorage.setItem('email', response.data.email)
                 navigate("/library")
             })
             .catch(function(error) {
