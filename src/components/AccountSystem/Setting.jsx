@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useSubmit } from "react-router"
 import axios from 'axios'
 
 function AccountSetting() {
+    const baseUrl = import.meta.env.VITE_API_URL
     const [open, setOpen] = useState(false)
     const [confirmDelete, setConfirmDelete] = useState(false)
     const [accountOption, setAccountOption] = useState()
@@ -114,16 +115,22 @@ function AccountSetting() {
     }
     
     const changeUsername = () => {
-        axios.post('https://quizigmaapi.onrender.com/api/v1/acc', {username: newUsername}, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
+        axios.post(`${baseUrl}/api/v1/acc/auth`, {username: newUsername.value}, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
             console.log(response)
+            openAccountInfo()
         })
-        openAccountInfo()
     }
     const changeEmail = () => {
-        openAccountInfo()
+        axios.post(`${baseUrl}/api/v1/acc/auth`, {username: newEmail.value}, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
+            console.log(response)
+            openAccountInfo()
+        })
     }
     const changePassword = () => {
-        openAccountInfo()
+        axios.post(`${baseUrl}/api/v1/acc/auth`, {username: newPassword.value}, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
+            console.log(response)
+            openAccountInfo()
+        })
     }
 
     return (
