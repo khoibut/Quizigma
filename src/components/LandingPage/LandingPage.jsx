@@ -36,7 +36,7 @@ function LandingPage() {
                         </button>
                     </div>
 
-                    <NavLink className="w-full" to='blank_page' end>
+                    <NavLink className="w-full" to='/setting' end>
                         <div className="flex w-full text-3xl md:mt-[20px] mt-5">
                             <button id="settings" class="bg-white hover:bg-gray-400 hover:text-white ease-in-out duration-300
                             min-w-[100px] min-h-[60px] shrink max-w-full max-h-[75px] grow font-bold ">

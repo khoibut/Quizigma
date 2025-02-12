@@ -1,24 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 function TemplateQuiz({set,sets, setSets}){
+    const [loading, setLoading] = useState(false)
     function removeSet(){
         console.log(set.id)
+        setLoading(true)
         axios.delete(`https://quizigmaapi.onrender.com/api/v1/set?id=${set.id}`, { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {
             setSets(sets.filter((s) => s.id !== set.id))
+        })
+        .finally(() => {
+            setLoading(false);
         })
     }
     function image(){
         if(set?.image){
-            return(<img src={set?.image} alt="Profile Picture" class="w-full h-full rounded-3xl rounded-br-none rounded-tr-none" />)
+            return(<img src={set?.image} alt="Profile Picture" class="object-cover h-full w-full rounded-3xl rounded-br-none rounded-tr-none" />)
         }
         else{
             return(<></>)
         }
     }
+
     return(
-        <div className="relative bg-gradient-to-r from-teal-400 to-blue-500 rounded-3xl m-2 hover:scale-95 transition ease-out duration-300 md:w-[50vh] w-[36vh] md:h-[45vh] h-[60vh] snap-center flex shrink-0 items-center p-2 cursor-pointer">
+        <div className="relative bg-gradient-to-r from-teal-400 to-blue-500 rounded-3xl m-2 hover:scale-95 transition ease-out  duration-300 md:w-[50vh] w-[36vh] md:h-[45vh] h-[60vh] snap-center flex shrink-0 items-center p-2 cursor-pointer">
             <div className="h-full w-1/2 flex flex-col">
-                <div className="w-full rounded-3xl rounded-br-none rounded-tr-none border-r-2 border-black">
+                <div className="w-full h-[20vh] rounded-3xl rounded-br-none rounded-tr-none border-r-2 border-black">
                     {image()}
                 </div>
                 <div className="w-full h-full border-black rounded-3xl rounded-br-none rounded-tr-none border-b-2 border-l-2 border-r-none">
@@ -28,8 +34,6 @@ function TemplateQuiz({set,sets, setSets}){
                         </span>
                     </div>
                     <div className="w-full h-3/4 rounded-bl-3xl flex flex-col items-center justify-center md:space-y-4 p-3">
-                        <span className="text-white md:text-lg text-sm font-medium overflow-hidden">
-                        </span>
                         <span className="text-white md:text-lg text-sm font-medium">
                             {`ID: #${set?.id}`}
                         </span>
@@ -43,7 +47,7 @@ function TemplateQuiz({set,sets, setSets}){
                             {set?.name}
                         </span>
                     </div>
-                    <div className="w-full h-2/3 p-2">
+                    <div className="w-full h-2/3 p-2 overflow-hidden">
                         <span className="text-gray-800 text-sm opacity-75">{set?.description}</span>
                     </div>
                 </div>
@@ -57,7 +61,7 @@ function TemplateQuiz({set,sets, setSets}){
                         </button>
                     </div>
                     <div className="w-full h-1/3 flex max-md:flex-col items-center justify-center">
-                        <button className="group bg-gray-600 h-full w-full rounded-lg scale-90 flex items-center justify-center hover:scale-100 transition ease-out duration-500 p-2">
+                        <button className="group bg-gray-600 h-full w-full rounded-lg scale-90 flex items-center justify-center hover:scale-100 transition ease-out duration-500 p-2" disabled = {loading}>
                             <span onClick={removeSet} className="md:text-lg text-sm font-bold text-gray-300 group-hover:text-gray-100">Remove</span>
                         </button>
                         <button className="group bg-gray-600 h-full w-full rounded-lg scale-90 flex items-center justify-center hover:scale-100 transition ease-out duration-500 p-2">

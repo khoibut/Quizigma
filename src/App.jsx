@@ -23,6 +23,7 @@ import MultipleChoice from './components/In_game/MultipleChoice.jsx';
 import TextAnswer from './components/In_game/TextAnswer.jsx';
 import HostGamePage from './pages/HostGamePage.jsx';
 import MathEquationDisplay from './components/QuestionSystem/MathEquationDisplay.jsx';
+import Setting from './components/AccountSystem/Setting.jsx';
 function App() {
   return (
     <>
@@ -45,6 +46,7 @@ function App() {
           <Route path='game/result' element={<ResultScreen correct={false} />}/>
           <Route path='game_text' element={<TextAnswer />} />
           <Route path='math' element={<MathEquationDisplay />} />
+          <Route path='setting' element={<Setting />} />
         </Routes>
       </BrowserRouter>
 

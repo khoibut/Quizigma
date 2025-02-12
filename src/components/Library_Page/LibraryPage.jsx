@@ -26,7 +26,7 @@ function LibraryPage() {
                             </div>
                         </div>
 
-                        <div className='rounded-3xl flex flex-wrap overflow-auto md:pb-[17vh] pb-[15vh] h-full gap-x-10'>
+                        <div className='flex flex-wrap overflow-auto md:pb-[17vh] pb-[15vh] h-full [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/40 [&::-webkit-scrollbar-thumb]:cursor-pointer [&::-webkit-scrollbar-track]:cursor-default'>
                             {sets.map((set) => {
                                 console.log(set)
                                 return (
