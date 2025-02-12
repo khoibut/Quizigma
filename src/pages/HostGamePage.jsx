@@ -5,6 +5,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import HostGameStat from "../components/Game/HostGameStat";
 function HostGamePage() {
+    const baseUrl=import.meta.env.VITE_API_URL
     const [view, setView] = useState('waiting')
     const [players, setPlayers] = useState([])
     const roomId = useParams().roomId;
@@ -27,7 +28,7 @@ function HostGamePage() {
         }
     }
     useEffect(() => {
-        let socket = new SockJS(`https://quizigmaapi.onrender.com/creator?room=${roomId}`);
+        let socket = new SockJS(`${baseUrl}/creator?room=${roomId}`);
         let stompClient = Stomp.over(socket);
         stompClient.heartbeatIncoming = 10000;
         stompClient.heartbeatOutgoing = 10000;
@@ -55,8 +56,6 @@ function HostGamePage() {
                 }
                 if (messageBody.type == 'end') {
                     console.log('Game ended')
-                    stompClient.disconnect()
-                    window.location.href = "/join"
                 }
                 if (messageBody.type == 'timer') {
                     console.log(messageBody.time)

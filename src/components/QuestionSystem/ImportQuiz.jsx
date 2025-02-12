@@ -3,6 +3,7 @@ import { useParams } from 'react-router'
 import axios from 'axios'
 import { use } from 'react'
 function ImportQuiz({ openFunction }) {
+    const baseUrl = import.meta.env.VITE_API_URL
     const setId = useParams().setId
     const url = useRef()
     const [type, setType] = useState("Quizizz")
@@ -30,13 +31,22 @@ function ImportQuiz({ openFunction }) {
             "Authorization": `Bearer ${localStorage.getItem("token")}`
         }
         if (type == "Quizizz") {
-            axios.post(`https://quizigmaapi.onrender.com/api/v1/import/quizizz?id=${setId}`, { url: url.current.value }, { headers: headers }).then((response) => {
+            axios.post(`${baseUrl}/api/v1/import/quizizz?id=${setId}`, { url: url.current.value }, { headers: headers }).then((response) => {
                 window.location.href = `/questionlist/${setId}`
             }).catch((error) => {
                 console.warn("error");
             })
         } else if (type == "Blooket") {
-            axios.post(`https://quizigmaapi.onrender.com/api/v1/import/blooket?id=${setId}`, { url: url.current.value }, { headers: headers }).then((response) => {
+            axios.post(`${baseUrl}/api/v1/import/blooket?id=${setId}`, { url: url.current.value }, { headers: headers }).then((response) => {
+                window.location.href = `/questionlist/${setId}`
+            }).catch((error) => {
+                console.warn("error");
+            })
+        } else if(type=="Spreadsheet"){
+            let file = document.getElementById("quiz-URL").files[0]
+            let formData = new FormData()
+            formData.append("file",file)
+            axios.post(`${baseUrl}/api/v1/import/spreadsheet?id=${setId}`, formData, { headers: headers }).then((response) => {
                 window.location.href = `/questionlist/${setId}`
             }).catch((error) => {
                 console.warn("error");

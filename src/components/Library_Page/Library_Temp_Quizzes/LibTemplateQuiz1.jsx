@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import axios from 'axios'
 function TemplateQuiz({set,sets, setSets}){
     const [loading, setLoading] = useState(false)
+    const baseUrl = import.meta.env.VITE_API_URL
     function removeSet(){
         console.log(set.id)
         setLoading(true)
-        axios.delete(`https://quizigmaapi.onrender.com/api/v1/set?id=${set.id}`, { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {
+        axios.delete(`${baseUrl}/api/v1/set?id=${set.id}`, { headers: { "Authorization": "Bearer " + localStorage.getItem('token') } }).then((response) => {
             setSets(sets.filter((s) => s.id !== set.id))
         })
         .finally(() => {

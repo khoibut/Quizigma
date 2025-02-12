@@ -5,6 +5,7 @@ import { NavLink, useNavigate } from "react-router"
 import axios from "axios"
 
 function AddQuiz({ setIsOpen }) {
+    const baseUrl = import.meta.env.VITE_API_URL
     const [addImage, setAddImage] = useState(false)
     const [image, setImage] = useState('')
     let name
@@ -29,7 +30,7 @@ function AddQuiz({ setIsOpen }) {
             questions: []
         }
         setLoading(true)
-        axios.post('https://quizigmaapi.onrender.com/api/v1/set', quiz, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
+        axios.post(`${baseUrl}/api/v1/set`, quiz, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
             console.log(response)
             navigate('/library')
         })
