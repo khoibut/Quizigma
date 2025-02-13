@@ -2,7 +2,7 @@ import Luffy from "../../Icons&Images/ProfilePicture.jpg"
 
 function TemplateQuiz1(){
     return(
-        <div class="relative bg-gradient-to-r from-teal-400 to-blue-500 rounded-3xl m-2 hover:scale-95 transition ease-out duration-300
+        <div className="relative bg-gradient-to-r from-teal-400 to-blue-500 rounded-3xl m-2 hover:scale-95 transition ease-out duration-300
         md:w-[50vh] w-[36vh] md:h-[45vh] h-[30vh] snap-center flex items-center shrink-0 items-center p-2 cursor-pointer">
             <div className="h-full w-1/2 flex flex-col">
                 <div className="w-full h-2/3 rounded-3xl rounded-br-none rounded-tr-none border-r-2 border-black">

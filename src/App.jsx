@@ -24,6 +24,7 @@ import TextAnswer from './components/In_game/TextAnswer.jsx';
 import HostGamePage from './pages/HostGamePage.jsx';
 import MathEquationDisplay from './components/QuestionSystem/MathEquationDisplay.jsx';
 import Setting from './components/AccountSystem/Setting.jsx';
+import SearchPage from './components/Discovery_Page/SearchPage.jsx';
 function App() {
   return (
     <>
@@ -47,6 +48,7 @@ function App() {
           <Route path='game_text' element={<TextAnswer />} />
           <Route path='math' element={<MathEquationDisplay />} />
           <Route path='setting' element={<Setting />} />
+          <Route path='search' element={<SearchPage/>} />
         </Routes>
       </BrowserRouter>
 
