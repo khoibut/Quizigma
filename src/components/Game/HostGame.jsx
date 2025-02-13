@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useParams } from "react-router";
 import { useRef } from "react";
 import axios from "axios";
+import displayQuestion from "../../utils/displayQuestion";
 function LiveGame({ timeLimit, lateJoin }) {
     return (
         <div className="flex flex-col gap-4">
@@ -111,7 +112,9 @@ function MultiChoiceQuestion({ question, index }) {
                     <div style={{ backgroundImage: `url(${question.image})` }} className="h-[100px] sm:w-auto sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center bg-contain bg-no-repeat bg-center"></div>
                     <div className="max-sm:basis-full">
                         <div className="font-semibold text-xl">{`Question ${index}:`}</div>
-                        <div dangerouslySetInnerHTML={{ __html: question.question }} className="question-title" />
+                        <div className="question-title" >
+                            {displayQuestion(question.question)}
+                        </div>
                     </div>
                     <div className="ml-auto flex gap-5 items-center">
                         <div className="px-10 py-2 rounded-full font-bold bg-red-400 text-white text-nowrap">Multiple choice</div>
@@ -162,7 +165,7 @@ function TextAnswerQuestion({ question, index }) {
                     <div style={{ backgroundImage: `url(${question.image})` }} className="h-[100px] sm:w-auto sm:h-[100px] aspect-[4/3] bg-black rounded-xl self-center bg-contain bg-center bg-no-repeat"></div>
                     <div className="max-sm:basis-full">
                         <div className="font-semibold text-xl">{`Question ${index}:`}</div>
-                        <div dangerouslySetInnerHTML={{__html:question.question}} className="question-title"></div>
+                        <div className="question-title">{displayQuestion(question.question)}</div>
                     </div>
                     <div className="ml-auto flex gap-5 items-center">
                         <div className="px-10 py-2 rounded-full font-bold bg-red-400 text-white text-nowrap">Type answer</div>
