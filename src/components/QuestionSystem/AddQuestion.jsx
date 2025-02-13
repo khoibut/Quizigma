@@ -122,10 +122,11 @@ const withMath = (editor) => {
 };
 const MathElement = ({ attributes, children, element }) => {
     return (
-        <span {...attributes}>
-            <StaticMathField>{element.children[0].text}</StaticMathField>
+        <span {...attributes} contentEditable={false} style={{ display: "inline-block" }}>
+            <StaticMathField>{element.value}</StaticMathField>
+            {children}
         </span>
-    )
+    );
 };
 function Leaf({ attributes, children, leaf }) {
     if (leaf.bold) {
@@ -151,7 +152,18 @@ const withInlineMath = (editor) => {
 function AddQuestion({ openFunction, quiz, render }) {
     const baseUrl = import.meta.env.VITE_API_URL
     const [isMathOpen, setIsMathOpen] = useState(false)
-    const [editor] = useState(() => withReact(withHistory(createEditor())));
+    const [editor] = useState(() => {
+        const e = withReact(withHistory(createEditor()));
+        const { isInline } = e;
+        const { isVoid } = e;
+        e.isVoid = (element) => {
+            return element.type === "math" ? true : isVoid(element);
+        }
+        e.isInline = (element) => {
+            return element.type === "math" ? true : isInline(element);
+        };
+        return e;
+    });
     const [isStyleMarkActive, setIsStyleMarkActive] = useState({ bold: false, italic: false, underline: false })
     const [value, setValue] = useState([
         {
@@ -187,7 +199,8 @@ function AddQuestion({ openFunction, quiz, render }) {
     const insertMath = (latex) => {
         const newNode = {
             type: 'math',
-            children: [{ text: latex }]
+            value: latex,
+            children: [{ text: '' }]
         }
         Transforms.insertNodes(editor, newNode)
     };
@@ -196,7 +209,7 @@ function AddQuestion({ openFunction, quiz, render }) {
             case 'math':
                 return <MathElement {...props} />
             default:
-                return <p className="inline" {...props.attributes}>{props.children}</p>
+                return <p {...props.attributes}>{props.children}</p>
         }
     }
     function hotKeys(e) {
@@ -245,6 +258,10 @@ function AddQuestion({ openFunction, quiz, render }) {
                 }
                 return text
             }
+            if (child.type === 'math') {
+                console.log(child)
+                return `<span><StaticMathField>${child.value}</StaticMathField></span>`
+            }
             return ''
         }).join('')
     }
@@ -253,8 +270,6 @@ function AddQuestion({ openFunction, quiz, render }) {
         return value.map((node) => {
             if (node.type === 'paragraph') {
                 return `<p>${serializeParagraph(node)}</p>`
-            }else if (node.type === 'math') {
-                return `<StaticMathField>${node.children[0].text}</StaticMathField>`
             }
             return ''
         }).join('\n')
@@ -358,6 +373,7 @@ function AddQuestion({ openFunction, quiz, render }) {
     if (typeAnswer) {
         return (
             <>
+                <MathEquationDisplay insertMath={insertMath} isMathOpen={isMathOpen} setIsMathOpen={setIsMathOpen} />
                 <Modal
                     isOpen={addImage}
                     style={{
@@ -393,25 +409,27 @@ function AddQuestion({ openFunction, quiz, render }) {
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
                     <div className="flex items-center justify-between gap-4 rounded-md my-4 p-2 sm:p-6 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
                         <div className="flex gap-2 bg-[#BFF4FF] p-2 sm:p-4 rounded-lg">
-                            <button onClick={(e) => {
-                                e.preventDefault()
-                                toggleMark('bold')
-                                setIsStyleMarkActive({ bold: !isStyleMarkActive.bold, italic: false, underline: false })
+                            <button onMouseDown={(e) => {
+                                e.preventDefault();
+                                toggleMark('bold');
+                                setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
                             }}
-                                className={`{${isStyleMarkActive.bold ? 'bg-gray-400' : ''}} hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg`}><b>B</b></button>
-                            <button onClick={(e) => {
-                                e.preventDefault()
+                                className={`hover:bg-gray-400 ${isStyleMarkActive.bold ? "bg-gray-400" : ''} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><b>B</b></button>
+                            <button onMouseDown={(e) => {
+                                e.preventDefault();
                                 toggleMark('italic')
-                                setIsStyleMarkActive({ bold: false, italic: !isStyleMarkActive.italic, underline: false })
+                                setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
                             }}
-                                className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><i>I</i></button>
-                            <button onClick={(e) => {
-                                e.preventDefault()
+                                className={`hover:bg-gray-400 ${isStyleMarkActive.italic ? "bg-gray-400" : ""} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><i>I</i></button>
+                            <button onMouseDown={(e) => {
+                                e.preventDefault();
                                 toggleMark('underline')
-                                setIsStyleMarkActive({ bold: false, italic: false, underline: !isStyleMarkActive.underline })
-                            }}
-                                className="hover:bg-gray-400 hover:scale-110 transition-all h-8 w-8 rounded-lg"><u>U</u></button>
-                            <button className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
+                                setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+                            }} className={`hover:bg-gray-400 ${isStyleMarkActive.underline ? "bg-gray-400" : ''} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><u>U</u></button>
+                            <button onClick={() => {
+                                setIsMathOpen(true)
+                            }} className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
+                            <button type="button" onClick={addOption} className="ml-auto rounded-lg bg-[#B9E42A] h-8 w-8 hover:scale-105 transition-all">+</button>
                         </div>
                         <div className="flex gap-2 sm:gap-4 flex-wrap">
                             <button onClick={() => { openFunction(false) }} className="px-3 sm:px-6 py-3 rounded-lg bg-violet-600 text-white hover:bg-blue-500 hover:scale-105 transition-all">EXIT</button>
@@ -422,20 +440,19 @@ function AddQuestion({ openFunction, quiz, render }) {
                             <button onClick={addQuestion} className="bg-[#FF6663] px-3 sm:px-6 rounded-lg hover:scale-105 hover:bg-red-600 transition-all text-white py-3">ADD</button>
                         </div>
                     </div>
-
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
-                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="h- full bg-black rounded-lg bg-center bg-no-repeat bg-contain max-h-20"></div>
-                        <div className="w-full break-words overflow-auto bg-[#e7e2e2] rounded-lg p-4 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
+                        <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="bg-black rounded-lg bg-contain bg-no-repeat bg-center max-h-20"></div>
+                        <div className="w-full bg-[#e7e2e2] rounded-lg p-2 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
                             <div>Question {quiz.questions.length + 1}:</div>
-                            <Slate editor={editor} initialValue={initialValue} onChange={newValue => setValue(newValue)}>
-                                <Editable
-                                    className="focus:outline-none outline-none border-none"
-                                    onKeyDown={hotKeys}
-                                    placeholder="Input question here"
-                                    renderElement={renderElement}
-                                    renderLeaf={props => <Leaf {...props} />}
-                                />
-                            </Slate>
+                            <div className="flex-grow whitespace-normal break-words ps-4 p-2 bg-transparent outline-none group-hover w-full focus:outline-none outline-none border-none">
+                                <Slate editor={editor} initialValue={initialValue} onChange={newValue => setValue(newValue)}>
+                                    <Editable className="focus:outline-none outline-none border-none" onKeyDown={hotKeys}
+                                        placeholder="Input question here"
+                                        renderElement={renderElement}
+                                        renderLeaf={props => <Leaf {...props} />}
+                                    />
+                                </Slate>
+                            </div>
                         </div>
                     </div>
                     <div className="mx-4 sm:mx-10 overflow-y-auto">

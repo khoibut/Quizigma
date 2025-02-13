@@ -2,8 +2,7 @@ import { useState } from "react"
 import { EditableMathField } from "react-mathquill"
 import Modal from "react-modal"
 function MathEquationDisplay({ isMathOpen, setIsMathOpen, insertMath }) {
-    const [equation, setEquation] = useState()
-    const [latex, setLatex] = useState()
+    const [latex, setLatex] = useState('')
     let symbols = ['&forall;']
 
     function InputButton({ value }) {
@@ -11,13 +10,9 @@ function MathEquationDisplay({ isMathOpen, setIsMathOpen, insertMath }) {
     }
 
 
-    const addToEquation = (value) => {
-        setEquation(equation => {
-            equation.value += value
-        })
-    }
     const addEquation = () => {
         insertMath(latex)
+        setLatex('')
         setIsMathOpen(false)
     }
 
@@ -58,6 +53,7 @@ function MathEquationDisplay({ isMathOpen, setIsMathOpen, insertMath }) {
                         <div className="text-black opacity-50 font-semibold text-sm ml-2">Preview:</div>
                         <div className="whitespace-nowrap min-w-full">
                             <EditableMathField
+                                latex={latex}
                                 onChange={(mathField) => {
                                     setLatex(mathField.latex())
                                 }}

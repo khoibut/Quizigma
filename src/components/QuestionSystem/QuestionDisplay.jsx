@@ -10,7 +10,8 @@ import axios from "axios"
 import React from "react"
 import ImportQuiz from "./ImportQuiz.jsx"
 import { useRef } from "react"
-
+import parse from 'html-react-parser';
+import { StaticMathField } from "react-mathquill"
 function MultiChoiceOption({ correct, option }) {
     if (correct) {
         return (
@@ -55,6 +56,16 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
     let questionPopup
 
     // open option container under the question
+    function displayQuestion(question){
+        const elements=parse(question,{
+            replace: (domNode) => {
+                if(domNode.name === 'staticmathfield'){
+                    return <StaticMathField>{domNode.children[0].data}</StaticMathField>
+                }
+            }
+        })
+        return elements
+    }
     function open() {
         if (!active) {
             option.style.height = '350px'
@@ -128,10 +139,9 @@ function MultiChoiceQuestion({ question, questionsList, setQuestions, selectedQu
                 {/* question info */}
                 <div className="question">
                     <div className="font-semibold text-xl">Question {questionsList.map(q => q.id).indexOf(question.id) + 1}:</div>
-                    <div
-                        className="question-title"
-                        dangerouslySetInnerHTML={{ __html: question.question }}
-                    />
+                    <div className="question-title">
+                        {displayQuestion(question.question)}
+                    </div>
                 </div>
                 {/* question type, edit icon, remove icon */}
                 <div className="ml-auto gap-5 items-center sm:flex hidden">

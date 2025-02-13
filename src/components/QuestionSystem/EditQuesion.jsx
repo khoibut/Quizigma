@@ -8,19 +8,9 @@ import { createEditor } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { Editor } from "slate";
 import { Text } from "slate";
-function Leaf({ attributes, children, leaf }) {
-    if (leaf.bold) {
-        children = <strong>{children}</strong>
-    }
-    if (leaf.italic) {
-        children = <em>{children}</em>
-    }
-    if (leaf.underline) {
-        children = <u>{children}</u>
-    }
-    return <span {...attributes}>{children}</span>
-}
-
+import { StaticMathField } from "react-mathquill";
+import MathEquationDisplay from "./MathEquationDisplay";
+import { Transforms } from "slate";
 function OptionStatus({ status, changeStatus, correctOptions, setCorrectOptions, optionIndex }) {
     if (status) {
         return <button type="button" onClick={() => { changeStatus(false); setCorrectOptions(correctOptions => correctOptions.filter(option => option != optionIndex)) }} className="rounded-full bg-[#6EE163] text-white text-center py-1 px-4 font-bold w-fit">Correct</button>
@@ -78,7 +68,7 @@ function MultiChoiceOption(prop) {
             <div className="flex gap-2 sm:gap-8 border-b-2 py-3 sm:px-1">
                 <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="max-sm:max-w-[100px] max-sm:w-[30%] sm:h-[100px] aspect-[4/3] bg-black rounded-xl bg-center bg-no-repeat bg-contain"></div>
                 <div className="overflow-auto w-[50%] flex flex-col">
-                    <div dangerouslySetInnerHTML={{__html:prop.option.option}} className="font-semibold text-lg mb-2"></div>
+                    <div dangerouslySetInnerHTML={{ __html: prop.option.option }} className="font-semibold text-lg mb-2"></div>
                     {button}
                 </div>
                 <div onClick={() => { prop.delete(prop.option, prop.index) }} className="self-center ml-auto">
@@ -97,21 +87,57 @@ function TypeAnswerOption(prop) {
         </>
     )
 }
-
+const MathElement = ({ attributes, children, element }) => {
+    return (
+        <span {...attributes} contentEditable={false} style={{ display: "inline-block" }}>
+            <StaticMathField>{element.value}</StaticMathField>
+            {children}
+        </span>
+    );
+};
+function Leaf({ attributes, children, leaf }) {
+    if (leaf.bold) {
+        children = <strong>{children}</strong>
+    }
+    if (leaf.italic) {
+        children = <em>{children}</em>
+    }
+    if (leaf.underline) {
+        children = <u>{children}</u>
+    }
+    return <span {...attributes}>{children}</span>
+}
 function EditQuestion({ openFunction, question, render, questionsList, questionNumber }) {
     const baseUrl = import.meta.env.VITE_API_URL
-    const [editor] = useState(() => withReact(withHistory(createEditor())));
+    const [isMathOpen, setIsMathOpen] = useState(false)
+    const [editor] = useState(() => {
+        const e = withReact(withHistory(createEditor()));
+        const { isInline } = e;
+        const { isVoid } = e;
+        e.isVoid = (element) => {
+            return element.type === "math" ? true : isVoid(element);
+        }
+        e.isInline = (element) => {
+            return element.type === "math" ? true : isInline(element);
+        };
+        return e;
+    });
     const [isStyleMarkActive, setIsStyleMarkActive] = useState({ bold: false, italic: false, underline: false })
     const [value, setValue] = useState([
         {
             type: 'paragraph',
-            children: [{ text: question.question }],
+            children: [{ text: 'Type something here...' }],
         },
-    ])
+    ]);
 
     function isMarkActive(editor, format) {
         const marks = Editor.marks(editor)
         return marks ? marks[format] === true : false
+    }
+    function offAllMarks(editor) {
+        Editor.removeMark(editor, 'bold')
+        Editor.removeMark(editor, 'italic')
+        Editor.removeMark(editor, 'underline')
     }
 
     function toggleMark(format) {
@@ -122,78 +148,113 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
             Editor.addMark(editor, format, true)
         }
     }
-
-    function hotKeys(event) {
-        if (event.key === 'b' && (event.ctrlKey || event.metaKey)) {
-            event.preventDefault()
-            toggleMark('bold')
-            setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+    const insertMath = (latex) => {
+        const newNode = {
+            type: 'math',
+            value: latex,
+            children: [{ text: '' }]
         }
-        if (event.key === 'i' && (event.ctrlKey || event.metaKey)) {
-            event.preventDefault()
-            toggleMark('italic')
-            setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
-        }
-        if (event.key === 'u' && (event.ctrlKey || event.metaKey)) {
-            event.preventDefault()
-            toggleMark('underline')
-            setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
-        }
-        if (event.key === ' ' && (event.ctrlKey || event.metaKey)) {
-            event.preventDefault()
-            offAllMarks(editor)
-            setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+        Transforms.insertNodes(editor, newNode)
+    };
+    const renderElement = (props) => {
+        switch (props.element.type) {
+            case 'math':
+                return <MathElement {...props} />
+            default:
+                return <p {...props.attributes}>{props.children}</p>
         }
     }
-
-    function offAllMarks(editor) {
-        Editor.removeMark(editor, 'bold')
-        Editor.removeMark(editor, 'italic')
-        Editor.removeMark(editor, 'underline')
+    function hotKeys(e) {
+        if (e.ctrlKey) {
+            switch (e.key) {
+                case 'b': {
+                    e.preventDefault()
+                    toggleMark('bold')
+                    setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+                    break
+                }
+                case 'i': {
+                    e.preventDefault()
+                    toggleMark('italic')
+                    setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+                    break
+                }
+                case 'u': {
+                    e.preventDefault()
+                    toggleMark('underline')
+                    setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
+                    break
+                }
+                case ' ': {
+                    e.preventDefault()
+                    setIsStyleMarkActive({ bold: false, italic: false, underline: false })
+                    offAllMarks(editor)
+                    break
+                }
+            }
+        }
     }
 
     const deserializeParagraph = (element) => {
-        const children = Array.from(element.childNodes).map((node) => {
+        let children = Array.from(element.childNodes).map((node) => {
             if (node.nodeType === Node.TEXT_NODE) {
-                return { text: node.textContent }; // Plain text node
+                return { text: node.textContent };
             } else if (node.nodeType === Node.ELEMENT_NODE) {
-                // Recursively process child nodes
-                const childText = node.textContent || "";
+                const isMath = node.tagName === "SPAN";
+                if (isMath) {
+                    const mathField = node.querySelector("StaticMathField, staticmathfield");
+                    if (mathField) {
+                        return [
+                            { text: '' }, // Empty text before math
+                            { type: "math", value: mathField.textContent.replace(/\n/g, ''), children: [{ text: '' }] },
+                            { text: '' }  // Empty text after math
+                        ];
+                    }
+                }
 
-                // Check for styling and set appropriate flags
                 const bold = node.tagName === "STRONG" || node.style.fontWeight === "bold";
                 const italic = node.tagName === "EM" || node.style.fontStyle === "italic";
-                const underline = node.tagName === "U" || node.style.textDecoration.includes("underline");
+                const underline = node.tagName === "U" ||
+                    (node.style.textDecoration && node.style.textDecoration.includes("underline"));
 
-                // Combine styles if the element contains nested styles (e.g., <strong><u>text</u></strong>)
-                const nestedStyles = deserializeParagraph(node); // Recursive call for nested styles
-                const combinedChildren = nestedStyles.children.map((child) => ({
+                const nested = deserializeParagraph(node);
+
+                return nested.children.map((child) => ({
                     ...child,
                     bold: bold || child.bold,
                     italic: italic || child.italic,
                     underline: underline || child.underline,
                 }));
-
-                return combinedChildren.length > 0
-                    ? combinedChildren[0]
-                    : { text: childText, bold, italic, underline };
             }
-            return null; // Ignore unsupported nodes
+            return null;
         });
 
-        return { type: "paragraph", children: children.flat().filter(Boolean) };
+        children = children.flat().filter(child => child !== null);
+
+        // Ensure the structure starts and ends with a text node
+        if (children.length === 0 || children[0].type === 'math') {
+            children.unshift({ text: '' });
+        }
+        if (children[children.length - 1].type === 'math') {
+            children.push({ text: '' });
+        }
+
+        return {
+            type: "paragraph",
+            children: children
+        };
     };
 
 
-    // Deserialize entire HTML string into Slate value
     const deserializeHTML = (html) => {
         const container = document.createElement("div");
-        container.innerHTML = html; // Parse HTML into DOM
+        container.innerHTML = html; // Convert the HTML string to a DOM tree
 
         return Array.from(container.childNodes)
-            .filter((node) => node.nodeName === "P") // Only handle <p> elements
+            .filter((node) => node.nodeName === "P") // Only process <p> elements (as defined in your serializer)
             .map((paragraphNode) => deserializeParagraph(paragraphNode));
     };
+
     function serializeParagraph(paragraph) {
         return paragraph.children.map((child) => {
             if (Text.isText(child)) {
@@ -208,6 +269,9 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                     text = `<u>${text}</u>`
                 }
                 return text
+            }
+            if (child.type === 'math') {
+                return `<span style={{ display: "inline-block" }}><StaticMathField>${child.value}</StaticMathField></span>`
             }
             return ''
         }).join('')
@@ -394,7 +458,7 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
                         <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="bg-black rounded-lg bg-contain bg-no-repeat bg-center max-h-20"></div>
                         <div className="w-full bg-[#e7e2e2] rounded-lg p-2 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
-                            <div>Question {questionNumber+1}:</div>
+                            <div>Question {questionNumber + 1}:</div>
                             <div className="flex-grow whitespace-normal break-words ps-4 p-2 bg-transparent outline-none group-hover w-full focus:outline-none outline-none border-none">
                                 <Slate editor={editor} initialValue={initialValue} onChange={newValue => setValue(newValue)}>
                                     <Editable className="focus:outline-none outline-none border-none" onKeyDown={hotKeys}
@@ -415,6 +479,8 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
     else {
         return (
             <>
+                {console.log(value)}
+                <MathEquationDisplay insertMath={insertMath} isMathOpen={isMathOpen} setIsMathOpen={setIsMathOpen} />
                 <Modal
                     isOpen={addImage}
                     style={{
@@ -447,9 +513,8 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                 >
                     <AddImage addButton={setAddImage} imageContainer={setImage} />
                 </Modal>
-                {console.log(correctOptions)}
                 <div className="flex min-h-screen flex-col w-full bg-[#338ACB] border-slate-500 rounded-lg lg:px-7 lg:w-4/5">
-                    <div className="flex items-center gap-4 justify-between rounded-md my-4 p-5 md:p-10 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
+                    <div className="flex items-center justify-between gap-4 rounded-md my-4 p-2 sm:p-6 shadow-[0_8px_10px_5px_rgba(0,0,0,0.2)] flex-wrap">
                         <div className="flex gap-2 bg-[#BFF4FF] p-2 sm:p-4 rounded-lg">
                             <button onMouseDown={(e) => {
                                 e.preventDefault();
@@ -468,16 +533,18 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                                 toggleMark('underline')
                                 setIsStyleMarkActive({ bold: isMarkActive(editor, 'bold'), italic: isMarkActive(editor, 'italic'), underline: isMarkActive(editor, 'underline') })
                             }} className={`hover:bg-gray-400 ${isStyleMarkActive.underline ? "bg-gray-400" : ''} hover:scale-110 transition-all h-8 w-8 rounded-lg`}><u>U</u></button>
-                            <button className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
+                            <button onClick={() => {
+                                setIsMathOpen(true)
+                            }} className="rounded-lg bg-[#B9E42A] px-4 sm:px-6 hover:scale-110 transition-all max-sm:text-sm">π Equation</button>
                             <button type="button" onClick={addOption} className="ml-auto rounded-lg bg-[#B9E42A] h-8 w-8 hover:scale-105 transition-all">+</button>
                         </div>
-                        <div className="flex gap-4 flex-wrap">
-                            <button onClick={() => { openFunction(false) }} className="px-6 py-3 rounded-lg bg-violet-600 text-white hover:bg-blue-500 hover:scale-105 transition-all">EXIT</button>
-                            {/* <select onChange={changeType} className="bg-[#FF6663] px-6 rounded-lg text-white py-3">
+                        <div className="flex gap-2 sm:gap-4 flex-wrap">
+                            <button onClick={() => { openFunction(false) }} className="px-3 sm:px-6 py-3 rounded-lg bg-violet-600 text-white hover:bg-blue-500 hover:scale-105 transition-all">EXIT</button>
+                            {/* <select onChange={changeType} className="bg-[#FF6663] px-3 sm:px-6 rounded-lg text-white py-3">
                                 <option value={1} selected>Multiple choice</option>
                                 <option value={0}>Text answer</option>
                             </select> */}
-                            <button onClick={saveQuestion} className="bg-[#FF6663] px-6 rounded-lg hover:scale-105 hover:bg-red-600 transition-all text-white py-3">SAVE</button>
+                            <button onClick={saveQuestion} className="bg-[#FF6663] px-3 sm:px-6 rounded-lg hover:scale-105 hover:bg-red-600 transition-all text-white py-3">SAVE</button>
                         </div>
                     </div>
 
@@ -488,11 +555,12 @@ function EditQuestion({ openFunction, question, render, questionsList, questionN
                     <div className="grid grid-cols-[120px_1fr] gap-2 mb-5 mx-2">
                         <div onClick={() => { setAddImage(true) }} style={{ backgroundImage: `url(${image})` }} className="bg-black rounded-lg bg-contain bg-no-repeat bg-center max-h-20"></div>
                         <div className="w-full bg-[#e7e2e2] rounded-lg p-2 ps-6 flex flex-col ring-offset-2 ring-offset-[#338ACB] ring-white ring-transparent group-hover:ring-2">
-                            <div>Question {questionNumber+1}:</div>
+                            <div>Question {questionNumber + 1}:</div>
                             <div className="flex-grow whitespace-normal break-words ps-4 p-2 bg-transparent outline-none group-hover w-full focus:outline-none outline-none border-none">
                                 <Slate editor={editor} initialValue={initialValue} onChange={newValue => setValue(newValue)}>
                                     <Editable className="focus:outline-none outline-none border-none" onKeyDown={hotKeys}
                                         placeholder="Input question here"
+                                        renderElement={renderElement}
                                         renderLeaf={props => <Leaf {...props} />}
                                     />
                                 </Slate>
