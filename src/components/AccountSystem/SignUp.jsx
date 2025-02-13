@@ -113,6 +113,7 @@ function SignUp() {
                 usernameError.style.display = 'none'
                 localStorage.setItem('token', response.data.token)
                 localStorage.setItem('username', user.username)
+                localStorage.setItem('email', user.email)
                 navigate("/library")
             })
             .catch(function(error) {
@@ -135,9 +136,9 @@ function SignUp() {
     return (
         <>
             <Title />
-            <div className="flex justify-center items-center flex-col bg-blue-300 w-full lg:w-2/3 xl:w-1/2 inset-0 m-auto rounded-t-lg mt-5">
-                <div className="self-start text-2xl font-extrabold m-5 sm:m-10 text-white">SIGN UP</div>
-                <div className="flex flex-col w-4/5 md:w-3/5 lg:w-1/2 m-2">
+            <div className="flex justify-center items-center flex-col bg-blue-300 w-full lg:w-2/3 xl:w-1/2 inset-0 m-auto rounded-t-lg mt-2">
+                <div className="self-start text-2xl font-extrabold my-7 mx-5 sm:mx-10 text-white">SIGN UP</div>
+                <div className="flex flex-col w-4/5 md:w-3/5 lg:w-1/2">
                     <label className="mt-2 text-xl" for="username">Username</label>
                     <input ref={(current) => (usernameInput = current)} className="rounded-md p-3 outline-none hover:outline-blue-950 hover:outline-offset-2" type="text" id="username" name="username" placeholder="Enter your username" />
                     <div ref={(current) => (usernameError = current)} className="text-rose-500 font-bold hidden mt-1 gap-2 items-center">
@@ -195,7 +196,7 @@ function SignUp() {
             </div>
 
             <NavLink to="/signin" end >
-                <div className="flex justify-center items-center gap-5 w-full lg:w-2/3 xl:w-1/2 inset-0 m-auto my-4 p-5     lg:p-10 rounded-b-lg bg-blue-300 hover:bg-sky-500">
+                <div className="flex justify-center items-center gap-5 w-full lg:w-2/3 xl:w-1/2 inset-0 m-auto my-4 p-5 lg:p-8 rounded-b-lg bg-blue-300 hover:bg-sky-500">
                     <button className="font-extrabold text-white text-lg">SIGN IN HERE</button>
                 </div>
             </NavLink>

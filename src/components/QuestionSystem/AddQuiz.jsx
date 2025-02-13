@@ -11,14 +11,25 @@ function AddQuiz({ setIsOpen }) {
     let name
     let description
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
 
     function createQuiz() {
+        if(description.value.length > 60) {
+            alert('Description can only be 60 characters long');
+            return false;
+        }
+        if(name.value.length > 12) {
+            alert('Quiz name can only be 12 characters long');
+            return false;
+        }
+
         let quiz = {
             name: name.value,
             description: description.value,
             image: image,
             questions: []
         }
+        setLoading(true)
         axios.post(`${baseUrl}/api/v1/set`, quiz, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
             console.log(response)
             navigate('/library')
@@ -71,13 +82,13 @@ function AddQuiz({ setIsOpen }) {
                             <label className="mt-3 font-semibold" for="quiz-name">Name</label>
                             <input ref={(current) => { name = current }} className="p-3 rounded-xl" type="text" />
                             <label className="mt-3 font-semibold" for="quiz-name">Description</label>
-                            <textarea ref={(current) => { description = current }} className="p-3 rounded-xl h-full"></textarea>
+                            <textarea ref={(current) => { description = current }} className="p-3 rounded-xl h-full resize-none"></textarea>
                         </div>
 
-                        <div className="col-span-2 flex justify-end mt-5 justify-self-center w-2/3 lg:w-full" onClick={createQuiz} value="CREATE"><button className="w-full sm:w-fit bg-red-400 rounded-full py-2 px-16 text-white hover:bg-rose-500 hover:scale-105 transition-all">CREATE</button></div>
+                        <div className="col-span-2 flex justify-end mt-5 justify-self-center w-2/3 lg:w-full" onClick={createQuiz} value="CREATE"><button disabled={loading} className="w-full sm:w-fit bg-red-400 rounded-full py-2 px-16 text-white hover:bg-rose-500 hover:scale-105 transition-all">CREATE</button></div>
 
                     </div>
-                    <NavLink to='/discovery' end>
+                    <NavLink to='/library' end>
                         <div className="col-span-2 flex justify-end my-5 justify-self-center w-2/3 lg:w-full "><button onClick={() => { openFunction(false) }} className="bg-blue-500 hover:bg-violet-800 w-full sm:w-fit rounded-full py-2 px-16 text-white  hover:scale-105 transition-all">Exit</button></div>
                     </NavLink>
                 </div>
