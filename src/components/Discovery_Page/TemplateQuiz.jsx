@@ -23,7 +23,7 @@ function TemplateQuiz({set}){
                     </div>
                     <div className="w-full h-3/4 rounded-bl-3xl flex flex-col items-center justify-center md:space-y-4 p-3">
                         <span className="text-white md:text-lg text-sm font-medium">
-                            {`ID: #${set?.id}`}
+                            {`Author: ${set?.author}`}
                         </span>
                     </div>
                 </div>
