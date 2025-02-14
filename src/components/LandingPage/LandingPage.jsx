@@ -27,7 +27,7 @@ function LandingPage() {
                         <button className="rounded-full bg-[#FF6663] font-bold text-white hover:bg-rose-700 hover:border-white ease-in duration-200 text-2xl border-[5px] border-[#EF0028] py-2 px-4 min-w-fit w-[50%] flex flex-col justify-center items-center">Sign up</button>
                     </NavLink>
             
-                    <div className="bg-[#C6E3F1] items-center border-[8px] border-[#338ACB] w-full h-[160px] grid grid-cols-2 gap-5 p-5">
+                    <div className="bg-[#C6E3F1] dark:bg-[#493761] light:bg-[#eff3f5] items-center border-[8px] border-[#338ACB] dark:border-[#1b1423] light:border-[#f1eaea] w-full h-[160px] grid grid-cols-2 gap-5 p-5">
                         <button className="h-[80%] rounded-full shadow-xl bg-[#487FA7] font-bold text-white hover:bg-sky-500 hover:shadow-none ease-in duration-200 text-xl inline-block">
                             <span>Online</span>
                         </button>
@@ -38,7 +38,7 @@ function LandingPage() {
 
                     <NavLink className="w-full" to='/setting' end>
                         <div className="flex w-full text-3xl md:mt-[20px] mt-5">
-                            <button id="settings" class="bg-white hover:bg-gray-400 hover:text-white ease-in-out duration-300
+                            <button id="settings" class="bg-white dark:bg-[rgba(36,27,47,1)] light:bg-[rgba(250,252,253,1)] hover:bg-gray-400 hover:text-white dark:hover:bg-[#3a3256] light:hover:bg-[#cbcdcd] light:hover:text-black ease-in-out duration-300
                             min-w-[100px] min-h-[60px] shrink max-w-full max-h-[75px] grow font-bold ">
                                 Settings
                             </button>

@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate, useSubmit } from "react-router"
 import axios from 'axios'
+import lightMode from '../../assets/images/light.jpg'
+import darkMode from '../../assets/images/dark.jpg'
+import classicMode from '../../assets/images/classic.jpg'
 
 function AccountSetting() {
     const baseUrl = import.meta.env.VITE_API_URL
@@ -19,8 +22,8 @@ function AccountSetting() {
                             <div className='overflow-hidden flex flex-col gap-2 pl-6'>
                                 <label for="small-input" className="block text-sm font-medium text-gray-900 dark:text-white">Enter new username</label>
                                 <input ref={(e) => newUsername = e} type="text" placeholder="Your new username..." id="small-input" className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                                <li onClick={changeUsername} className='cursor-pointer text-center bg-blue-200 w-40 p-2 rounded-full hover:bg-violet-400 transition-all z-10'>Change username</li>
-                                <li onClick={openAccountInfo} className='cursor-pointer text-center bg-red-400 w-28 p-1 rounded-full hover:bg-red-500 transition-all z-10 text-sm'>Cancel</li>
+                                <li onClick={changeUsername} className='cursor-pointer text-center bg-blue-200 w-40 p-2 rounded-full hover:bg-violet-400 transition-all text-black'>Change username</li>
+                                <li onClick={openAccountInfo} className='cursor-pointer text-center bg-red-400 w-28 p-1 rounded-full hover:bg-red-500 transition-all text-black text-sm'>Cancel</li>
                             </div>
                         </ul>  
                     </>
@@ -32,8 +35,8 @@ function AccountSetting() {
                             <div className='overflow-hidden flex flex-col gap-2 pl-6'>
                                 <label for="small-input" className="block text-sm font-medium text-gray-900 dark:text-white">Enter new Email</label>
                                 <input ref={(e) => newEmail = e} type="text" placeholder="Your new email..." id="small-input" className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                                <li onClick={openChangeEmail} className='cursor-pointer text-center bg-blue-200 w-40 p-2 rounded-full hover:bg-violet-400 transition-all z-10'>Change email</li>
-                                <li onClick={openAccountInfo} className='cursor-pointer text-center bg-red-400 w-28 p-1 rounded-full hover:bg-red-500 transition-all z-10 text-sm'>Cancel</li>
+                                <li onClick={openChangeEmail} className='cursor-pointer text-center bg-blue-200 w-40 p-2 rounded-full hover:bg-violet-400 transition-all text-black'>Change email</li>
+                                <li onClick={openAccountInfo} className='cursor-pointer text-center bg-red-400 w-28 p-1 rounded-full hover:bg-red-500 transition-all text-black text-sm'>Cancel</li>
                             </div>
                         </ul>  
                     </>
@@ -45,8 +48,8 @@ function AccountSetting() {
                             <div className='overflow-hidden flex flex-col gap-2 pl-6'>
                                 <label for="small-input" className="block text-sm font-medium text-gray-900 dark:text-white">Enter new Password</label>
                                 <input ref={(e) => newPassword = e} type="text" placeholder="Your new password..." id="small-input" className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                                <li onClick={openChangeEmail} className='cursor-pointer text-center bg-blue-200 w-40 p-2 rounded-full hover:bg-violet-400 transition-all z-10'>Change password</li>
-                                <li onClick={openAccountInfo} className='cursor-pointer text-center bg-red-400 w-28 p-1 rounded-full hover:bg-red-500 transition-all z-10 text-sm'>Cancel</li>
+                                <li onClick={openChangeEmail} className='cursor-pointer text-center bg-blue-200 w-40 p-2 rounded-full hover:bg-violet-400 transition-all text-black'>Change password</li>
+                                <li onClick={openAccountInfo} className='cursor-pointer text-center bg-red-400 w-28 p-1 rounded-full hover:bg-red-500 transition-all text-black text-sm'>Cancel</li>
                             </div>
                         </ul>   
                     </>
@@ -56,11 +59,11 @@ function AccountSetting() {
                     <>
                      <ul className={`transition-all grid w-full ${open ? 'grid-rows-[1fr] pb-6 pt-2 border-b border-slate-400' : 'grid-rows-[0fr]'}`}>
                             <div className='overflow-hidden flex flex-col gap-2 pl-6'>
-                                <li><span className='text-black/70 font-semibold'>Username: </span><span>{localStorage.getItem('username')}</span></li>
-                                <li><span className='text-black/70 font-semibold'>Email: </span><span>{localStorage.getItem('email')}</span></li>
-                                <li onClick={openChgUsername} className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] z-10'>Change username</li>
-                                <li onClick={openChangeEmail} className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] z-10'>Change email</li>
-                                <li onClick={openChangePassword} className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] z-10'>Change password</li>
+                                <li><span className='text-black/70 dark:text-white/70 font-semibold'>Username: </span><span>{localStorage.getItem('username')}</span></li>
+                                <li><span className='text-black/70 dark:text-white/70 font-semibold'>Email: </span><span>{localStorage.getItem('email')}</span></li>
+                                <li onClick={openChgUsername} className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] text-black'>Change username</li>
+                                <li onClick={openChangeEmail} className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] text-black'>Change email</li>
+                                <li onClick={openChangePassword} className='cursor-pointer bg-blue-200 w-40 p-2 rounded-md hover:bg-violet-400 transition-all hover:scale-[105%] text-black'>Change password</li>
                             </div>
                         </ul>   
                     </>
@@ -121,13 +124,13 @@ function AccountSetting() {
         })
     }
     const changeEmail = () => {
-        axios.post(`${baseUrl}/api/v1/acc/auth`, {username: newEmail.value}, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
+        axios.post(`${baseUrl}/api/v1/acc/auth`, {email: newEmail.value}, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
             console.log(response)
             openAccountInfo()
         })
     }
     const changePassword = () => {
-        axios.post(`${baseUrl}/api/v1/acc/auth`, {username: newPassword.value}, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
+        axios.post(`${baseUrl}/api/v1/acc/auth`, {password: newPassword.value}, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }).then((response) => {
             console.log(response)
             openAccountInfo()
         })
@@ -139,14 +142,14 @@ function AccountSetting() {
                 <h3 className="font-semibold w-full text-center border-b border-slate-400 pb-2 mb-4">Account and Privacy</h3>
                 <ul>
                     <li className="mt-2">
-                        <button onClick={() => {setOpen(!open)}} className='bg-[#8dd0d1] w-full rounded-lg p-2 pl-4 flex justify-between items-center hover:bg-[#92c6c8]'>
+                        <button onClick={() => {setOpen(!open); setTimeout(() => setAccountOption(''), 300)}} className='bg-[#8dd0d1] dark:bg-[#404f83] light:bg-[rgba(203,234,236,1)] dark:hover:bg-[#5f75c1] light:hover:bg-[#bcd8da]  w-full rounded-lg p-2 pl-4 flex justify-between items-center hover:bg-[#92c6c8]'>
                             <span>Account Information</span>
                             <svg className={`transition-transform ${open ? 'rotate-180' : ''} `} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>
                         </button>
                         {renderContent()}
                     </li>
                     <li className="mt-2">
-                        <button className='bg-[#8dd0d1] w-full rounded-lg p-2 pl-4 flex justify-between items-center hover:bg-[#92c6c8]'>Notification</button>
+                        <button className='bg-[#8dd0d1] dark:bg-[#404f83] light:bg-[rgba(203,234,236,1)] dark:hover:bg-[#5f75c1] light:hover:bg-[#bcd8da] w-full rounded-lg p-2 pl-4 flex justify-between items-center hover:bg-[#92c6c8]'>Notification</button>
                     </li>
                     <li className="mt-2">
                         <button onClick={logOut} className='bg-[#e43d34] w-52 font-semibold text-gray-200 rounded-lg p-2 pl-4 flex justify-between items-center hover:bg-[#b93d37] group hover:text-white'>
@@ -229,30 +232,49 @@ function OtherSetting() {
     )
 }
 function ThemeSetting() {
+    const [theme, setTheme] = useState(localStorage.getItem("theme") || null)
+    useEffect(() => {
+        const html = document.querySelector('html')
+        html.className = ''
+        switch(theme) {
+            case 'dark':
+                html.classList.add('dark')
+                break
+            case 'light':
+                html.classList.add('light')
+                break
+            default:
+                html.className = ''
+        }
+    }, [theme])
+
     return (
         <>
             <div>
-                <h3 className="font-semibold w-full text-center border-b border-slate-400 pb-2">Theme</h3>
-                 <ul>
+                <h3 className="font-semibold w-full text-center border-b border-slate-400 pb-2 mb-4">Theme</h3>
+                <ul className='flex gap-4 px-4 gap-y-2 max-sm:flex-col'>
                     <li>
-                        <div>Account Information</div>
+                        <label onClick={() => {setTheme(null); localStorage.removeItem("theme")}} htmlFor="classic">
+                            <img src={classicMode} alt="Classic Mode" className="w-full h-full hover:scale-105 transition-all mb-2" />
+                            <input checked={theme ? false : true} id="classic" type="radio" name="theme" />
+                            Classic theme
+                        </label>
                     </li>
-                 </ul>
-                 <ul>
                     <li>
-                        <div>Notification</div>
+                        <label onClick={() => {setTheme('dark'); localStorage.setItem("theme", "dark")}} htmlFor="dark">
+                            <img src={darkMode} alt="Dark Mode" className="w-full h-full hover:scale-105 transition-all mb-2" />
+                            <input checked={theme === 'dark' ? true : false} id="dark" type="radio" name="theme" />
+                            Dark theme
+                        </label>
                     </li>
-                 </ul>
-                 <ul>
                     <li>
-                        <div>Delete Account</div>
+                        <label onClick={() => {setTheme('light'); localStorage.setItem("theme", "light")}} htmlFor="light">
+                            <img src={lightMode} alt="Light Mode" className="w-full h-full hover:scale-105 transition-all mb-2" />
+                            <input checked={theme === 'light' ? true : false} id="light" type="radio" name="theme" />
+                            Light theme
+                        </label>
                     </li>
-                 </ul>
-                 <ul>
-                    <li>
-                        <div>Log out</div>
-                    </li>
-                 </ul>
+                </ul>
             </div>
         </>
     )
@@ -298,31 +320,31 @@ function Setting() {
 
     return (
         <>
-            <div className="flex h-screen bg-gray-100">
-                <div ref={(e) => {sidebar = e}} className="w-[280px] shrink-0 bg-white shadow-lg p-4 overflow-hidden flex flex-col justify-between transition-all max-sm:w-full">
+            <div className="flex h-screen bg-gray-100 dark:bg-[rgb(24,18,31)] light:bg-slate-100">
+                <div ref={(e) => {sidebar = e}} className="w-[280px] bg-white dark:bg-[rgba(36,27,47,1)] light:bg-[rgba(250,252,253,1)] shrink-0 shadow-lg p-4 overflow-hidden flex flex-col justify-between transition-all max-sm:w-full">
                     <div>
                         <h2 className="text-2xl font-bold mb-4">Settings</h2>
                         <ul className='gap-2 flex flex-col'>
                             <li
-                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'account' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
+                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'account' ? 'bg-blue-200 dark:bg-[rgba(93,116,203,1)] light:bg-[rgba(203,234,236,1)] shadow-[0_3px_rgba(0,0,0,0.4)] dark:shadow-[0_3px_rgba(93,116,203,0.6)]' : 'hover:bg-slate-300 dark:hover:bg-[rgba(123,89,163,1)] light:hover:bg-[rgba(229,234,253,1)]'}`}
                                 onClick={() => {setSelectedOption('account'); closeSierbar()}}
                             >
                                 Account & Privacy
                             </li>
                             <li
-                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'setting' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
+                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'setting' ? 'bg-blue-200 dark:bg-[rgba(93,116,203,1)] light:bg-[rgba(203,234,236,1)] shadow-[0_3px_rgba(0,0,0,0.4)] dark:shadow-[0_3px_rgba(93,116,203,0.6)]' : 'hover:bg-slate-300 dark:hover:bg-[rgba(123,89,163,1)] light:hover:bg-[rgba(229,234,253,1)]'}`}
                                 onClick={() => {setSelectedOption('setting'); closeSierbar()}}
                             >
                                 Setting
                             </li>
                             <li
-                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'language' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
+                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'language' ? 'bg-blue-200 dark:bg-[rgba(93,116,203,1)] light:bg-[rgba(203,234,236,1)] shadow-[0_3px_rgba(0,0,0,0.4)] dark:shadow-[0_3px_rgba(93,116,203,0.6)]' : 'hover:bg-slate-300 dark:hover:bg-[rgba(123,89,163,1)] light:hover:bg-[rgba(229,234,253,1)]'}`}
                                 onClick={() => {setSelectedOption('language'); closeSierbar()}}
                             >
                                 Language
                             </li>
                             <li
-                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'theme' ? 'bg-blue-200 shadow-[0_3px_rgba(0,0,0,0.4)]' : 'hover:bg-slate-300'}`}
+                                className={`p-2 cursor-pointer rounded-sm transition-all ${selectedOption === 'theme' ? 'bg-blue-200 dark:bg-[rgba(93,116,203,1)] light:bg-[rgba(203,234,236,1)] shadow-[0_3px_rgba(0,0,0,0.4)] dark:shadow-[0_3px_rgba(93,116,203,0.6)]' : 'hover:bg-slate-300 dark:hover:bg-[rgba(123,89,163,1)] light:hover:bg-[rgba(229,234,253,1)]'}`}
                                 onClick={() => {setSelectedOption('theme'); closeSierbar()}}
                             >
                                 Theme
@@ -336,7 +358,7 @@ function Setting() {
                 <button ref={(e) => sidebarBtn = e} onClick={openSidebar} className='bg-white h-fit rounded-r-lg self-center hidden'>
                     <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000"><path d="M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z"/></svg>
                 </button>
-                <div ref={(e) => content = e} className="w-full p-4 sm:ml-4 max-sm:hidden">
+                <div ref={(e) => content = e} className="w-full h-full overflow-auto p-4 sm:ml-4 max-sm:hidden">
                     {renderContent()}
                 </div>
             </div>

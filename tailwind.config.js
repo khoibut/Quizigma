@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin')
+
 export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  darkMode: ['selector'],
   theme: {
     extend: {
       borderRadius: {
@@ -85,5 +88,9 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function( {addVariant} ) {
+      addVariant('light', '.light &')
+    }),
+  ],
 }

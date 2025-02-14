@@ -25,6 +25,7 @@ import HostGamePage from './pages/HostGamePage.jsx';
 import MathEquationDisplay from './components/QuestionSystem/MathEquationDisplay.jsx';
 import Setting from './components/AccountSystem/Setting.jsx';
 function App() {
+  document.querySelector('html').classList.add(localStorage.getItem('theme'))
   return (
     <>
       <BrowserRouter>

@@ -18,7 +18,7 @@ function AddQuiz({ setIsOpen }) {
             alert('Description can only be 60 characters long');
             return false;
         }
-        if(name.value.length > 12) {
+        if(name.value.length > 20) {
             alert('Quiz name can only be 12 characters long');
             return false;
         }
@@ -47,7 +47,6 @@ function AddQuiz({ setIsOpen }) {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        background: '#fff',
                         zIndex: 10
                     },
                     content: {
@@ -71,10 +70,10 @@ function AddQuiz({ setIsOpen }) {
                 <AddImage addButton={setAddImage} imageContainer={setImage} />
             </Modal>
             <div className="backdrop-blur-[2px] w-screen h-screen fixed z-10 flex">
-                <div className="flex flex-col inset-0 m-auto w-full bg-blue-200 border-2 border-slate-500 rounded-lg md:p-10 lg:w-4/5">
+                <div className="flex flex-col inset-0 m-auto w-full bg-blue-200 dark:bg-[#394778] light:bg-[rgba(203,234,236,1)]  rounded-lg md:p-10 lg:w-4/5">
                     <div className="self-center font-bold sm:text-2xl m-3">CREATE NEW QUIZIGMA</div>
                     <div className="gap-2 lg:grid lg:grid-cols-2">
-                        <label className="flex justify-center justify-self-center w-2/3 items-center aspect-square bg-sky-200 shadow-md border border-blue-300 rounded-xl lg:w-4/5 bg-center bg-cover" style={(image != '' ? { backgroundImage: `url(${image})` } : { backgroundImage: "none" })}>
+                        <label className="flex justify-center justify-self-center w-2/3 items-center aspect-square bg-sky-200 dark:bg-[rgba(123,89,163,1)] light:bg-[rgba(229,234,253,1)] shadow-md border border-blue-300 rounded-xl lg:w-4/5 bg-center bg-cover" style={(image != '' ? { backgroundImage: `url(${image})` } : { backgroundImage: "none" })}>
                             <button className="hidden w-fit bg-red-400 rounded-full py-3 px-10 text-white sm:block hover:bg-rose-500 hover:scale-105 hover:opacity-100 transition-all" style={(image == '' ? { display: "block" } : { display: 'none' })} onClick={() => { setAddImage(true) }}>ADD IMAGE</button>
                             <svg className="hidden" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#000000"><path d="M480-480ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h320v80H200v560h560v-320h80v320q0 33-23.5 56.5T760-120H200Zm40-160h480L570-480 450-320l-90-120-120 160Zm440-320v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z" /></svg>
                         </label>
