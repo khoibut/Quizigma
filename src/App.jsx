@@ -25,6 +25,8 @@ import HostGamePage from './pages/HostGamePage.jsx';
 import MathEquationDisplay from './components/QuestionSystem/MathEquationDisplay.jsx';
 import Setting from './components/AccountSystem/Setting.jsx';
 import SearchPage from './components/Discovery_Page/SearchPage.jsx';
+import JoinAssignment from './components/Game/JoinAssignment.jsx';
+import AssignmentPage from './pages/AssignmentPage.jsx';
 function App() {
   return (
     <>
@@ -37,7 +39,9 @@ function App() {
           <Route path='signup' element={<SignUp />} />
           <Route path='addquiz' element={<AddQuiz />} />
           <Route path='join' element={<JoinGame />} />
+          <Route path='join/assignment' element={<JoinAssignment />} />
           <Route path='game/:roomId' element={<GamePage />} />
+          <Route path='assignment/:assignmentId' element={<AssignmentPage />} />
           <Route path='game/host/:roomId' element={<HostGamePage />} />
           <Route path='game/host/stat' element={<StatManagement totalQuestion="10" />} />
           <Route path='game/stat' element={<PlayerStat total="10" score="10000" correct="9" />} />

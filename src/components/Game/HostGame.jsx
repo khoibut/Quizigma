@@ -10,7 +10,7 @@ function LiveGame({ timeLimit, lateJoin }) {
             {/* Maximun score input */}
             {/* Game length */}
             <div>
-                <span class="font-semibold text-lg">Time: </span>
+                <span className="font-semibold text-lg">Time: </span>
                 <input ref={timeLimit} className="p-1 ps-3 outline-none rounded-lg" type="text"></input>
             </div>
             {/* Late join check box */}
@@ -21,23 +21,34 @@ function LiveGame({ timeLimit, lateJoin }) {
         </div>
     )
 }
-function Assignment() {
+function Assignment({ maxQuestionsRef, deadlineRef, link }) {
+    function displayLink() {
+        if (link === '') {
+            return <></>
+        } else {
+            return (
+                <>
+                    <div className="font-semibold text-lg">Link: </div>
+                    <div onClick={() => { navigator.clipboard.write(``); }} className="bg-white cursor-pointer p-1 ps-3 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] w-full">{`quizigma.vercel.app/assignment/${link}`}</div>
+                </>
+            )
+        }
+    }
     return (
         <div className="flex flex-col gap-4">
             {/* maximum score input */}
             <div>
-                <span className="font-semibold text-lg">Max Score: </span>
-                <input className="p-1 ps-3 outline-none rounded-lg" type="text"></input>
+                <span className="font-semibold text-lg">Max Questions: </span>
+                <input ref={maxQuestionsRef} className="p-1  ps-3 outline-none rounded-lg" type="number"></input>
             </div>
             {/* time before assignment close */}
             <div>
                 <span className="font-semibold text-lg">Deadline: </span>
-                <input className="p-1 ps-3 outline-none rounded-lg" type="date"></input>
+                <input ref={deadlineRef} className="p-1 ps-3 outline-none rounded-lg" type="date"></input>
             </div>
             {/* pre-generated link */}
             <div className="flex flex-col">
-                <div className="font-semibold text-lg">Link: </div>
-                <div onClick={() => { navigator.clipboard.write('sex.com/sexsupersex'); }} className="bg-white cursor-pointer p-1 ps-3 rounded-lg shadow-[0_5px_1px_rgba(0,0,15,0.5)] w-full">sex.com/sexsupersex</div>
+                {displayLink()}
             </div>
             {/* pre-generated qr code */}
             <div className='flex justify-between'>
@@ -124,9 +135,9 @@ function MultiChoiceQuestion({ question, index }) {
                     <div className="option-list">
                         {question.options.map((option, index) => {
                             if (question.answers.includes(index + 1)) {
-                                return <MultiChoiceOption correct={true} option={option} index={index + 1} />
+                                return <MultiChoiceOption correct={true} option={option} index={index + 1} key={option.id} />
                             } else {
-                                return <MultiChoiceOption correct={false} option={option} index={index + 1} />
+                                return <MultiChoiceOption correct={false} option={option} index={index + 1} key={option.id} />
                             }
                         })}
 
@@ -184,9 +195,12 @@ function HostGame() {
     const setId = useParams()
     const timeLimit = useRef()
     const lateJoin = useRef()
+    const maxQuestions = useRef()
+    const deadline = useRef()
+    const [link, setLink] = useState('')
     const [questions, setQuestions] = useState([])
     const [set, setSet] = useState(null)
-    const [typeOfHost, setTypeOfHost] = useState(<LiveGame timeLimit={timeLimit} lateJoin={lateJoin} />)
+    const [typeOfHost, setTypeOfHost] = useState('liveGame')
     let liveGameButton
     let assignmentButton
     const navigate = useNavigate()
@@ -204,7 +218,7 @@ function HostGame() {
 
     // switch, toggle game mode styling
     function liveGame() {
-        setTypeOfHost(<LiveGame timeLimit={timeLimit} lateJoin={lateJoin} />)
+        setTypeOfHost('liveGame')
         liveGameButton.style.borderRadius = '0 9999px 9999px 0'
         liveGameButton.style.boxShadow = '6px 0 2px rgba(0,0,15,0.5)'
         liveGameButton.style.zIndex = '10'
@@ -213,7 +227,7 @@ function HostGame() {
         assignmentButton.style.zIndex = '1'
     }
     function assignment() {
-        setTypeOfHost(<Assignment />)
+        setTypeOfHost('assignment')
         assignmentButton.style.borderRadius = '9999px 0 0 9999px'
         assignmentButton.style.boxShadow = '-6px 0 2px rgba(0,0,15,0.5)'
         assignmentButton.style.zIndex = '10'
@@ -221,30 +235,59 @@ function HostGame() {
         liveGameButton.style.boxShadow = 'none'
         liveGameButton.style.zIndex = '1'
     }
-    function startGame() {
-        navigate("/game/host#randomnumber")
+
+    function displayHost() {
+        if (typeOfHost === 'liveGame') {
+            return <LiveGame timeLimit={timeLimit} lateJoin={lateJoin} />
+        } else {
+            return <Assignment maxQuestionsRef={maxQuestions} deadlineRef={deadline} link={link} />
+        }
     }
 
     function startGame() {
-        const roomDTO = {
-            setId: setId.setId,
-            timeLimit: timeLimit.current.value,
-            lateJoin: lateJoin.current.checked
-        }
-
-        axios.post(`${baseUrl}/api/v1/room`, roomDTO,
-            {
-                headers:
+        if (typeOfHost == 'liveGame') {
+            const roomDTO = {
+                setId: setId.setId,
+                timeLimit: timeLimit.current.value,
+                lateJoin: lateJoin.current.checked
+            }
+            axios.post(`${baseUrl}/api/v1/room`, roomDTO,
                 {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    headers:
+                        { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                }).then((response) => {
+                    if (response.status === 200) {
+                        window.location.href = `/game/host/${response.data.roomId}`
+                    } else {
+                        console.log(response.data)
+                    }
                 }
-            }).then((response) => {
-                if (response.status === 200) {
-                    window.location.href = `/game/host/${response.data.roomId}`
-                } else {
-                    console.log(response.data)
-                }
+                )
+        } else if (typeOfHost == 'assignment') {
+            if (maxQuestions.current.value == '' || deadline.current.value == '') {
+                alert('Please fill in all the fields')
+                return
+            }
+            if (maxQuestions.current.value < 1) {
+                alert('Max questions must be greater than 0')
+                return
+            }
+            if (new Date(deadline.current.value) < new Date()) {
+                alert('Deadline must be in the future')
+                return
+            }
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+            const assignmentDTO = {
+                setId: setId.setId,
+                maxQuestions: maxQuestions.current.value,
+                deadline: deadline.current.value
+            }
+            axios.post(`${baseUrl}/api/v1/assignment`, assignmentDTO, { headers: headers }).then((response) => {
+                setLink(response.data.assignmentId)
             })
+        }
     }
     return (
         <>
@@ -272,7 +315,7 @@ function HostGame() {
                         </div>
                         {/* game mode options display */}
                         <div className="p-2">
-                            {typeOfHost}
+                            {displayHost()}
                         </div>
                     </div>
 
@@ -280,9 +323,9 @@ function HostGame() {
                     <div className="bg-[#8DBEE2] overflow-y-auto h-full py-4">
                         {questions.map((question, index) => {
                             if (question.type === 'MCQ') {
-                                return <MultiChoiceQuestion question={question} index={index + 1} />
+                                return <MultiChoiceQuestion question={question} index={index + 1} key={question.id} />
                             } else {
-                                return <TextAnswerQuestion question={question} index={index + 1} />
+                                return <TextAnswerQuestion question={question} index={index + 1} key={question.id} />
                             }
 
                         })
